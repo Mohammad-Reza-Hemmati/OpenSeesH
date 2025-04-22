@@ -226,11 +226,11 @@ OPS_ResponseSpectrumAnalysis(void)
 			Tn.clear();
 			while (OPS_GetNumRemainingInputArgs() > 0) {
 				double item;
-				auto old_num_rem = OPS_GetNumRemainingInputArgs();
+				//auto old_num_rem = OPS_GetNumRemainingInputArgs();
 				if (OPS_GetDoubleInput(&numData, &item) < 0) {
-					auto new_num_rem = OPS_GetNumRemainingInputArgs();
-					if (new_num_rem < old_num_rem)
-						OPS_ResetCurrentInputArg(-1);
+					//auto new_num_rem = OPS_GetNumRemainingInputArgs();
+					//if (new_num_rem < old_num_rem)
+					//	OPS_ResetCurrentInputArg(-1);
 					break;
 				}
 				if (strcmp(value, "-fn") == 0 && item != 0) {
@@ -253,11 +253,11 @@ OPS_ResponseSpectrumAnalysis(void)
 			Sa.clear();
 			while (OPS_GetNumRemainingInputArgs() > 0) {
 				double item;
-				auto old_num_rem = OPS_GetNumRemainingInputArgs();
+				//auto old_num_rem = OPS_GetNumRemainingInputArgs();
 				if (OPS_GetDoubleInput(&numData, &item) < 0) {
-					auto new_num_rem = OPS_GetNumRemainingInputArgs();
-					if (new_num_rem < old_num_rem)
-						OPS_ResetCurrentInputArg(-1);
+					//auto new_num_rem = OPS_GetNumRemainingInputArgs();
+					//if (new_num_rem < old_num_rem)
+					//	OPS_ResetCurrentInputArg(-1);
 					break;
 				}
 				Sa.push_back(item);

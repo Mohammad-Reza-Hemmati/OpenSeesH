@@ -1025,6 +1025,11 @@ int OPS_GetNumRemainingInputArgs()
 	return interp->getNumRemainingInputArgs();
 }
 
+int OPS_GetInt(int* numData, int* data)
+{
+	return OPS_GetIntInput(numData, data);
+}
+
 int OPS_GetIntInput(int* numData, int* data)
 {
 	if (cmds == 0) return 0;
@@ -1059,6 +1064,11 @@ int OPS_SetIntDictListOutput(std::map<const char*, std::vector<int>>& data)
 	if (cmds == 0) return 0;
 	DL_Interpreter* interp = cmds->getInterpreter();
 	return interp->setInt(data);
+}
+
+int OPS_GetDouble(int* numData, double* data)
+{
+	return OPS_GetDoubleInput(numData, data);
 }
 
 int OPS_GetDoubleInput(int* numData, double* data)
@@ -1257,6 +1267,14 @@ int OPS_Error(char* errorMessage, int length)
 {
 	opserr << errorMessage;
 	opserr << endln;
+	return 0;
+}
+
+int OPS_IncrCurrentInputArg()
+{
+	if (cmds == 0) return 0;
+	DL_Interpreter* interp = cmds->getInterpreter();
+	interp->incrCurrentArg();
 	return 0;
 }
 

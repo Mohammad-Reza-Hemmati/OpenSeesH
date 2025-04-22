@@ -113,6 +113,9 @@
     <ClCompile Include="..\..\..\SRC\recorder\OpsRecorderCommands.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\SRC\HeatTransfer\Interpreter\TclHeatTransferModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\SRC\modelbuilder\tcl\TclModelBuilder.h">
@@ -141,6 +144,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\SRC\domain\region\MeshRegion.h">
       <Filter>Source Files\region</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\SRC\HeatTransfer\Interpreter\TclHeatTransferModule.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -383,7 +383,6 @@
     <ClInclude Include="..\..\..\SRC\element\shell\ShellNLDKGQThermal.h" />
     <ClInclude Include="..\..\..\SRC\element\shell\ShellNLDKGT.h" />
     <ClInclude Include="..\..\..\SRC\element\shell\ShellNLDKGTThermal.h" />
-    <ClInclude Include="..\..\..\SRC\api\elementAPI.h" />
     <ClInclude Include="..\..\..\SRC\element\truss\CorotTruss.h" />
     <ClInclude Include="..\..\..\Src\element\truss\CorotTrussSection.h" />
     <ClInclude Include="..\..\..\SRC\element\truss\Truss.h" />

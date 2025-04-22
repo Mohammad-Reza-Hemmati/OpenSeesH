@@ -840,7 +840,7 @@ int OPS_MeshRegion()
 			while (OPS_GetNumRemainingInputArgs() > 0) {
 				if (OPS_GetIntInput(&numdata, &eleTag) < 0) {
 					// back one arg
-					OPS_ResetCurrentInputArg(-1);
+					//OPS_ResetCurrentInputArg(-1);
 					break;
 				}
 
@@ -909,7 +909,7 @@ int OPS_MeshRegion()
 			while (OPS_GetNumRemainingInputArgs() > 0) {
 				if (OPS_GetIntInput(&numdata, &nodTag) < 0) {
 					// back one arg
-					OPS_ResetCurrentInputArg(-1);
+					//OPS_ResetCurrentInputArg(-1);
 					break;
 				}
 
@@ -1735,7 +1735,7 @@ int OPS_send()
 			return -1;
 		}
 		datatype = MPI_CHAR;
-		OPS_ResetCurrentInputArg(-1);
+		//OPS_ResetCurrentInputArg(-1);
 		sdata = OPS_GetString();
 	}
 
@@ -1795,7 +1795,7 @@ int OPS_recv()
 			}
 		}
 		else {
-			OPS_ResetCurrentInputArg(-1);
+			//OPS_ResetCurrentInputArg(-1);
 
 			sdata = OPS_GetString();
 			if (strcmp(sdata, "ANY") == 0) {
@@ -1899,7 +1899,7 @@ int OPS_Bcast() {
 				return -1;
 			}
 			datatype = MPI_CHAR;
-			OPS_ResetCurrentInputArg(-1);
+			//OPS_ResetCurrentInputArg(-1);
 			sdata = OPS_GetString();
 		}
 

@@ -118,7 +118,7 @@ int OPS_HomogeneousBC_X()
 	int fix;
 	if (OPS_GetIntInput(&numData, &fix) < 0) {
 	    // back one arg
-	    OPS_ResetCurrentInputArg(-1);
+	    //OPS_ResetCurrentInputArg(-1);
 	    break;
 	}
 	fixity[fixity.Size()] = fix;
@@ -168,7 +168,7 @@ int OPS_HomogeneousBC_Y()
 	int fix;
 	if (OPS_GetIntInput(&numData, &fix) < 0) {
 	    // back one arg
-	    OPS_ResetCurrentInputArg(-1);
+	    //OPS_ResetCurrentInputArg(-1);
 	    break;
 	}
 	fixity[fixity.Size()] = fix;
@@ -218,7 +218,7 @@ int OPS_HomogeneousBC_Z()
 	int fix;
 	if (OPS_GetIntInput(&numData, &fix) < 0) {
 	    // back one arg
-	    OPS_ResetCurrentInputArg(-1);
+	    //OPS_ResetCurrentInputArg(-1);
 	    break;
 	}
 	fixity[fixity.Size()] = fix;

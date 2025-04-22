@@ -58,6 +58,18 @@ PythonWrapper::~PythonWrapper()
 {
 	wrapper = 0;
 }
+PyObject* PythonWrapper::getCurrentArgv() {
+	return currentArgv;
+}
+int PythonWrapper::getCurrentArg() const {
+	return currentArg;
+}
+int PythonWrapper::getNumberArgs() const {
+	return numberArgs;
+}
+void PythonWrapper::incrCurrentArg() {
+	currentArg++;
+}
 
 void
 PythonWrapper::resetCommandLine(int nArgs, int cArg, PyObject* argv)
@@ -835,17 +847,17 @@ static PyObject* Py_ops_getTime(PyObject* self, PyObject* args)
 	return wrapper->getResults();
 }
 
-static PyObject* Py_ops_setCreep(PyObject* self, PyObject* args)
-{
-	wrapper->resetCommandLine(PyTuple_Size(args), 1, args);
-
-	if (OPS_setCreep() < 0) {
-		opserr << (void*)0;
-		return NULL;
-	}
-
-	return wrapper->getResults();
-}
+//static PyObject* Py_ops_setCreep(PyObject* self, PyObject* args)
+//{
+//	wrapper->resetCommandLine(PyTuple_Size(args), 1, args);
+//
+//	if (OPS_setCreep() < 0) {
+//		opserr << (void*)0;
+//		return NULL;
+//	}
+//
+//	return wrapper->getResults();
+//}
 
 static PyObject* Py_ops_eleResponse(PyObject* self, PyObject* args)
 {
@@ -2072,29 +2084,29 @@ static PyObject* Py_ops_setElementRayleighFactors(PyObject* self, PyObject* args
 	return wrapper->getResults();
 }
 
-static PyObject* Py_ops_mesh(PyObject* self, PyObject* args)
-{
-	wrapper->resetCommandLine(PyTuple_Size(args), 1, args);
+//static PyObject* Py_ops_mesh(PyObject* self, PyObject* args)
+//{
+//	wrapper->resetCommandLine(PyTuple_Size(args), 1, args);
+//
+//	if (OPS_mesh() < 0) {
+//		opserr << (void*)0;
+//		return NULL;
+//	}
+//
+//	return wrapper->getResults();
+//}
 
-	if (OPS_mesh() < 0) {
-		opserr << (void*)0;
-		return NULL;
-	}
-
-	return wrapper->getResults();
-}
-
-static PyObject* Py_ops_remesh(PyObject* self, PyObject* args)
-{
-	wrapper->resetCommandLine(PyTuple_Size(args), 1, args);
-
-	if (OPS_remesh() < 0) {
-		opserr << (void*)0;
-		return NULL;
-	}
-
-	return wrapper->getResults();
-}
+//static PyObject* Py_ops_remesh(PyObject* self, PyObject* args)
+//{
+//	wrapper->resetCommandLine(PyTuple_Size(args), 1, args);
+//
+//	if (OPS_remesh() < 0) {
+//		opserr << (void*)0;
+//		return NULL;
+//	}
+//
+//	return wrapper->getResults();
+//}
 
 static PyObject* Py_ops_parameter(PyObject* self, PyObject* args)
 {

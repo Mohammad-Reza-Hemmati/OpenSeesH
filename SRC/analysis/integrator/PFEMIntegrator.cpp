@@ -65,7 +65,7 @@ OPS_PFEMIntegrator(void)
     int numData = 2;
     if (OPS_GetNumRemainingInputArgs() > 1) {
         if (OPS_GetDouble(&numData, dData) < 0) {
-            OPS_ResetCurrentInputArg(-2);
+            //OPS_ResetCurrentInputArg(-2);
         }
     }
 

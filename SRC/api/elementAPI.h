@@ -119,65 +119,65 @@ class StaticIntegrator;
 class TransientIntegrator;
 class ConvergenceTest;
 
-#define OPS_GetSimulationInfo ops_getsimulationinfo_
-#define OPS_Error ops_error_
-#define OPS_GetIntInput ops_getintinput_
-#define OPS_SetIntOutput ops_setintoutput_
-#define OPS_SetIntListsOutput ops_setintlistsoutput_
-#define OPS_SetIntDictOutput ops_setintdictoutput_
-#define OPS_SetIntDictListOutput ops_setintdictlistoutput_
-#define OPS_GetDoubleInput ops_getdoubleinput_
-#define OPS_SetDoubleOutput ops_setdoubleoutput_
-#define OPS_SetDoubleListsOutput ops_setdoublelistsoutput_
-#define OPS_SetDoubleDictOutput ops_setdoubledictoutput_
-#define OPS_SetDoubleDictListOutput ops_setdoubledictlistoutput_
-#define OPS_AllocateMaterial ops_allocatematerial_
-#define OPS_AllocateElement ops_allocateelement_
-#define OPS_GetMaterialType ops_getmaterialtype_
-#define OPS_GetMaterial ops_getmaterial_
-#define OPS_GetCrdTransf ops_getcrdtransf_
-#define OPS_GetFrictionModel ops_getfrictionmodel_
-#define OPS_GetNodeCrd ops_getnodecrd_
-#define OPS_GetNodeDisp ops_getnodedisp_
-#define OPS_GetNodeVel ops_getnodevel_
-#define OPS_GetNodeAccel ops_getnodeaccel_
-#define OPS_GetNodeIncrDisp ops_getnodeincrdisp_
-#define OPS_GetNodeIncrDeltaDisp ops_getnodeincrdeltadisp_
-#define OPS_InvokeMaterial ops_invokematerial_
-#define OPS_InvokeMaterialDirectly ops_invokematerialdirectly_
-#define OPS_GetInt ops_getintinput_
-#define OPS_GetDouble ops_getdoubleinput_
-#define OPS_GetDoubleListInput ops_getdoublelistinput_
-#define OPS_EvalDoubleStringExpression ops_evaldoublestringexpression_
-#define OPS_GetString ops_getstring
-#define OPS_GetStringFromAll ops_getstringfromall_
-#define OPS_SetString ops_setstring
-#define OPS_SetStringList ops_setstringlist
-#define OPS_SetStringLists ops_setstringlists
-#define OPS_SetStringDict ops_setstringdict
-#define OPS_SetStringDictList ops_setstringdictlist_
-#define OPS_GetNDM ops_getndm_
-#define OPS_GetNDF ops_getndf_
-#define OPS_GetFEDatastore ops_getfedatastore_
-#define OPS_GetInterpPWD ops_getinterppwd_
-#define OPS_AllocateLimitCurve ops_allocatelimitcurve_
-#define OPS_GetLimitCurveType ops_getlimitcurvetype_
-
-#define OPS_GetAnalysisModel ops_getanalysismodel_
-#define OPS_GetAlgorithm ops_getalgorithm_
-#define OPS_GetHandler ops_gethandler_
-#define OPS_GetNumberer ops_getnumberer_
-#define OPS_GetSOE ops_getsoe_
-#define OPS_GetEigenSOE ops_geteigensoe_
-#define OPS_GetStaticAnalysis ops_getstaticanalysis_
-#define OPS_GetTransientAnalysis ops_gettransientanalysis_
-#define OPS_GetVariableTimeStepTransientAnalysis ops_getvariabletimesteptransientanalysis_
-#define OPS_GetNumEigen ops_getnumeigen_
-#define OPS_GetStaticIntegrator ops_getstaticintegrator_
-#define OPS_GetTransientIntegrator ops_gettransientintegrator_
-#define OPS_GetTest ops_gettest_
-#define OPS_builtModel ops_builtmodel_
-#define OPS_GetDomain ops_getdomain_
+//#define OPS_GetSimulationInfo ops_getsimulationinfo_
+//#define OPS_Error ops_error_
+//#define OPS_GetIntInput ops_getintinput_
+//#define OPS_SetIntOutput ops_setintoutput_
+//#define OPS_SetIntListsOutput ops_setintlistsoutput_
+//#define OPS_SetIntDictOutput ops_setintdictoutput_
+//#define OPS_SetIntDictListOutput ops_setintdictlistoutput_
+//#define OPS_GetDoubleInput ops_getdoubleinput_
+//#define OPS_SetDoubleOutput ops_setdoubleoutput_
+//#define OPS_SetDoubleListsOutput ops_setdoublelistsoutput_
+//#define OPS_SetDoubleDictOutput ops_setdoubledictoutput_
+//#define OPS_SetDoubleDictListOutput ops_setdoubledictlistoutput_
+//#define OPS_AllocateMaterial ops_allocatematerial_
+//#define OPS_AllocateElement ops_allocateelement_
+//#define OPS_GetMaterialType ops_getmaterialtype_
+//#define OPS_GetMaterial ops_getmaterial_
+//#define OPS_GetCrdTransf ops_getcrdtransf_
+//#define OPS_GetFrictionModel ops_getfrictionmodel_
+//#define OPS_GetNodeCrd ops_getnodecrd_
+//#define OPS_GetNodeDisp ops_getnodedisp_
+//#define OPS_GetNodeVel ops_getnodevel_
+//#define OPS_GetNodeAccel ops_getnodeaccel_
+//#define OPS_GetNodeIncrDisp ops_getnodeincrdisp_
+//#define OPS_GetNodeIncrDeltaDisp ops_getnodeincrdeltadisp_
+//#define OPS_InvokeMaterial ops_invokematerial_
+//#define OPS_InvokeMaterialDirectly ops_invokematerialdirectly_
+//#define OPS_GetInt ops_getintinput_
+//#define OPS_GetDouble ops_getdoubleinput_
+//#define OPS_GetDoubleListInput ops_getdoublelistinput_
+//#define OPS_EvalDoubleStringExpression ops_evaldoublestringexpression_
+//#define OPS_GetString ops_getstring
+//#define OPS_GetStringFromAll ops_getstringfromall_
+//#define OPS_SetString ops_setstring
+//#define OPS_SetStringList ops_setstringlist
+//#define OPS_SetStringLists ops_setstringlists
+//#define OPS_SetStringDict ops_setstringdict
+//#define OPS_SetStringDictList ops_setstringdictlist_
+//#define OPS_GetNDM ops_getndm_
+//#define OPS_GetNDF ops_getndf_
+//#define OPS_GetFEDatastore ops_getfedatastore_
+//#define OPS_GetInterpPWD ops_getinterppwd_
+//#define OPS_AllocateLimitCurve ops_allocatelimitcurve_
+//#define OPS_GetLimitCurveType ops_getlimitcurvetype_
+//
+//#define OPS_GetAnalysisModel ops_getanalysismodel_
+//#define OPS_GetAlgorithm ops_getalgorithm_
+//#define OPS_GetHandler ops_gethandler_
+//#define OPS_GetNumberer ops_getnumberer_
+//#define OPS_GetSOE ops_getsoe_
+//#define OPS_GetEigenSOE ops_geteigensoe_
+//#define OPS_GetStaticAnalysis ops_getstaticanalysis_
+//#define OPS_GetTransientAnalysis ops_gettransientanalysis_
+//#define OPS_GetVariableTimeStepTransientAnalysis ops_getvariabletimesteptransientanalysis_
+//#define OPS_GetNumEigen ops_getnumeigen_
+//#define OPS_GetStaticIntegrator ops_getstaticintegrator_
+//#define OPS_GetTransientIntegrator ops_gettransientintegrator_
+//#define OPS_GetTest ops_gettest_
+//#define OPS_builtModel ops_builtmodel_
+//#define OPS_GetDomain ops_getdomain_
 
 #include <OPS_Globals.h>
 #include <vector>
@@ -193,13 +193,16 @@ extern "C" int         OPS_GetNDF();
 extern "C" int         OPS_Error(char* errorMessage, int length);
 extern "C" int         OPS_GetNumRemainingInputArgs();
 extern "C" int         OPS_ResetCurrentInputArg(int cArg);
+extern "C" int         OPS_IncrCurrentInputArg();
 //extern "C" int       OPS_ResetInput(ClientData clientData, Tcl_Interp * interp, int cArg, int mArg, TCL_Char * *argv, Domain * domain, TclModelBuilder * builder);
 //extern "C" int       OPS_ResetInputNoBuilder(ClientData clientData, Tcl_Interp * interp, int cArg, int mArg, TCL_Char * *argv, Domain * domain);
+extern "C" int         OPS_GetInt(int* numData, int* data);
 extern "C" int         OPS_GetIntInput(int* numData, int* data);
 extern "C" int         OPS_SetIntOutput(int* numData, int* data, bool scalar);
 extern "C" int         OPS_SetIntListsOutput(std::vector<std::vector<int>>& data);
 extern "C" int         OPS_SetIntDictOutput(std::map<const char*, int>& data);
 extern "C" int         OPS_SetIntDictListOutput(std::map<const char*, std::vector<int>>& data);
+extern "C" int         OPS_GetDouble(int* numData, double* data);
 extern "C" int         OPS_GetDoubleInput(int* numData, double* data);
 extern "C" int         OPS_GetDoubleListInput(int* size, Vector * data);
 extern "C" int         OPS_EvalDoubleStringExpression(const char* theExpression, double& current_val);

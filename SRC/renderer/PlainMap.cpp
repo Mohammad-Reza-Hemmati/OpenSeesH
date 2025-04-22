@@ -35,7 +35,8 @@
 #include <OPS_Stream.h>
 #include <stdlib.h>
 #include <math.h>
-
+#include <limits>
+#include <cmath>
 static float jet[64*3] = {
   0,         0,    0.5625,
   0,         0,    0.6250,
@@ -114,6 +115,12 @@ PlainMap::PlainMap()
 
 float 
 PlainMap::getRed(float value){
+  if (!std::isfinite(value)) {
+    if (value == -std::numeric_limits<float>::infinity())
+      value = min;
+    else if (value == std::numeric_limits<float>::infinity())
+      value = max;
+  }
   if (value > max)
     max = value;
   else if (value < min)
@@ -129,6 +136,8 @@ PlainMap::getRed(float value){
     return data[0];
   else {
     int index = (floor)((value-minLast)*sizeData/((maxLast-minLast)));
+		if (index > sizeData)
+			index = sizeData;
     return data[index*3-3];
   }
     
@@ -138,6 +147,12 @@ PlainMap::getRed(float value){
 
 float 
 PlainMap::getGreen(float value) {
+  if (!std::isfinite(value)) {
+    if (value == -std::numeric_limits<float>::infinity())
+      value = min;
+    else if (value == std::numeric_limits<float>::infinity())
+      value = max;
+  }
   if (value > max)
     max = value;
   else if (value < min)
@@ -161,6 +176,12 @@ PlainMap::getGreen(float value) {
 
 float 
 PlainMap::getBlue(float value) {
+  if (!std::isfinite(value)) {
+		if (value == -std::numeric_limits<float>::infinity())
+			value = min;
+		else if (value == std::numeric_limits<float>::infinity())
+			value = max;
+  }
   if (value > max)
     max = value;
   else if (value < min)

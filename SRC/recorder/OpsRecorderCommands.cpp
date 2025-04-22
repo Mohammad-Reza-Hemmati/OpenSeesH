@@ -274,7 +274,7 @@ void* OPS_NodeRecorder(const char* type)
 
 				int nd;
 				if (OPS_GetIntInput(&numData, &nd) < 0) {
-					OPS_ResetCurrentInputArg(-1);
+					//OPS_ResetCurrentInputArg(-1);
 					break;
 				}
 				nodes[numNodes++] = nd;
@@ -337,7 +337,7 @@ void* OPS_NodeRecorder(const char* type)
 
 				int dof;
 				if (OPS_GetIntInput(&numData, &dof) < 0) {
-					OPS_ResetCurrentInputArg(-1);
+					//OPS_ResetCurrentInputArg(-1);
 					break;
 				}
 				dofs[numDOF++] = dof - 1;
@@ -544,7 +544,7 @@ void* OPS_ElementRecorder(const char* type)
 
 				int el;
 				if (OPS_GetIntInput(&numData, &el) < 0) {
-					OPS_ResetCurrentInputArg(-1);
+					//OPS_ResetCurrentInputArg(-1);
 					break;
 				}
 				elements[numEle++] = el;
@@ -606,7 +606,7 @@ void* OPS_ElementRecorder(const char* type)
 
 				int dof;
 				if (OPS_GetIntInput(&numData, &dof) < 0) {
-					OPS_ResetCurrentInputArg(-1);
+					//OPS_ResetCurrentInputArg(-1);
 					break;
 				}
 				dofs[numDOF++] = dof - 1;
@@ -691,7 +691,6 @@ void* OPS_ElementRecorder(const char* type)
 	if (strcmp(type, "ConditionalElement") == 0)
 		recorder = new ConditionalElementRecorder(&elements, data, nargrem, *domain,
 			theOutputStream, cntrlRcrdrTag, procDataMethod, nProcGrp, echoTimeFlag, &dofs);
-
 	if (data != 0) {
 		delete[] data;
 	}
@@ -816,7 +815,7 @@ void* OPS_DriftRecorder(const char* type)
 			while (OPS_GetNumRemainingInputArgs() > 0)
 			{
 				if (OPS_GetInt(&numData, &node) != 0) {
-					OPS_ResetCurrentInputArg(-1);
+					//OPS_ResetCurrentInputArg(-1);
 					break;
 				}
 				iNodes[numNodes++] = node;
@@ -828,7 +827,7 @@ void* OPS_DriftRecorder(const char* type)
 			int numNodes = 0;
 			while (OPS_GetNumRemainingInputArgs() > 0) {
 				if (OPS_GetInt(&numData, &node) != 0) {
-					OPS_ResetCurrentInputArg(-1);
+					//OPS_ResetCurrentInputArg(-1);
 					break;
 				}
 				jNodes[numNodes++] = node;

@@ -110,7 +110,7 @@ void* OPS_PathSeries() {
         numData = 1;
         if (OPS_GetDoubleInput(&numData, &val) <
           0) {
-          OPS_ResetCurrentInputArg(loc);
+          //OPS_ResetCurrentInputArg(loc);
           break;
         }
         values.push_back(val);
@@ -187,7 +187,7 @@ void* OPS_PathSeries() {
         numData = 1;
         if (OPS_GetDoubleInput(&numData, &val) <
           0) {
-          OPS_ResetCurrentInputArg(loc);
+          //OPS_ResetCurrentInputArg(loc);
           break;
         }
         times.push_back(val);

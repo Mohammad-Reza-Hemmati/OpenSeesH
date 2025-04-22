@@ -81,6 +81,7 @@ public:
 	virtual int getStringCopy(char** stringPtr);
 	virtual int evalDoubleStringExpression(const char* theExpression, double& current_val);
 	virtual void resetInput(int cArg);
+	virtual void incrCurrentArg();
 
 	// methods for interpreters to output results
 	virtual int setInt(int*, int numArgs, bool scalar);

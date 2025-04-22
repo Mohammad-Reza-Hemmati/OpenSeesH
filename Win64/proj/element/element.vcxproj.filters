@@ -370,7 +370,6 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\SRC\element\Element.h" />
     <ClInclude Include="..\..\..\SRC\element\Information.h" />
-    <ClInclude Include="..\..\..\SRC\api\elementAPI.h" />
     <ClInclude Include="..\..\..\SRC\element\forceBeamColumn\BeamIntegration.h">
       <Filter>beamIntegration</Filter>
     </ClInclude>

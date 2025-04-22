@@ -231,6 +231,7 @@
     <ClCompile Include="..\..\..\SRC\element\TclElementCommands.cpp" />
     <ClCompile Include="..\..\..\SRC\element\UP-ucsd\TclFourNodeQuadUPCommand.cpp" />
     <ClCompile Include="..\..\..\SRC\element\zeroLength\TclZeroLength.cpp" />
+    <ClCompile Include="..\..\..\SRC\HeatTransfer\Interpreter\TclHeatTransferModule.cpp" />
     <ClCompile Include="..\..\..\SRC\material\nD\soil\TclUpdateMaterialStageCommand.cpp" />
     <ClCompile Include="..\..\..\SRC\material\section\TclModelBuilderSectionCommand.cpp" />
     <ClCompile Include="..\..\..\SRC\material\uniaxial\PY\TclPyTzQzMaterialCommand.cpp" />
@@ -247,6 +248,7 @@
     <ClInclude Include="..\..\..\SRC\api\elementAPI.h" />
     <ClInclude Include="..\..\..\SRC\api\packages.h" />
     <ClInclude Include="..\..\..\SRC\domain\region\MeshRegion.h" />
+    <ClInclude Include="..\..\..\SRC\HeatTransfer\Interpreter\TclHeatTransferModule.h" />
     <ClInclude Include="..\..\..\SRC\modelbuilder\tcl\TclPlaneStressMaterialTester.h" />
     <ClInclude Include="..\..\..\SRC\tcl\commands.h" />
     <ClInclude Include="..\..\..\SRC\modelbuilder\tcl\TclModelBuilder.h" />

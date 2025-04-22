@@ -143,7 +143,6 @@ PythonModule::getInt(int* data, int numArgs) {
 
 	for (int i = 0; i < numArgs; i++) {
 		PyObject* o = PyTuple_GetItem(wrapper.getCurrentArgv(), wrapper.getCurrentArg());
-		wrapper.incrCurrentArg();
 		if (PyLong_Check(o) || PyFloat_Check(o) || PyBool_Check(o)) {
 			PyErr_Clear();
 			data[i] = PyLong_AsLong(o);
@@ -154,6 +153,7 @@ PythonModule::getInt(int* data, int numArgs) {
 		else {
 			return -1;
 		}
+		wrapper.incrCurrentArg();
 	}
 
 	return 0;
@@ -167,7 +167,6 @@ PythonModule::getDouble(double* data, int numArgs) {
 
 	for (int i = 0; i < numArgs; i++) {
 		PyObject* o = PyTuple_GetItem(wrapper.getCurrentArgv(), wrapper.getCurrentArg());
-		wrapper.incrCurrentArg();
 		if (PyLong_Check(o) || PyFloat_Check(o) || PyBool_Check(o)) {
 			PyErr_Clear();
 			data[i] = PyFloat_AsDouble(o);
@@ -178,6 +177,7 @@ PythonModule::getDouble(double* data, int numArgs) {
 		else {
 			return -1;
 		}
+		wrapper.incrCurrentArg();
 	}
 
 	return 0;
@@ -190,7 +190,6 @@ int PythonModule::getDoubleList(int* size, Vector* data)
 	}
 
 	PyObject* o = PyTuple_GetItem(wrapper.getCurrentArgv(), wrapper.getCurrentArg());
-	wrapper.incrCurrentArg();
 
 	if (PyList_Check(o)) {
 		*size = PyList_Size(o);
@@ -228,7 +227,7 @@ int PythonModule::getDoubleList(int* size, Vector* data)
 		opserr << "PythonModule::getDoubleList error: input is neither a list nor a tuple\n";
 		return -1;
 	}
-
+	wrapper.incrCurrentArg();
 	return 0;
 }
 
@@ -259,6 +258,7 @@ PythonModule::getString() {
 		return 0;
 	}
 
+	wrapper.incrCurrentArg();
 	return PyString_AS_STRING(o);
 #endif
 }
@@ -270,7 +270,6 @@ const char* PythonModule::getStringFromAll(char* buffer, int len) {
 
 	PyObject* o =
 		PyTuple_GetItem(wrapper.getCurrentArgv(), wrapper.getCurrentArg());
-	wrapper.incrCurrentArg();
 
 	// check if int
 	if (PyLong_Check(o) || PyBool_Check(o)) {
@@ -280,6 +279,7 @@ const char* PythonModule::getStringFromAll(char* buffer, int len) {
 			return 0;
 		}
 		snprintf(buffer, len, "%d", data);
+		wrapper.incrCurrentArg();
 		return buffer;
 	}
 	// check if double
@@ -290,6 +290,7 @@ const char* PythonModule::getStringFromAll(char* buffer, int len) {
 			return 0;
 		}
 		snprintf(buffer, len, "%.20f", data);
+		wrapper.incrCurrentArg();
 		return buffer;
 	}
 
@@ -313,6 +314,7 @@ const char* PythonModule::getStringFromAll(char* buffer, int len) {
 
 	strncpy(buffer, res, lenres);
 
+	wrapper.incrCurrentArg();
 	return buffer;
 #else
 	if (!PyString_Check(o)) {
@@ -368,6 +370,11 @@ PythonModule::evalDoubleStringExpression(const char* theExpression, double& curr
 void
 PythonModule::resetInput(int cArg) {
 	wrapper.resetCommandLine(cArg);
+}
+
+void PythonModule::incrCurrentArg()
+{
+	wrapper.incrCurrentArg();
 }
 
 int

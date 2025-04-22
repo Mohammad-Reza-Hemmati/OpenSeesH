@@ -2,14 +2,14 @@
 Copyright (c) 2015-2017, The Regents of the University of California (Regents).
 All rights reserved.
 
-Redistribution and use in source and binary forms, with or without 
+Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
 
 1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer.
+	 list of conditions and the following disclaimer.
 2. Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
+	 this list of conditions and the following disclaimer in the documentation
+	 and/or other materials provided with the distribution.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -26,14 +26,14 @@ The views and conclusions contained in the software and documentation are those
 of the authors and should not be interpreted as representing official policies,
 either expressed or implied, of the FreeBSD Project.
 
-REGENTS SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+REGENTS SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
 THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-THE SOFTWARE AND ACCOMPANYING DOCUMENTATION, IF ANY, PROVIDED HEREUNDER IS 
-PROVIDED "AS IS". REGENTS HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, 
+THE SOFTWARE AND ACCOMPANYING DOCUMENTATION, IF ANY, PROVIDED HEREUNDER IS
+PROVIDED "AS IS". REGENTS HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT,
 UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 *************************************************************************** */
-                                                                        
+
 // Written: Minjie
 
 // Description: A python wrapper for OpenSees commands
@@ -58,49 +58,49 @@ class PythonWrapper
 {
 public:
 
-    PythonWrapper();
-    ~PythonWrapper();
+	PythonWrapper();
+	~PythonWrapper();
 
-    // reset command line
-    void resetCommandLine(int nArgs, int cArg, PyObject* argv);
-    void resetCommandLine(int cArg);
+	// reset command line
+	void resetCommandLine(int nArgs, int cArg, PyObject* argv);
+	void resetCommandLine(int cArg);
 
-    // wrapper commands
-    void addOpenSeesCommands();
-    void addCommand(const char* name, PyCFunction proc);
-    PyMethodDef* getMethods();
+	// wrapper commands
+	void addOpenSeesCommands();
+	void addCommand(const char* name, PyCFunction proc);
+	PyMethodDef* getMethods();
 
-    // get command line arguments
-    PyObject* getCurrentArgv() {return currentArgv;}
-    int getCurrentArg() const {return currentArg;}
-    int getNumberArgs() const {return numberArgs;}
-    void incrCurrentArg() {currentArg++;}
+	// get command line arguments
+	PyObject* getCurrentArgv();
+	int getCurrentArg() const;
+	int getNumberArgs() const;
+	void incrCurrentArg();
 
-    // set outputs
-    void setOutputs(int* data, int numArgs, bool scalar);
-    void setOutputs(double* data, int numArgs, bool scalar);
-    void setOutputs(const char* str);
-    void setOutputs(std::vector<std::vector<int>> &data);
-    void setOutputs(std::map<const char*, int>& data);
-    void setOutputs(std::map<const char*, std::vector<int>>& data);
-    void setOutputs(std::vector<std::vector<double>> &data);
-    void setOutputs(std::map<const char*, double>& data);
-    void setOutputs(std::map<const char*, std::vector<double>>& data);
-    void setOutputs(std::vector<const char*> &data);
-    void setOutputs(std::vector<std::vector<const char*>> &data);
-    void setOutputs(std::map<const char*, const char*>& data);
-    void setOutputs(std::map<const char*, std::vector<const char*>>& data);
-    PyObject* getResults();
+	// set outputs
+	void setOutputs(int* data, int numArgs, bool scalar);
+	void setOutputs(double* data, int numArgs, bool scalar);
+	void setOutputs(const char* str);
+	void setOutputs(std::vector<std::vector<int>>& data);
+	void setOutputs(std::map<const char*, int>& data);
+	void setOutputs(std::map<const char*, std::vector<int>>& data);
+	void setOutputs(std::vector<std::vector<double>>& data);
+	void setOutputs(std::map<const char*, double>& data);
+	void setOutputs(std::map<const char*, std::vector<double>>& data);
+	void setOutputs(std::vector<const char*>& data);
+	void setOutputs(std::vector<std::vector<const char*>>& data);
+	void setOutputs(std::map<const char*, const char*>& data);
+	void setOutputs(std::map<const char*, std::vector<const char*>>& data);
+	PyObject* getResults();
 
 private:
-    // command line arguments
-    PyObject* currentArgv;
-    int currentArg;
-    int numberArgs;
+	// command line arguments
+	PyObject* currentArgv;
+	int currentArg;
+	int numberArgs;
 
-    // methods table
-    std::vector<PyMethodDef> methodsOpenSees;
-    const char* opensees_docstring;
-    PyObject* currentResult;
+	// methods table
+	std::vector<PyMethodDef> methodsOpenSees;
+	const char* opensees_docstring;
+	PyObject* currentResult;
 };
 #endif

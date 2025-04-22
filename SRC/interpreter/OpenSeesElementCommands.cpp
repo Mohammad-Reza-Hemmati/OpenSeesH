@@ -1068,9 +1068,9 @@ OPS_Element()
 //				}
 //			}
 //		}
-//		else {
-//			OPS_ResetCurrentInputArg(cArg);
-//		}
+//		//else {
+//		//	OPS_ResetCurrentInputArg(cArg);
+//		//}
 //	}
 //
 //	// get coords
