@@ -1,24 +1,18 @@
-این سورس کد توسط دکتر سیدعلیرضا جلالی از مجموعه عمران علم افزار مدیریت می شود
-آخرین تغییرات در نسخه اپنسیس دانشگاه برکلی-کالیفرنیا به صورت هفتگی در این نسخه اعمال می شود
-بنابراین، با استفاده از فایل باینری این مجموعه, علاوه بر دسترسی سریع به تغییرات نسخه دانشگاه برکلی-کالیفرنیا
-(که هر چند ماه یک بار در وبسایت آن مجموعه بروزرسانی می شود) 
-از قابلیتهای اضافه شده توسط این مجموعه به اپنسیس نیز بهره مند خواهید شد
+این سورس کد توسط دکتر سیدعلیرضا جلالی از مجموعه خانه OpenSees مدیریت می شود
+این نسخه به صورت گسترده نسبت به نسخه اپنسیس دانشگاه برکلی-کالیفرنیا بهینه سازی شده و به همین دلیل دیگر با این نسخه بروز نخواهد شد 
 برای ارسال هر گونه سؤال و یا پیشنهاد با ما از طریق ایمیل زیر در ارتباط باشید
 seyedalirezajalali@gmail.com
-و یا به وبسیات فارسی ما در آدرس زیر مراجعه فرمایید
-htps://www.OmranElmAfzar.ir
+و یا به وبسیات ما در آدرس زیر مراجعه فرمایید
+htps://www.OpenSeesHouse.com
 
 با تشکر
 سیدعلیرضا جلالی
 
-This source code is managed by Dr. SA Jalali from civil-soft-science (CSS) organization, Iran. The lastest modifications applied to the 
-official version of OpenSees (managed by the University of California, Berkeley) are added to this source code in a weekly manner.
-Therefore, the binary file distributed by CSS reflects the up-to-week version of that repository (which is released every several month
-by the official managers). In addition, many valuable capabilities are added and important bugs are removed by effort of CSS staff.
-For asking any questions related to CSS-OpenSees, recieving the latest built OpenSees.exe file or suggesting any changes please send email
+This source code is managed by Dr. SA Jalali from the OpenSees House institute, Iran. This repo is substantially optimized and the modifications applied to the official version of OpenSees (managed by the University of California, Berkeley) are not added to this source code anymore.
+For asking any questions related to OpenSeesH, recieving the latest built OpenSees.exe or openseesh.pyd files or suggesting any changes please send email
 to:
 seyedalirezajalali@gmail.com
-or visit us at: www.CivilSoftScience.com (English) or www.OmranElmAfzar.ir (Persian)
+or visit us at: www.OpenSeesHouse.com (English)
 
 Thanks and Regards,
 SA Jalali
