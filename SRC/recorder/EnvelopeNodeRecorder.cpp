@@ -707,6 +707,8 @@ EnvelopeNodeRecorder::sendSelf(int commitTag, Channel& theChannel)
 	 if (theHandler != 0) {
 		  idData(2) = theHandler->getClassTag();
 	 }
+	 else
+		 idData(2) = 0;
 
 	 idData(3) = dataFlag;
 
@@ -850,16 +852,18 @@ EnvelopeNodeRecorder::recvSelf(int commitTag, Channel& theChannel,
 
 	 if (theHandler != 0)
 		  delete theHandler;
+	 if (idData(2) != 0)
+	 {
+		 theHandler = theBroker.getPtrNewStream(idData(2));
+		 if (theHandler == 0) {
+			 opserr << "EnvelopeNodeRecorder::sendSelf() - failed to get a data output handler\n";
+			 return -1;
+		 }
 
-	 theHandler = theBroker.getPtrNewStream(idData(2));
-	 if (theHandler == 0) {
-		  opserr << "EnvelopeNodeRecorder::sendSelf() - failed to get a data output handler\n";
-		  return -1;
-	 }
-
-	 if (theHandler->recvSelf(commitTag, theChannel, theBroker) < 0) {
-		  delete theHandler;
-		  theHandler = 0;
+		 if (theHandler->recvSelf(commitTag, theChannel, theBroker) < 0) {
+			 delete theHandler;
+			 theHandler = 0;
+		 }
 	 }
 
 
@@ -1096,7 +1100,15 @@ double EnvelopeNodeRecorder::getRecordedValue(int clmnId, int rowOffset, bool re
 	 if (!initializationDone)
 		  return res;
 	 if (clmnId >= data->noCols())
-		  return res;
+	 {
+		 opserr << "EnvelopeNodeRecorder::getRecordedValue: columnId exceeds valid range" << endln;
+		 return 0;
+	 }
+	 if (rowOffset > 2 || rowOffset < 0)
+	 {
+		 opserr << "EnvelopeNodeRecorder::getRecordedValue: 0 < rowOffset < 2 not met" << endln;
+		 return 0;
+	 }
 	 res = (*data)(2 - rowOffset, clmnId);
 	 if (reset)
 		  first = true;

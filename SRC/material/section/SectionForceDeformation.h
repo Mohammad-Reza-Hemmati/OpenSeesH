@@ -99,7 +99,7 @@ class SectionForceDeformation : public Material
   virtual const ID &getType (void) = 0;
   virtual int getOrder (void) const = 0;
   
-  virtual Response *setResponse(const char **argv, int argc, OPS_Stream &s);
+  virtual Response *setResponse(const char **argv, int argc, OPS_Stream *s);
   virtual int getResponse(int responseID, Information &info);
 
   virtual int getResponseSensitivity(int responseID, int gradIndex,

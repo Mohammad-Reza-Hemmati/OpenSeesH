@@ -1,7 +1,7 @@
 #ifndef SimpleLine_h
 #define SimpleLine_h
 
-#include <../SimpleMesh/Simple_Entity.h>
+#include <Simple_Entity.h>
 #include <Matrix.h>
 #include <Vector.h>
 #include <ID.h>

@@ -805,15 +805,17 @@ ZeroLengthND::Print(OPS_Stream& s, int flag)
 }
 
 Response*
-ZeroLengthND::setResponse(const char** argv, int argc, OPS_Stream& output)
+ZeroLengthND::setResponse(const char** argv, int argc, OPS_Stream* output)
 {
 	Response* theResponse = 0;
-
-	output.tag("ElementOutput");
-	output.attr("eleType", "ZeroLength");
-	output.attr("eleTag", this->getTag());
-	output.attr("node1", connectedExternalNodes[0]);
-	output.attr("node2", connectedExternalNodes[1]);
+	if (output != 0)
+	{
+		output->tag("ElementOutput");
+		output->attr("eleType", "ZeroLength");
+		output->attr("eleTag", this->getTag());
+		output->attr("node1", connectedExternalNodes[0]);
+		output->attr("node2", connectedExternalNodes[1]);
+	}
 
 	char outputData[10];
 
@@ -822,13 +824,16 @@ ZeroLengthND::setResponse(const char** argv, int argc, OPS_Stream& output)
 
 		char outputData[10];
 		int numDOFperNode = numDOF / 2;
-		for (int i = 0; i < numDOFperNode; i++) {
-			sprintf(outputData, "P1_%d", i + 1);
-			output.tag("ResponseType", outputData);
-		}
-		for (int j = 0; j < numDOFperNode; j++) {
-			sprintf(outputData, "P2_%d", j + 1);
-			output.tag("ResponseType", outputData);
+		if (output != 0)
+		{
+			for (int i = 0; i < numDOFperNode; i++) {
+				sprintf(outputData, "P1_%d", i + 1);
+				output->tag("ResponseType", outputData);
+			}
+			for (int j = 0; j < numDOFperNode; j++) {
+				sprintf(outputData, "P2_%d", j + 1);
+				output->tag("ResponseType", outputData);
+			}
 		}
 		theResponse = new ElementResponse(this, 1, *P);
 
@@ -836,16 +841,22 @@ ZeroLengthND::setResponse(const char** argv, int argc, OPS_Stream& output)
 	else if (strcmp(argv[0], "basicForce") == 0 || strcmp(argv[0], "basicForces") == 0) {
 
 		if (the1DMaterial != 0) {
-			for (int i = 0; i < 3; i++) {
-				sprintf(outputData, "P%d", i + 1);
-				output.tag("ResponseType", outputData);
+			if (output != 0)
+			{
+				for (int i = 0; i < 3; i++) {
+					sprintf(outputData, "P%d", i + 1);
+					output->tag("ResponseType", outputData);
+				}
 			}
 			theResponse = new ElementResponse(this, 2, Vector(3));
 		}
 		else {
-			for (int i = 0; i < order; i++) {
-				sprintf(outputData, "P%d", i + 1);
-				output.tag("ResponseType", outputData);
+			if (output != 0)
+			{
+				for (int i = 0; i < order; i++) {
+					sprintf(outputData, "P%d", i + 1);
+					output->tag("ResponseType", outputData);
+				}
 			}
 			theResponse = new ElementResponse(this, 2, Vector(order));
 		}
@@ -855,16 +866,22 @@ ZeroLengthND::setResponse(const char** argv, int argc, OPS_Stream& output)
 		strcmp(argv[0], "deformation") == 0) {
 
 		if (the1DMaterial != 0) {
-			for (int i = 0; i < 3; i++) {
-				sprintf(outputData, "e%d", i + 1);
-				output.tag("ResponseType", outputData);
+			if (output != 0)
+			{
+				for (int i = 0; i < 3; i++) {
+					sprintf(outputData, "e%d", i + 1);
+					output->tag("ResponseType", outputData);
+				}
 			}
 			theResponse = new ElementResponse(this, 3, Vector(3));
 		}
 		else {
-			for (int i = 0; i < order; i++) {
-				sprintf(outputData, "e%d", i + 1);
-				output.tag("ResponseType", outputData);
+			if (output != 0)
+			{
+				for (int i = 0; i < order; i++) {
+					sprintf(outputData, "e%d", i + 1);
+					output->tag("ResponseType", outputData);
+				}
 			}
 			theResponse = new ElementResponse(this, 3, Vector(order));
 		}
@@ -879,7 +896,8 @@ ZeroLengthND::setResponse(const char** argv, int argc, OPS_Stream& output)
 			theResponse = the1DMaterial->setResponse(&argv[1], argc - 1, output);
 	}
 
-	output.endTag();
+	if (output != 0)
+		output->endTag();
 	return theResponse;
 }
 

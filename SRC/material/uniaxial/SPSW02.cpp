@@ -657,7 +657,6 @@ int SPSW02::revertToLastCommit()
 
 int SPSW02::revertToStart()
 {
-	opserr <<"revert called\n";
 	excurEnerg = totalEnerg = beta = 0;
 	excurEnergP = totalEnergP = betaP = 0;
 	Fts = FTS;

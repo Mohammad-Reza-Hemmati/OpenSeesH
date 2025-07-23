@@ -1873,8 +1873,7 @@ Domain::getElementResponse(int eleTag, const char** argv, int argc)
 			}
 		}
 
-		DummyStream dummy;
-		Response* theResponse = theEle->setResponse(argv, argc, dummy);
+		Response* theResponse = theEle->setResponse(argv, argc, 0);
 		if (theResponse == 0) {
 			return 0;
 		}

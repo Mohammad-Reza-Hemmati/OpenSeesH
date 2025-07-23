@@ -80,7 +80,7 @@ public:
 	virtual UniaxialMaterial* getCopy(SectionForceDeformation* s);
 
 	virtual Response* setResponse(const char** argv, int argc,
-		OPS_Stream& theOutputStream);
+		OPS_Stream * theOutputStream);
 	virtual int getResponse(int responseID, Information& matInformation);
 	virtual bool hasFailed(void) { return false; }
 

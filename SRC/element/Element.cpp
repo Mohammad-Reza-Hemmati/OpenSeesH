@@ -422,77 +422,95 @@ Element::isSubdomain(void)
 }
 
 Response*
-Element::setResponse(const char **argv, int argc, OPS_Stream &output)
+Element::setResponse(const char** argv, int argc, OPS_Stream* output)
 {
-  Response *theResponse = 0;
-
-  output.tag("ElementOutput");
-  output.attr("eleType",this->getClassType());
-  output.attr("eleTag",this->getTag());
+  Response* theResponse = 0;
+  if (output != 0)
+  {
+    output->tag("ElementOutput");
+    output->attr("eleType", this->getClassType());
+    output->attr("eleTag", this->getTag());
+  }
   int numNodes = this->getNumExternalNodes();
-  const ID &nodes = this->getExternalNodes();
+  const ID& nodes = this->getExternalNodes();
   static char nodeData[32];
 
-  for (int i=0; i<numNodes; i++) {
-    sprintf(nodeData,"node%d",i+1);
-    output.attr(nodeData,nodes(i));
+  for (int i = 0; i < numNodes; i++) {
+    sprintf(nodeData, "node%d", i + 1);
+    if (output != 0)
+      output->attr(nodeData, nodes(i));
   }
 
-  if (strcmp(argv[0],"force") == 0 || strcmp(argv[0],"forces") == 0 ||
-      strcmp(argv[0],"globalForce") == 0 || strcmp(argv[0],"globalForces") == 0) {
-    const Vector &force = this->getResistingForce();
-    int size = force.Size();
-    for (int i=0; i<size; i++) {
-      sprintf(nodeData,"P%d",i+1);
-      output.tag("ResponseType",nodeData);
+  if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0 ||
+    strcmp(argv[0], "globalForce") == 0 || strcmp(argv[0], "globalForces") == 0) {
+    if (output != 0)
+    {
+      const Vector& force = this->getResistingForce();
+      int size = force.Size();
+      for (int i = 0; i < size; i++) {
+        sprintf(nodeData, "P%d", i + 1);
+        output->tag("ResponseType", nodeData);
+      }
     }
     // Using "strange" numbers to avoid conflicts with Element subclasses
     theResponse = new ElementResponse(this, 111111, this->getResistingForce());
   }
 
-  else if (strcmp(argv[0],"dampingForce") == 0 || strcmp(argv[0],"dampingForces") == 0) {
-    const Vector &force = this->getResistingForce();
-    int size = force.Size();
-    for (int i=0; i<size; i++) {
-      sprintf(nodeData,"P%d",i+1);
-      output.tag("ResponseType",nodeData);
+  else if (strcmp(argv[0], "dampingForce") == 0 || strcmp(argv[0], "dampingForces") == 0) {
+    if (output != 0)
+    {
+      const Vector& force = this->getResistingForce();
+      int size = force.Size();
+      for (int i = 0; i < size; i++) {
+        sprintf(nodeData, "P%d", i + 1);
+        output->tag("ResponseType", nodeData);
+      }
     }
     theResponse = new ElementResponse(this, 222222, this->getResistingForce());
   }
 
-  else if (strcmp(argv[0],"dynamicForce") == 0 || strcmp(argv[0],"dynamicForces") == 0) {
-    const Vector &force = this->getResistingForce();
-    int size = force.Size();
-    for (int i=0; i<size; i++) {
-      sprintf(nodeData,"P%d",i+1);
-      output.tag("ResponseType",nodeData);
+  else if (strcmp(argv[0], "dynamicForce") == 0 || strcmp(argv[0], "dynamicForces") == 0) {
+    if (output != 0)
+    {
+      const Vector& force = this->getResistingForce();
+      int size = force.Size();
+      for (int i = 0; i < size; i++) {
+        sprintf(nodeData, "P%d", i + 1);
+        output->tag("ResponseType", nodeData);
+      }
     }
     theResponse = new ElementResponse(this, 333333, this->getResistingForce());
   }
 
-  else if (strcmp(argv[0],"inertialForce") == 0 || strcmp(argv[0],"inertialForces") == 0) {
-    const Vector &force = this->getResistingForce();
-    int size = force.Size();
-    for (int i=0; i<size; i++) {
-      sprintf(nodeData,"P%d",i+1);
-      output.tag("ResponseType",nodeData);
+  else if (strcmp(argv[0], "inertialForce") == 0 || strcmp(argv[0], "inertialForces") == 0) {
+    if (output != 0)
+    {
+      const Vector& force = this->getResistingForce();
+      int size = force.Size();
+      for (int i = 0; i < size; i++) {
+        sprintf(nodeData, "P%d", i + 1);
+        output->tag("ResponseType", nodeData);
+      }
     }
     theResponse = new ElementResponse(this, 444444, this->getResistingForce());
   }
 #ifdef _CSS
   else if (strcmp(argv[0], "dampingEnergy") == 0 || strcmp(argv[0], "DampingEnergy") == 0) {
-      output.tag("ResponseType", "dampingEnergy");
-      theResponse = new ElementResponse(this, 555555, 0.0);
+    if (output != 0)
+      output->tag("ResponseType", "dampingEnergy");
+    theResponse = new ElementResponse(this, 555555, 0.0);
   }
   else if (strcmp(argv[0], "energy") == 0 || strcmp(argv[0], "Energy") == 0) {
-      output.tag("ResponseType", "hystereticEnergy");
-      theResponse = new ElementResponse(this, 666666, 0.0);
+    if (output != 0)
+      output->tag("ResponseType", "hystereticEnergy");
+    theResponse = new ElementResponse(this, 666666, 0.0);
   }
 
 #endif // _CSS
 
 
-  output.endTag();
+  if (output != 0)
+    output->endTag();
   return theResponse;
 }
 

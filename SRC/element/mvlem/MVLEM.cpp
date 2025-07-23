@@ -1369,26 +1369,32 @@ MVLEM::Print(OPS_Stream &s, int flag)
 	}
 }
 
-Response *MVLEM::setResponse(const char **argv, int argc, OPS_Stream &s)
+Response* MVLEM::setResponse(const char** argv, int argc, OPS_Stream* output)
 {
-	Response *theResponse = 0;
+	Response* theResponse = 0;
 
-	s.tag("ElementOutput");
-	s.attr("eleType", "MVLEM");
-	s.attr("eleTag", this->getTag());
-	s.attr("node1", externalNodes[0]);
-	s.attr("node2", externalNodes[1]);
+	if (output != 0)
+	{
+		output->tag("ElementOutput");
+		output->attr("eleType", "MVLEM");
+		output->attr("eleTag", this->getTag());
+		output->attr("node1", externalNodes[0]);
+		output->attr("node2", externalNodes[1]);
+	}
 
 	// Global forces
 	if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0 ||
 		strcmp(argv[0], "globalForce") == 0 || strcmp(argv[0], "globalForces") == 0) {
 
-		s.tag("ResponseType", "Fx_i");
-		s.tag("ResponseType", "Fy_i");
-		s.tag("ResponseType", "Mz_i");
-		s.tag("ResponseType", "Fx_j");
-		s.tag("ResponseType", "Fy_j");
-		s.tag("ResponseType", "Mz_j");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "Fx_i");
+			output->tag("ResponseType", "Fy_i");
+			output->tag("ResponseType", "Mz_i");
+			output->tag("ResponseType", "Fx_j");
+			output->tag("ResponseType", "Fy_j");
+			output->tag("ResponseType", "Mz_j");
+		}
 
 		return new ElementResponse(this, 1, Vector(6));
 
@@ -1397,7 +1403,8 @@ Response *MVLEM::setResponse(const char **argv, int argc, OPS_Stream &s)
 	// Element curvature
 	else if (strcmp(argv[0], "Curvature") == 0 || strcmp(argv[0], "curvature") == 0) {
 
-		s.tag("ResponseType", "fi");
+		if (output != 0)
+			output->tag("ResponseType", "fi");
 
 		return new ElementResponse(this, 2, 0.0);
 	}
@@ -1405,7 +1412,8 @@ Response *MVLEM::setResponse(const char **argv, int argc, OPS_Stream &s)
 	// Fiber Strain
 	else if (strcmp(argv[0], "Fiber_Strain") == 0 || strcmp(argv[0], "fiber_strain") == 0) {
 
-		s.tag("ResponseType", "ey");
+		if (output != 0)
+			output->tag("ResponseType", "ey");
 
 		return new ElementResponse(this, 3, Vector(m));
 	}
@@ -1413,7 +1421,8 @@ Response *MVLEM::setResponse(const char **argv, int argc, OPS_Stream &s)
 	// Fiber Concrete Stress
 	else if (strcmp(argv[0], "Fiber_Stress_Concrete") == 0 || strcmp(argv[0], "fiber_stress_concrete") == 0) {
 
-		s.tag("ResponseType", "syc");
+		if (output != 0)
+			output->tag("ResponseType", "syc");
 
 		return new ElementResponse(this, 4, Vector(m));
 	}
@@ -1421,7 +1430,8 @@ Response *MVLEM::setResponse(const char **argv, int argc, OPS_Stream &s)
 	// Fiber Steel Stress
 	else if (strcmp(argv[0], "Fiber_Stress_Steel") == 0 || strcmp(argv[0], "fiber_stress_steel") == 0) {
 
-		s.tag("ResponseType", "sys");
+		if (output != 0)
+			output->tag("ResponseType", "sys");
 
 		return new ElementResponse(this, 5, Vector(m));
 	}
@@ -1429,12 +1439,14 @@ Response *MVLEM::setResponse(const char **argv, int argc, OPS_Stream &s)
 	// Shear Force Deformation
 	else if (strcmp(argv[0], "Shear_Force_Deformation") == 0 || strcmp(argv[0], "shear_force_deformation") == 0) {
 
-		s.tag("ResponseType", "shFD");
+		if (output != 0)
+			output->tag("ResponseType", "shFD");
 
 		return new ElementResponse(this, 6, Vector(2));
 	}
 
-	s.endTag();
+	if (output != 0)
+		output->endTag();
 
 	return 0;
 }

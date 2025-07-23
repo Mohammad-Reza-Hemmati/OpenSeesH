@@ -343,7 +343,7 @@ void NDFiber2d::Print(OPS_Stream &s, int flag)
 }
 
 Response*
-NDFiber2d::setResponse(const char **argv, int argc, OPS_Stream &s)
+NDFiber2d::setResponse(const char **argv, int argc, OPS_Stream *s)
 {
   if (argc == 0)
     return 0;

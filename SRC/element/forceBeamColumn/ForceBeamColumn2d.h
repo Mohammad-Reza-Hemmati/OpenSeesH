@@ -122,7 +122,7 @@ class ForceBeamColumn2d: public Element
   friend OPS_Stream &operator<<(OPS_Stream &s, ForceBeamColumn2d &E);        
   void Print(OPS_Stream &s, int flag =0);    
   
-  Response *setResponse(const char **argv, int argc, OPS_Stream &s);
+  Response *setResponse(const char **argv, int argc, OPS_Stream *s);
   int getResponse(int responseID, Information &eleInformation);
   
   // AddingSensitivity:BEGIN //////////////////////////////////////////

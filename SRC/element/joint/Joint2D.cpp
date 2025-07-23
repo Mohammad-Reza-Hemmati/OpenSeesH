@@ -1282,7 +1282,7 @@ int Joint2D::displaySelf(Renderer& theViewer, int displayMode, float fact, const
 
 
 //most-probably requires to be overridden
-Response* Joint2D::setResponse(const char** argv, int argc, OPS_Stream& output)
+Response* Joint2D::setResponse(const char** argv, int argc, OPS_Stream* output)
 {
 #ifdef _CSS
 	Response* theResponse = Element::setResponse(argv, argc, output);

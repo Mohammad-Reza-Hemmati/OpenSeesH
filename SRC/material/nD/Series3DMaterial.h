@@ -94,7 +94,7 @@ public:
 
 	// parameters and responses
 	int setParameter(const char** argv, int argc, Parameter& param);
-	Response* setResponse(const char** argv, int argc, OPS_Stream& output);
+	Response* setResponse(const char** argv, int argc, OPS_Stream * output);
 	int getResponse(int responseID, Information& matInformation);
 
 private:

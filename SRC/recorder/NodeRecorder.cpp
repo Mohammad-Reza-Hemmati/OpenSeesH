@@ -825,6 +825,8 @@ NodeRecorder::sendSelf(int commitTag, Channel& theChannel)
 	if (theOutputHandler != 0) {
 		idData(2) = theOutputHandler->getClassTag();
 	}
+	else
+		idData(2) = 0;
 
 	if (echoTimeFlag == true)
 		idData(3) = 1;
@@ -989,16 +991,18 @@ NodeRecorder::recvSelf(int commitTag, Channel& theChannel,
 
 	if (theOutputHandler != 0)
 		delete theOutputHandler;
+	if (idData(2) != 0)
+	{
+		theOutputHandler = theBroker.getPtrNewStream(idData(2));
+		if (theOutputHandler == 0) {
+			opserr << "NodeRecorder::sendSelf() - failed to get a data output handler\n";
+			return -1;
+		}
 
-	theOutputHandler = theBroker.getPtrNewStream(idData(2));
-	if (theOutputHandler == 0) {
-		opserr << "NodeRecorder::sendSelf() - failed to get a data output handler\n";
-		return -1;
-	}
-
-	if (theOutputHandler->recvSelf(commitTag, theChannel, theBroker) < 0) {
-		delete theOutputHandler;
-		theOutputHandler = 0;
+		if (theOutputHandler->recvSelf(commitTag, theChannel, theBroker) < 0) {
+			delete theOutputHandler;
+			theOutputHandler = 0;
+		}
 	}
 
 	if (idData[7] == 1) {
@@ -1297,7 +1301,10 @@ double NodeRecorder::getRecordedValue(int clmnId, int rowOffset, bool reset)
 	if (!initializationDone)
 		return res;
 	if (clmnId >= response.Size())
-		return res;
+	{
+		opserr << "NodeRecorder::getRecordedValue: columnId exceeds valid range" << endln;
+		return 0;
+	}
 	res = response(clmnId);
 	return res;
 }

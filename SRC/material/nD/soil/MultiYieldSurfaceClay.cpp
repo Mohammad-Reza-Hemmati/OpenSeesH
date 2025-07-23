@@ -1050,7 +1050,7 @@ int MultiYieldSurfaceClay::recvSelf(int commitTag, Channel &theChannel,
 
 
 Response*
-MultiYieldSurfaceClay::setResponse (const char **argv, int argc, OPS_Stream &theOutput)
+MultiYieldSurfaceClay::setResponse (const char **argv, int argc, OPS_Stream *theOutput)
 {
   if (strcmp(argv[0],"stress") == 0 || strcmp(argv[0],"stresses") == 0)
 		return new MaterialResponse(this, 1, this->getCommittedStress());

@@ -1110,7 +1110,7 @@ NDFiberSection2d::Print(OPS_Stream &s, int flag)
 
 Response*
 NDFiberSection2d::setResponse(const char **argv, int argc,
-			      OPS_Stream &output)
+			      OPS_Stream *output)
 {
   Response *theResponse = 0;
 
@@ -1197,14 +1197,17 @@ NDFiberSection2d::setResponse(const char **argv, int argc,
     }
     
     if (key < numFibers && key >= 0) {
-      output.tag("FiberOutput");
-      output.attr("yLoc",matData[2*key]);
-      output.attr("zLoc",0.0);
-      output.attr("area",matData[2*key+1]);
+      if (output != 0)
+      {
+        output->tag("FiberOutput");
+        output->attr("yLoc", matData[2 * key]);
+        output->attr("zLoc", 0.0);
+        output->attr("area", matData[2 * key + 1]);
+      }
       
       theResponse = theMaterials[key]->setResponse(&argv[passarg], argc-passarg, output);
       
-      output.endTag();
+      output->endTag();
     }
 
   }
@@ -1213,16 +1216,16 @@ NDFiberSection2d::setResponse(const char **argv, int argc,
     
     int numData = numFibers*7;
     for (int j = 0; j < numFibers; j++) {
-      output.tag("FiberOutput");
-      output.attr("yLoc", matData[2*j]);
-      output.attr("zLoc", 0.0);
-      output.attr("area", matData[2*j+1]);    
-      output.tag("ResponseType","yCoord");
-      output.tag("ResponseType","zCoord");
-      output.tag("ResponseType","area");
-      output.tag("ResponseType","stress");
-      output.tag("ResponseType","strain");
-      output.endTag();
+      output->tag("FiberOutput");
+      output->attr("yLoc", matData[2*j]);
+      output->attr("zLoc", 0.0);
+      output->attr("area", matData[2*j+1]);    
+      output->tag("ResponseType","yCoord");
+      output->tag("ResponseType","zCoord");
+      output->tag("ResponseType","area");
+      output->tag("ResponseType","stress");
+      output->tag("ResponseType","strain");
+      output->endTag();
     }
     Vector theResponseData(numData);
     theResponse = new MaterialResponse(this, 5, theResponseData);
@@ -1232,16 +1235,16 @@ NDFiberSection2d::setResponse(const char **argv, int argc,
     
     int numData = numFibers*8;
     for (int j = 0; j < numFibers; j++) {
-      output.tag("FiberOutput");
-      output.attr("yLoc", matData[2*j]);
-      output.attr("zLoc", 0.0);
-      output.attr("area", matData[2*j+1]);    
-      output.tag("ResponseType","yCoord");
-      output.tag("ResponseType","zCoord");
-      output.tag("ResponseType","area");
-      output.tag("ResponseType","stress");
-      output.tag("ResponseType","strain");
-      output.endTag();
+      output->tag("FiberOutput");
+      output->attr("yLoc", matData[2*j]);
+      output->attr("zLoc", 0.0);
+      output->attr("area", matData[2*j+1]);    
+      output->tag("ResponseType","yCoord");
+      output->tag("ResponseType","zCoord");
+      output->tag("ResponseType","area");
+      output->tag("ResponseType","stress");
+      output->tag("ResponseType","strain");
+      output->endTag();
     }
     Vector theResponseData(numData);
     theResponse = new MaterialResponse(this, 55, theResponseData);

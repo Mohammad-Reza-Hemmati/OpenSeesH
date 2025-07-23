@@ -235,7 +235,7 @@ UniaxialMaterial::getCopy(SectionForceDeformation* s)
 
 Response*
 UniaxialMaterial::setResponse(const char** argv, int argc,
-	OPS_Stream& theOutput)
+	OPS_Stream* output)
 {
 	Response* theResponse = 0;
 
@@ -265,29 +265,36 @@ UniaxialMaterial::setResponse(const char** argv, int argc,
 
 		) {
 
-		theOutput.tag("UniaxialMaterialOutput");
-		theOutput.attr("matType", this->getClassType());
-		theOutput.attr("matTag", this->getTag());
+		if (output != 0)
+		{
+			output->tag("UniaxialMaterialOutput");
+			output->attr("matType", this->getClassType());
+			output->attr("matTag", this->getTag());
+		}
 
 		// stress
 		if (strcmp(argv[0], "stress") == 0) {
-			theOutput.tag("ResponseType", "sigma11");
+			if (output != 0)
+				output->tag("ResponseType", "sigma11");
 			theResponse = new MaterialResponse(this, 1, 0.0);
 		}
 		// tangent
 		else if (strcmp(argv[0], "tangent") == 0) {
-			theOutput.tag("ResponseType", "C11");
+			if (output != 0)
+				output->tag("ResponseType", "C11");
 			theResponse = new MaterialResponse(this, 2, 0.0);
 		}
 
 		// strain
 		else if (strcmp(argv[0], "strain") == 0) {
-			theOutput.tag("ResponseType", "eps11");
+			if (output != 0)
+				output->tag("ResponseType", "eps11");
 			theResponse = new MaterialResponse(this, 3, 0.0);
 		}
 
 		else if (strcmp(argv[0], "plasticStrain") == 0) {
-			theOutput.tag("ResponseType", "eps11");
+			if (output != 0)
+				output->tag("ResponseType", "eps11");
 			theResponse = new MaterialResponse(this, 6, 0.0);
 		}
 
@@ -295,16 +302,22 @@ UniaxialMaterial::setResponse(const char** argv, int argc,
 		else if ((strcmp(argv[0], "stressStrain") == 0) ||
 			(strcmp(argv[0], "stressANDstrain") == 0) ||
 			(strcmp(argv[0], "stressAndStrain") == 0)) {
-			theOutput.tag("ResponseType", "sig11");
-			theOutput.tag("ResponseType", "eps11");
+			if (output != 0)
+			{
+				output->tag("ResponseType", "sig11");
+				output->tag("ResponseType", "eps11");
+			}
 			theResponse = new MaterialResponse(this, 4, Vector(2));
 		}
 
 		else if ((strcmp(argv[0], "stressStrainTangent") == 0) ||
 			(strcmp(argv[0], "stressANDstrainANDtangent") == 0)) {
-			theOutput.tag("ResponseType", "sig11");
-			theOutput.tag("ResponseType", "eps11");
-			theOutput.tag("ResponseType", "C11");
+			if (output != 0)
+			{
+				output->tag("ResponseType", "sig11");
+				output->tag("ResponseType", "eps11");
+				output->tag("ResponseType", "C11");
+			}
 			theResponse = new MaterialResponse(this, 5, Vector(3));
 		}
 
@@ -314,7 +327,8 @@ UniaxialMaterial::setResponse(const char** argv, int argc,
 			char* token = strtok((char*)argv[0], " ");
 			if (token != NULL) token = strtok(NULL, " ");
 			int gradient = atoi(token);
-			theOutput.tag("ResponseType", "sigsens11");
+			if (output != 0)
+				output->tag("ResponseType", "sigsens11");
 			theResponse = new MaterialResponse(this, gradient + 10000, 0.0);
 		}
 		// strain sensivitiy
@@ -322,32 +336,39 @@ UniaxialMaterial::setResponse(const char** argv, int argc,
 			char* token = strtok((char*)argv[0], " ");
 			if (token != NULL) token = strtok(NULL, " ");
 			int gradient = atoi(token);
-			theOutput.tag("ResponseType", "epssens11");
+			if (output != 0)
+				output->tag("ResponseType", "epssens11");
 			theResponse = new MaterialResponse(this, gradient + 20000, 0.0);
 		}
 		//Added by Liming, UoE, for temperature and elongation output,[SIF]2017
 		else if ((strcmp(argv[0], "TempElong") == 0) ||
 			(strcmp(argv[0], "tempANDelong") == 0)) {
-			theOutput.tag("ResponseType", "temp11");
-			theOutput.tag("ResponseType", "Elong11");
+			if (output != 0)
+			{
+				output->tag("ResponseType", "temp11");
+				output->tag("ResponseType", "Elong11");
+			}
 			theResponse = new MaterialResponse(this, 7, Vector(2));
 		}
 		// by SAJalali:
 		else if ((strcmp(argv[0], "energy") == 0) ||
 			(strcmp(argv[0], "Energy") == 0)) {
-			theOutput.tag("ResponseType", "energy");
+			if (output != 0)
+				output->tag("ResponseType", "energy");
 			theResponse = new MaterialResponse(this, 9, 0.0);
 		}
 #ifdef _CSS
 		// by SAJalali:
 		else if ((strcmp(argv[0], "ductility") == 0) ||
 			(strcmp(argv[0], "Ductility") == 0)) {
-			theOutput.tag("ResponseType", "ductility");
+			if (output != 0)
+				output->tag("ResponseType", "ductility");
 			theResponse = new MaterialResponse(this, 8, 0.0);
 		}
 #endif // _CSS
 
-		theOutput.endTag();
+		if (output != 0)
+			output->endTag();
 	}
 
 	return theResponse;

@@ -228,18 +228,16 @@ ReinforcedConcretePlaneStress ::ReinforcedConcretePlaneStress (int      tag,
       exit(-1);
     }
     
-    OPS_Stream *theDummyStream = new DummyStream();
-    
     const char **argv = new const char *[1];
     argv[0] = "getCommittedStrain";
-    theResponses[0] = theMaterial[0]->setResponse(argv, 1, *theDummyStream);
-    theResponses[1] = theMaterial[1]->setResponse(argv, 1, *theDummyStream);
+    theResponses[0] = theMaterial[0]->setResponse(argv, 1, 0);
+    theResponses[1] = theMaterial[1]->setResponse(argv, 1, 0);
     argv[0] = "setWallVar";
-    theResponses[2] = theMaterial[2]->setResponse(argv, 1, *theDummyStream);
-    theResponses[3] = theMaterial[3]->setResponse(argv, 1, *theDummyStream);
+    theResponses[2] = theMaterial[2]->setResponse(argv, 1, 0);
+    theResponses[3] = theMaterial[3]->setResponse(argv, 1, 0);
     argv[0] = "getPD";
-    theResponses[4] = theMaterial[2]->setResponse(argv, 1, *theDummyStream);
-    theResponses[5] = theMaterial[3]->setResponse(argv, 1, *theDummyStream);
+    theResponses[4] = theMaterial[2]->setResponse(argv, 1, 0);
+    theResponses[5] = theMaterial[3]->setResponse(argv, 1, 0);
     
     if ((theResponses[0] == 0) || (theResponses[1] == 0) ||
 	(theResponses[2] == 0) || (theResponses[3] == 0) ||
@@ -248,7 +246,6 @@ ReinforcedConcretePlaneStress ::ReinforcedConcretePlaneStress (int      tag,
       exit(-1);
     }
     
-    delete theDummyStream;
     /* END FMK */
   
   this->revertToStart();

@@ -922,7 +922,7 @@ FiberSectionGJThermal::Print(OPS_Stream &s, int flag)
 }
 
 Response*
-FiberSectionGJThermal::setResponse(const char **argv, int argc, OPS_Stream &output)
+FiberSectionGJThermal::setResponse(const char **argv, int argc, OPS_Stream *output)
 {
 
   // See if the response is one of the defaults
@@ -1008,14 +1008,18 @@ FiberSectionGJThermal::setResponse(const char **argv, int argc, OPS_Stream &outp
   }
 
   if (key < numFibers && key >= 0) {
-    output.tag("FiberOutput");
-    output.attr("yLoc",-matData[2*key]);
-    output.attr("zLoc",matData[2*key+1]);
-    output.attr("area",matData[2*key+2]);
+    if (output != 0)
+    {
+      output->tag("FiberOutput");
+      output->attr("yLoc", -matData[2 * key]);
+      output->attr("zLoc", matData[2 * key + 1]);
+      output->attr("area", matData[2 * key + 2]);
+    }
 
     theResponse =  theMaterials[key]->setResponse(&argv[passarg], argc-passarg, output);
 
-    output.endTag();
+    if (output != 0)
+      output->endTag();
   }
 
   return theResponse;

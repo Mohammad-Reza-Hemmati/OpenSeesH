@@ -269,73 +269,90 @@ NDMaterial::getTempAndElong()
 //end of adding thermo-mechanical functions, L.Jiang [SIF]
 
 Response*
-NDMaterial::setResponse (const char **argv, int argc, OPS_Stream &output)
+NDMaterial::setResponse(const char** argv, int argc, OPS_Stream* output)
 {
-  Response *theResponse =0;
-  const char *matType = this->getType();
+  Response* theResponse = 0;
+  const char* matType = this->getType();
 
-  output.tag("NdMaterialOutput");
-  output.attr("matType",this->getClassType());
-  output.attr("matTag",this->getTag());
+  if (output != 0)
+  {
+    output->tag("NdMaterialOutput");
+    output->attr("matType", this->getClassType());
+    output->attr("matTag", this->getTag());
+  }
 
-  if (strcmp(argv[0],"stress") == 0 || strcmp(argv[0],"stresses") == 0) {
-    const Vector &res = this->getStress();
+  if (strcmp(argv[0], "stress") == 0 || strcmp(argv[0], "stresses") == 0) {
+    const Vector& res = this->getStress();
     int size = res.Size();
-    
-    if ( (strcmp(matType,"PlaneStress") == 0 && size == 3) ||
-	 (strcmp(matType,"PlaneStrain") == 0 && size == 3)) {
-	output.tag("ResponseType","sigma11");
-	output.tag("ResponseType","sigma22");
-	output.tag("ResponseType","sigma12");
-    } else if (strcmp(matType,"ThreeDimensional") == 0 && size == 6) {
-	output.tag("ResponseType","sigma11");
-	output.tag("ResponseType","sigma22");
-	output.tag("ResponseType","sigma33");
-	output.tag("ResponseType","sigma12");
-	output.tag("ResponseType","sigma23");
-	output.tag("ResponseType","sigma13");
-    } else {
-      for (int i=0; i<size; i++) 
-	output.tag("ResponseType","UnknownStress");
+
+    if (output != 0)
+    {
+      if ((strcmp(matType, "PlaneStress") == 0 && size == 3) ||
+        (strcmp(matType, "PlaneStrain") == 0 && size == 3)) {
+        output->tag("ResponseType", "sigma11");
+        output->tag("ResponseType", "sigma22");
+        output->tag("ResponseType", "sigma12");
+      }
+      else if (strcmp(matType, "ThreeDimensional") == 0 && size == 6) {
+        output->tag("ResponseType", "sigma11");
+        output->tag("ResponseType", "sigma22");
+        output->tag("ResponseType", "sigma33");
+        output->tag("ResponseType", "sigma12");
+        output->tag("ResponseType", "sigma23");
+        output->tag("ResponseType", "sigma13");
+      }
+      else {
+        for (int i = 0; i < size; i++)
+          output->tag("ResponseType", "UnknownStress");
+      }
     }
-    theResponse =  new MaterialResponse(this, 1, this->getStress());
+    theResponse = new MaterialResponse(this, 1, this->getStress());
 
-  } else if (strcmp(argv[0],"strain") == 0 || strcmp(argv[0],"strains") == 0) {
-    const Vector &res = this->getStrain();
+  }
+  else if (strcmp(argv[0], "strain") == 0 || strcmp(argv[0], "strains") == 0) {
+    const Vector& res = this->getStrain();
     int size = res.Size();
-    if ( (strcmp(matType,"PlaneStress") == 0 && size == 3) ||
-	 (strcmp(matType,"PlaneStrain") == 0 && size == 3)) {
-	output.tag("ResponseType","eta11");
-	output.tag("ResponseType","eta22");
-	output.tag("ResponseType","eta12");
-    } else if (strcmp(matType,"ThreeDimensional") == 0 && size == 6) {
-	output.tag("ResponseType","eps11");
-	output.tag("ResponseType","eps22");
-	output.tag("ResponseType","eps33");
-	output.tag("ResponseType","eps12");
-	output.tag("ResponseType","eps23");
-	output.tag("ResponseType","eps13");
-    } else {
-      for (int i=0; i<size; i++) 
-	output.tag("ResponseType","UnknownStrain");
-    }      
-    theResponse =  new MaterialResponse(this, 2, this->getStrain());
+    if (output != 0)
+    {
+      if ((strcmp(matType, "PlaneStress") == 0 && size == 3) ||
+        (strcmp(matType, "PlaneStrain") == 0 && size == 3)) {
+        output->tag("ResponseType", "eta11");
+        output->tag("ResponseType", "eta22");
+        output->tag("ResponseType", "eta12");
+      }
+      else if (strcmp(matType, "ThreeDimensional") == 0 && size == 6) {
+        output->tag("ResponseType", "eps11");
+        output->tag("ResponseType", "eps22");
+        output->tag("ResponseType", "eps33");
+        output->tag("ResponseType", "eps12");
+        output->tag("ResponseType", "eps23");
+        output->tag("ResponseType", "eps13");
+      }
+      else {
+        for (int i = 0; i < size; i++)
+          output->tag("ResponseType", "UnknownStrain");
+      }
+    }
+    theResponse = new MaterialResponse(this, 2, this->getStrain());
   }
   //Adding temperature and thermal expansion output,L.Jiang [SIF]
   else if (strcmp(argv[0], "TempAndElong") == 0 || strcmp(argv[0], "TempAndElong") == 0) {
-	  const Vector &res = this->getTempAndElong();
-	  int size = res.Size();
-	  if (size == 2) {
-		  output.tag("ResponseType", "Temp");
-		  output.tag("ResponseType", "Elong");
-	  }
-	  //opserr<<"tempElong "<<this->getTempAndElong()<<endln;
-	  theResponse = new MaterialResponse(this, 3, this->getTempAndElong());
+    if (output != 0)
+    {
+      const Vector& res = this->getTempAndElong();
+      int size = res.Size();
+      if (size == 2) {
+        output->tag("ResponseType", "Temp");
+        output->tag("ResponseType", "Elong");
+      }
+    }
+    //opserr<<"tempElong "<<this->getTempAndElong()<<endln;
+    theResponse = new MaterialResponse(this, 3, this->getTempAndElong());
   }
   //end of adding output request,L.Jiang [SIF]
   else if (strcmp(argv[0], "Tangent") == 0 || strcmp(argv[0], "tangent") == 0) {
-	  const Matrix &res = this->getTangent();
-	  theResponse = new MaterialResponse(this, 4, this->getTangent());
+    const Matrix& res = this->getTangent();
+    theResponse = new MaterialResponse(this, 4, this->getTangent());
   }
 
   // Massimo Petracca - 28/12/2021:
@@ -348,7 +365,8 @@ NDMaterial::setResponse (const char **argv, int argc, OPS_Stream &output)
   //}
   //default damage output - added by V.K. Papanikolaou [AUTh] - end 
 
-  output.endTag(); // NdMaterialOutput
+  if (output != 0)
+    output->endTag(); // NdMaterialOutput
 
   return theResponse;
 }

@@ -387,7 +387,7 @@ int OrthotropicMaterial::setParameter(const char** argv, int argc, Parameter& pa
 	return theIsotropicMaterial->setParameter(argv, argc, param);
 }
 
-Response* OrthotropicMaterial::setResponse(const char** argv, int argc, OPS_Stream& s)
+Response* OrthotropicMaterial::setResponse(const char** argv, int argc, OPS_Stream * s)
 {
 	if (argc > 0) {
 		if (strcmp(argv[0], "stress") == 0 || 

@@ -236,11 +236,14 @@ stressDensity::getOrder(void) const
 }
 
 Response*
-stressDensity::setResponse(const char **argv, int argc, OPS_Stream &output)
+stressDensity::setResponse(const char **argv, int argc, OPS_Stream *output)
 {
-    output.tag("NdMaterialOutput");
-	output.attr("matType",this->getClassType());
-	output.attr("matTag",this->getTag());
+  if (output != 0)
+  {
+    output->tag("NdMaterialOutput");
+    output->attr("matType", this->getClassType());
+    output->attr("matTag", this->getTag());
+  }
 
 	if(strcmp(argv[0],"stress") == 0 || strcmp(argv[0],"stresses") == 0) { 
 		return new MaterialResponse (this, 1, this->getStress());

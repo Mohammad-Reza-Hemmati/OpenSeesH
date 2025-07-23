@@ -234,19 +234,19 @@ HystereticEnergy::getCopy (void)
 
 
 Response*
-HystereticEnergy::setResponse(const char **argv, int argc, OPS_Stream  &info)
+HystereticEnergy::setResponse(const char** argv, int argc, OPS_Stream* info)
 {
-//
-// we compare argv[0] for known response types for the Truss
-//
+  //
+  // we compare argv[0] for known response types for the Truss
+  //
 
-  if ( strcmp(argv[0],"damage") == 0 || strcmp(argv[0],"damageindex") == 0 )
-    return new DamageResponse( this , 1 , 0.0 );
-  
-  else if (strcmp(argv[0],"trial") == 0 || strcmp(argv[0],"trialinfo") == 0 )
-    return new DamageResponse( this , 2 , Vector(7) );
-  
-  else 
+  if (strcmp(argv[0], "damage") == 0 || strcmp(argv[0], "damageindex") == 0)
+    return new DamageResponse(this, 1, 0.0);
+
+  else if (strcmp(argv[0], "trial") == 0 || strcmp(argv[0], "trialinfo") == 0)
+    return new DamageResponse(this, 2, Vector(7));
+
+  else
     return 0;
 
 }

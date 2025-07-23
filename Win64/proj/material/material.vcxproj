@@ -292,6 +292,7 @@
     <ClCompile Include="..\..\..\SRC\material\uniaxial\Steel02Thermal.cpp" />
     <ClCompile Include="..\..\..\SRC\material\uniaxial\Steel05.cpp" />
     <ClCompile Include="..\..\..\SRC\material\uniaxial\SteelECThermal.cpp" />
+    <ClCompile Include="..\..\..\SRC\material\uniaxial\Steel_01.cpp" />
     <ClCompile Include="..\..\..\SRC\material\uniaxial\TzSandCPT.cpp" />
     <ClCompile Include="..\..\..\SRC\material\uniaxial\UniaxialJ2Plasticity.cpp" />
     <ClCompile Include="..\..\..\SRC\material\uniaxial\UniaxialMaterial.cpp" />
@@ -501,6 +502,7 @@
     <ClInclude Include="..\..\..\SRC\material\uniaxial\Steel02Thermal.h" />
     <ClInclude Include="..\..\..\SRC\material\uniaxial\Steel05.h" />
     <ClInclude Include="..\..\..\SRC\material\uniaxial\SteelECThermal.h" />
+    <ClInclude Include="..\..\..\SRC\material\uniaxial\Steel_01.h" />
     <ClInclude Include="..\..\..\SRC\material\uniaxial\TzSandCPT.h" />
     <ClInclude Include="..\..\..\SRC\material\uniaxial\UniaxialJ2Plasticity.h" />
     <ClInclude Include="..\..\..\SRC\material\uniaxial\UniaxialMaterial.h" />

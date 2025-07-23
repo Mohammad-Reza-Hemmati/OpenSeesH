@@ -606,42 +606,51 @@ int SmearedSteelDoubleLayerT2DMaterial01::revertToStart(void)
 	return 0;
 }
 
-Response* SmearedSteelDoubleLayerT2DMaterial01::setResponse(const char** argv, int argc, OPS_Stream& theOutput)
+Response* SmearedSteelDoubleLayerT2DMaterial01::setResponse(const char** argv, int argc, OPS_Stream * theOutput)
 {
 	Response* theResponse = 0;
 
 	if (strcmp(argv[0], "strain_stress_steel1") == 0 || strcmp(argv[0], "Strain_Stress_Steel1") == 0) {
-		theOutput.tag("NdMaterialOutput");
-		theOutput.attr("matType", this->getClassType());
-		theOutput.attr("matTag", this->getTag());
-		theOutput.tag("ResponseType", "eps11");
-		theOutput.tag("ResponseType", "sig11");
-		theOutput.endTag();
+		if (theOutput != 0)
+		{
+			theOutput->tag("NdMaterialOutput");
+			theOutput->attr("matType", this->getClassType());
+			theOutput->attr("matTag", this->getTag());
+			theOutput->tag("ResponseType", "eps11");
+			theOutput->tag("ResponseType", "sig11");
+			theOutput->endTag();
+		}
 
 		Vector data1(2);
 		data1.Zero();
 		theResponse = new MaterialResponse(this, 101, data1);
 	}
 	else if (strcmp(argv[0], "strain_stress_steel2") == 0 || strcmp(argv[0], "Strain_Stress_Steel2") == 0) {
-		theOutput.tag("NdMaterialOutput");
-		theOutput.attr("matType", this->getClassType());
-		theOutput.attr("matTag", this->getTag());
-		theOutput.tag("ResponseType", "eps11");
-		theOutput.tag("ResponseType", "sig11");
-		theOutput.endTag();
+		if (theOutput != 0)
+		{
+			theOutput->tag("NdMaterialOutput");
+			theOutput->attr("matType", this->getClassType());
+			theOutput->attr("matTag", this->getTag());
+			theOutput->tag("ResponseType", "eps11");
+			theOutput->tag("ResponseType", "sig11");
+			theOutput->endTag();
+		}
 
 		Vector data2(2);
 		data2.Zero();
 		theResponse = new MaterialResponse(this, 102, data2);
 	}
 	else if (strcmp(argv[0], "steel_layer_stress") == 0 || strcmp(argv[0], "Steel_Layer_Stress") == 0) {
-		theOutput.tag("NdMaterialOutput");
-		theOutput.attr("matType", this->getClassType());
-		theOutput.attr("matTag", this->getTag());
-		theOutput.tag("ResponseType", "sigma11");
-		theOutput.tag("ResponseType", "sigma22");
-		theOutput.tag("ResponseType", "sigma12");
-		theOutput.endTag();
+		if (theOutput != 0)
+		{
+			theOutput->tag("NdMaterialOutput");
+			theOutput->attr("matType", this->getClassType());
+			theOutput->attr("matTag", this->getTag());
+			theOutput->tag("ResponseType", "sigma11");
+			theOutput->tag("ResponseType", "sigma22");
+			theOutput->tag("ResponseType", "sigma12");
+			theOutput->endTag();
+		}
 
 		Vector data3(3);
 		data3.Zero();

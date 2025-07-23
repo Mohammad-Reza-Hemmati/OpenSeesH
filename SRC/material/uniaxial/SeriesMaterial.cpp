@@ -633,35 +633,38 @@ SeriesMaterial::Print(OPS_Stream &s, int flag)
 }
 
 Response*
-SeriesMaterial::setResponse(const char **argv, int argc, OPS_Stream &theOutput)
+SeriesMaterial::setResponse(const char** argv, int argc, OPS_Stream* output)
 {
 
-  Response *theResponse = 0;
+  Response* theResponse = 0;
 
-  if (strcmp(argv[0],"strains") == 0) {
-    for (int i=0; i<numMaterials; i++) {
-      theOutput.tag("UniaxialMaterialOutput");
-      theOutput.attr("matType", theModels[i]->getClassType());
-      theOutput.attr("matTag", theModels[i]->getTag());
-      theOutput.tag("ResponseType", "eps11");
-      theOutput.endTag();
+  if (strcmp(argv[0], "strains") == 0) {
+    for (int i = 0; i < numMaterials; i++) {
+      if (output != 0)
+      {
+        output->tag("UniaxialMaterialOutput");
+        output->attr("matType", theModels[i]->getClassType());
+        output->attr("matTag", theModels[i]->getTag());
+        output->tag("ResponseType", "eps11");
+        output->endTag();
+      }
     }
 
-    theResponse =  new MaterialResponse(this, 100, Vector(numMaterials));
+    theResponse = new MaterialResponse(this, 100, Vector(numMaterials));
   }
-  else if (strcmp(argv[0],"material") == 0 ||
-	   strcmp(argv[0],"component") == 0) {
+  else if (strcmp(argv[0], "material") == 0 ||
+    strcmp(argv[0], "component") == 0) {
     if (argc > 1) {
       int matNum = atoi(argv[1]) - 1;
       if (matNum >= 0 && matNum < numMaterials)
-	theResponse =  theModels[matNum]->setResponse(&argv[2], argc-2, theOutput);
+        theResponse = theModels[matNum]->setResponse(&argv[2], argc - 2, output);
     }
   }
 
   if (theResponse != 0)
     return theResponse;
   else
-    return UniaxialMaterial::setResponse(argv, argc, theOutput);
+    return UniaxialMaterial::setResponse(argv, argc, output);
 }
 
 int

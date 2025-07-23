@@ -84,7 +84,7 @@ class NDMaterial : public Material
     virtual const char *getType(void) const = 0;
     virtual int getOrder(void) const {return 0;};  //??
 
-    virtual Response *setResponse (const char **argv, int argc, OPS_Stream &s);
+    virtual Response *setResponse (const char **argv, int argc, OPS_Stream *s);
     virtual int getResponse (int responseID, Information &matInformation);
     virtual bool hasFailed(void) {return false;}
 

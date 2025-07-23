@@ -111,6 +111,17 @@ extern "C" int         OPS_ResetInputNoBuilder(ClientData clientData, Tcl_Interp
 #include <Domain.h>
 #endif
 
+#ifdef _HEATTRANSFER
+//Adding HeatTransfer Module-----------------//Liming Jiang,UoE,2014
+//#include <HeatTransferDomain.h>
+#include <TclHeatTransferModule.h>
+
+int HeatTransfer(ClientData, Tcl_Interp*, int, TCL_Char**);
+int wipeHeatTransfer(ClientData, Tcl_Interp*, int, TCL_Char**);
+static TclHeatTransferModule* theTclHTModule = 0;
+//End of Adding 
+#endif
+
 #include <Information.h>
 #include <Element.h>
 #include <Node.h>
@@ -1131,6 +1142,16 @@ int OpenSeesAppInit(Tcl_Interp* interp) {
 
 	Tcl_CreateCommand(interp, "setMaxOpenFiles", &maxOpenFiles,
 		(ClientData)NULL, (Tcl_CmdDeleteProc*)NULL);
+#ifdef _HEATTRANSFER
+
+	//Added by Liming for HeatTransfer Module, UoE,2014
+
+	Tcl_CreateCommand(interp, "HeatTransfer", HeatTransfer,
+		(ClientData)NULL, (Tcl_CmdDeleteProc*)NULL);
+	Tcl_CreateCommand(interp, "wipeHT", wipeHeatTransfer,
+		(ClientData)NULL, (Tcl_CmdDeleteProc*)NULL);
+
+#endif
 
 	//#ifdef _RELIABILITY
 		//Tcl_CreateCommand(interp, "wipeReliability", wipeReliability,
@@ -1277,6 +1298,50 @@ OPS_SourceCmd(
 	return Tcl_FSEvalFileEx(interp, fileName, encodingName);
 #endif
 }
+
+#ifdef _HEATTRANSFER
+
+int
+HeatTransfer(ClientData clientData, Tcl_Interp* interp, int argc, TCL_Char** argv)
+{
+
+	if (theTclHTModule == 0) {
+		int ndm = 0;
+		if (argc == 1) {
+			ndm = 2;
+		}
+		else if (argc == 2) {
+			if ((strcmp(argv[1], "1d") == 0) || (strcmp(argv[1], "1D") == 0))
+				ndm = 1;
+			else if ((strcmp(argv[1], "2d") == 0) || (strcmp(argv[1], "2D") == 0))
+				ndm = 2;
+			else if ((strcmp(argv[1], "3d") == 0) || (strcmp(argv[1], "3D") == 0))
+				ndm = 3;
+			else
+				opserr << "WARNING: HeatTransfer recieves invalid ndm tag" << endln;
+
+		}
+		else
+			opserr << "WARNING: HeatTransfer recieves invalid argument" << endln;
+
+		theTclHTModule = new TclHeatTransferModule(ndm, interp);
+		return TCL_OK;
+	}
+	else
+		return TCL_ERROR;
+
+}
+
+int
+wipeHeatTransfer(ClientData clientData, Tcl_Interp* interp, int argc, TCL_Char** argv)
+{
+	if (theTclHTModule != 0) {
+		theTclHTModule->clearAll();
+	}
+	return TCL_OK;
+
+}
+#endif
 
 //#ifdef _OPTIMIZATION
 //
@@ -1507,6 +1572,12 @@ wipeModel(ClientData clientData, Tcl_Interp* interp, int argc, TCL_Char** argv)
 	theStaticAnalysis = 0;
 	theTransientAnalysis = 0;
 	theVariableTimeStepTransientAnalysis = 0;
+#ifdef _HEATTRANSFER
+	if (theTclHTModule != 0) {
+		theTclHTModule->clearAll();
+	}
+	theTclHTModule = 0;
+#endif
 
 	theTest = 0;
 	theDatabase = 0;
@@ -8558,9 +8629,7 @@ sectionForce(ClientData clientData, Tcl_Interp* interp, int argc, TCL_Char** arg
 		argvv[1] = c;
 	}
 
-	DummyStream dummy;
-
-	Response* theResponse = theElement->setResponse(argvv, argcc, dummy);
+	Response* theResponse = theElement->setResponse(argvv, argcc, 0);
 	if (theResponse == 0) {
 		char buffer[] = "0.0";
 		Tcl_SetResult(interp, buffer, TCL_VOLATILE);
@@ -8627,9 +8696,7 @@ sectionDeformation(ClientData clientData, Tcl_Interp* interp, int argc, TCL_Char
 	argvv[1] = b;
 	argvv[2] = c;
 
-	DummyStream dummy;
-
-	Response* theResponse = theElement->setResponse(argvv, argcc, dummy);
+	Response* theResponse = theElement->setResponse(argvv, argcc, 0);
 	if (theResponse == 0) {
 		char buffer[] = "0.0";
 		Tcl_SetResult(interp, buffer, TCL_VOLATILE);
@@ -8737,9 +8804,7 @@ sectionStiffness(ClientData clientData, Tcl_Interp* interp, int argc, TCL_Char**
 	argvv[1] = b;
 	argvv[2] = c;
 
-	DummyStream dummy;
-
-	Response* theResponse = theElement->setResponse(argvv, argcc, dummy);
+	Response* theResponse = theElement->setResponse(argvv, argcc, 0);
 	if (theResponse == 0) {
 		char buffer[] = "0.0";
 		Tcl_SetResult(interp, buffer, TCL_VOLATILE);
@@ -8806,9 +8871,7 @@ sectionFlexibility(ClientData clientData, Tcl_Interp* interp, int argc, TCL_Char
 	argvv[1] = b;
 	argvv[2] = c;
 
-	DummyStream dummy;
-
-	Response* theResponse = theElement->setResponse(argvv, argcc, dummy);
+	Response* theResponse = theElement->setResponse(argvv, argcc, 0);
 	if (theResponse == 0) {
 		char buffer[] = "0.0";
 		Tcl_SetResult(interp, buffer, TCL_VOLATILE);
@@ -8873,9 +8936,7 @@ basicDeformation(ClientData clientData, Tcl_Interp* interp, int argc, TCL_Char**
 	const char* argvv[1];
 	argvv[0] = a;
 
-	DummyStream dummy;
-
-	Response* theResponse = theElement->setResponse(argvv, argcc, dummy);
+	Response* theResponse = theElement->setResponse(argvv, argcc, 0);
 	if (theResponse == 0) {
 		char buffer[] = "0.0";
 		Tcl_SetResult(interp, buffer, TCL_VOLATILE);
@@ -8937,9 +8998,7 @@ basicForce(ClientData clientData, Tcl_Interp* interp, int argc, TCL_Char** argv)
 	const char* argvv[1];
 	argvv[0] = a;
 
-	DummyStream dummy;
-
-	Response* theResponse = theElement->setResponse(argvv, argcc, dummy);
+	Response* theResponse = theElement->setResponse(argvv, argcc, 0);
 	if (theResponse == 0) {
 		char buffer[] = "0.0";
 		Tcl_SetResult(interp, buffer, TCL_VOLATILE);
@@ -9001,9 +9060,7 @@ basicStiffness(ClientData clientData, Tcl_Interp* interp, int argc, TCL_Char** a
 	const char* argvv[1];
 	argvv[0] = a;
 
-	DummyStream dummy;
-
-	Response* theResponse = theElement->setResponse(argvv, argcc, dummy);
+	Response* theResponse = theElement->setResponse(argvv, argcc, 0);
 	if (theResponse == 0) {
 		char buffer[] = "0.0";
 		Tcl_SetResult(interp, buffer, TCL_VOLATILE);
@@ -10821,14 +10878,14 @@ extern "C" int OpenSeesParseArgv(int argc, char** argv)
 				currentArg += 3;
 			}
 			else
-			if ((strcmp(argv[currentArg], "-info") == 0) || (strcmp(argv[currentArg], "-INFO") == 0)) {
-				if (argc > (currentArg + 1)) {
-					simulationInfoOutputFilename = argv[currentArg + 1];
+				if ((strcmp(argv[currentArg], "-info") == 0) || (strcmp(argv[currentArg], "-INFO") == 0)) {
+					if (argc > (currentArg + 1)) {
+						simulationInfoOutputFilename = argv[currentArg + 1];
+					}
+					currentArg += 2;
 				}
-				currentArg += 2;
-			}
-			else
-				currentArg++;
+				else
+					currentArg++;
 		}
 	}
 	if (numParam != 0) {
@@ -10989,18 +11046,18 @@ setParameter(ClientData clientData, Tcl_Interp* interp, int argc, TCL_Char** arg
 			argLoc += 3;
 		}
 
-    int tempParamId = 0;
-    Parameter* tempParam;
-    ParameterIter& tempParamIter = theDomain.getParameters();
-    while ((tempParam = tempParamIter()) != 0) {
-        if (tempParam->getTag() > tempParamId)
-            tempParamId = tempParam->getTag();
-    }
-    ++tempParamId;
-    ElementStateParameter theParameter(tempParamId, newValue, &argv[argLoc], argc-argLoc, flag, &eleIDs);
-    theDomain.addParameter(&theParameter);
-    theDomain.removeParameter(tempParamId);
-  }
+		int tempParamId = 0;
+		Parameter* tempParam;
+		ParameterIter& tempParamIter = theDomain.getParameters();
+		while ((tempParam = tempParamIter()) != 0) {
+			if (tempParam->getTag() > tempParamId)
+				tempParamId = tempParam->getTag();
+		}
+		++tempParamId;
+		ElementStateParameter theParameter(tempParamId, newValue, &argv[argLoc], argc - argLoc, flag, &eleIDs);
+		theDomain.addParameter(&theParameter);
+		theDomain.removeParameter(tempParamId);
+	}
 
 	return TCL_OK;
 }

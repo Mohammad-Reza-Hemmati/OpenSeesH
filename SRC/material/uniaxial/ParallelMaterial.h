@@ -69,7 +69,7 @@ class ParallelMaterial : public UniaxialMaterial
     void Print(OPS_Stream &s, int flag =0);
 
     Response *setResponse(const char **argv, int argc, 
-			  OPS_Stream &theOutputStream);
+			  OPS_Stream *theOutputStream);
     int getResponse(int responseID, Information &matInformation);
 #ifdef _CSS
     virtual double getInitYieldStrain();

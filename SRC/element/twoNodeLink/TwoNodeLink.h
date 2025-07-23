@@ -88,7 +88,7 @@ public:
     void Print(OPS_Stream &s, int flag = 0);
     
     // public methods for element recorder
-    Response *setResponse(const char **argv, int argc, OPS_Stream &s);
+    Response *setResponse(const char **argv, int argc, OPS_Stream *s);
     int getResponse(int responseID, Information &eleInfo);
     
     int setParameter(const char **argv, int argc, Parameter &param);

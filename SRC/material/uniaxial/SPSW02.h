@@ -26,7 +26,7 @@ public:
 	virtual int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker & theBroker);
 	virtual void Print(OPS_Stream & s, int flag = 0);
     //virtual Response *setResponse (const char **argv, int argc, 
-				//   OPS_Stream &theOutputStream);
+				//   OPS_Stream *theOutputStream);
     //virtual int getResponse (int responseID, Information &matInformation);
 	virtual double getInitYieldStrain() {return FTS/E0;}
 #ifdef _CSS

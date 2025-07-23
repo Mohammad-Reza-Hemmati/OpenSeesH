@@ -92,7 +92,7 @@ class ModIMKPeakOriented02 : public UniaxialMaterial
                  FEM_ObjectBroker &theBroker);    
    
     void Print(OPS_Stream &s, int flag =0);
-    Response *setResponse (const char **argv, int argc, OPS_Stream &theOutputStream);
+    Response *setResponse (const char **argv, int argc, OPS_Stream *theOutputStream);
     int getResponse (int responseID, Information &matInformation);    
 
    

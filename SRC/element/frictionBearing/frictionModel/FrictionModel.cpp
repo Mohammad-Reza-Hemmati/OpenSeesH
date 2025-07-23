@@ -88,41 +88,49 @@ double FrictionModel::getVelocity()
 }
 
 
-Response* FrictionModel::setResponse(const char **argv, int argc,
-    OPS_Stream &theOutputStream)
+Response* FrictionModel::setResponse(const char** argv, int argc,
+  OPS_Stream* output)
 {
-    Response *theResponse = 0;
-    
-    theOutputStream.tag("FrictionModelOutput");
-    theOutputStream.attr("frnMdlType", this->getClassType());
-    theOutputStream.attr("frnMdlTag", this->getTag());
-    
-    // normal force
-    if (strcmp(argv[0],"normalForce") == 0 || strcmp(argv[0],"N") == 0 ||
-        strcmp(argv[0],"normalFrc") == 0)  {
-        theOutputStream.tag("ResponseType", "N");
-        return new FrictionResponse(this, 1, this->getNormalForce());
-    }
-    // velocity
-    else if (strcmp(argv[0],"velocity") == 0 || strcmp(argv[0],"vel") == 0)  {
-        theOutputStream.tag("ResponseType", "vel");
-        return new FrictionResponse(this, 2, this->getVelocity());
-    }
-    // friction force
-    else if (strcmp(argv[0],"frictionForce") == 0 || strcmp(argv[0],"Ff") == 0 ||
-             strcmp(argv[0],"frnForce") == 0 || strcmp(argv[0],"frnFrc") == 0)  {
-        theOutputStream.tag("ResponseType", "frnFrc");
-        return new FrictionResponse(this, 3, this->getFrictionForce());
-    }
-    // coefficient of friction
-    else if (strcmp(argv[0],"frictionCoeff") == 0 || strcmp(argv[0],"mu") == 0 ||
-             strcmp(argv[0],"frnCoeff") == 0 || strcmp(argv[0],"COF") == 0)  {
-        theOutputStream.tag("ResponseType", "COF");
-        return new FrictionResponse(this, 4, this->getFrictionCoeff());
-    }
-    
-    theOutputStream.endTag();
-    return theResponse;
+  Response* theResponse = 0;
+
+  if (output != 0)
+  {
+    output->tag("FrictionModelOutput");
+    output->attr("frnMdlType", this->getClassType());
+    output->attr("frnMdlTag", this->getTag());
+  }
+
+  // normal force
+  if (strcmp(argv[0], "normalForce") == 0 || strcmp(argv[0], "N") == 0 ||
+    strcmp(argv[0], "normalFrc") == 0) {
+    if (output != 0)
+      output->tag("ResponseType", "N");
+    return new FrictionResponse(this, 1, this->getNormalForce());
+  }
+  // velocity
+  else if (strcmp(argv[0], "velocity") == 0 || strcmp(argv[0], "vel") == 0) {
+    if (output != 0)
+      output->tag("ResponseType", "vel");
+    return new FrictionResponse(this, 2, this->getVelocity());
+  }
+  // friction force
+  else if (strcmp(argv[0], "frictionForce") == 0 || strcmp(argv[0], "Ff") == 0 ||
+    strcmp(argv[0], "frnForce") == 0 || strcmp(argv[0], "frnFrc") == 0) {
+    if (output != 0)
+      output->tag("ResponseType", "frnFrc");
+    return new FrictionResponse(this, 3, this->getFrictionForce());
+  }
+  // coefficient of friction
+  else if (strcmp(argv[0], "frictionCoeff") == 0 || strcmp(argv[0], "mu") == 0 ||
+    strcmp(argv[0], "frnCoeff") == 0 || strcmp(argv[0], "COF") == 0) {
+    if (output != 0)
+      output->tag("ResponseType", "COF");
+    return new FrictionResponse(this, 4, this->getFrictionCoeff());
+  }
+
+  if (output != 0)
+    output->endTag();
+  return theResponse;
 }
 
 

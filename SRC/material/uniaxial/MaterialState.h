@@ -45,7 +45,7 @@ class MaterialState : public TaggedObject, public MovableObject
   MaterialState(int tag, int classTag);    
   virtual ~MaterialState();
 
-  virtual Response *setResponse(const char **argv, int argc, OPS_Stream &s);
+  virtual Response *setResponse(const char **argv, int argc, OPS_Stream *s);
   virtual int getResponse(int responseID, Information &info);
   
   virtual int setVariable(const char *argv);

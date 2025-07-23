@@ -1051,42 +1051,51 @@ CatenaryCable::Print(OPS_Stream &s, int flag)
 
 
 Response*
-CatenaryCable::setResponse(const char **argv, int argc, OPS_Stream &output)
+CatenaryCable::setResponse(const char** argv, int argc, OPS_Stream* output)
 {
 
-    Response *theResponse = 0;
+  Response* theResponse = 0;
 
-    output.tag("ElementOutput");
-    output.attr("eleType","CatenaryCable");
-    output.attr("eleTag",this->getTag());
-    output.attr("node1",connectedExternalNodes[0]);
-    output.attr("node2",connectedExternalNodes[1]);
+  if (output != 0)
+  {
+    output->tag("ElementOutput");
+    output->attr("eleType", "CatenaryCable");
+    output->attr("eleTag", this->getTag());
+    output->attr("node1", connectedExternalNodes[0]);
+    output->attr("node2", connectedExternalNodes[1]);
+  }
 
-    // //
-    // // we compare argv[0] for known response types for the CatenaryCable
-    // //
+  // //
+  // // we compare argv[0] for known response types for the CatenaryCable
+  // //
 
 
-    if ((strcmp(argv[0],"force") == 0) || (strcmp(argv[0],"forces") == 0) 
-        || (strcmp(argv[0],"globalForce") == 0) || (strcmp(argv[0],"globalForces") == 0))
+  if ((strcmp(argv[0], "force") == 0) || (strcmp(argv[0], "forces") == 0)
+    || (strcmp(argv[0], "globalForce") == 0) || (strcmp(argv[0], "globalForces") == 0))
+  {
+    if (output != 0)
     {
-            output.tag("ResponseType", "f1");
-            output.tag("ResponseType", "f2");
-            output.tag("ResponseType", "f3");
-            output.tag("ResponseType", "f4");
-            output.tag("ResponseType", "f5");
-            output.tag("ResponseType", "f6");
-            theResponse =  new ElementResponse(this, 1, Vector(6));
-
-    } 
-    else if (strcmp(argv[0],"energy") == 0)
-    {
-            output.tag("ResponseType", "KineticEnergy");
-            output.tag("ResponseType", "PotentialEnergy");
-            theResponse =  new ElementResponse(this, 2, Vector(2));
+      output->tag("ResponseType", "f1");
+      output->tag("ResponseType", "f2");
+      output->tag("ResponseType", "f3");
+      output->tag("ResponseType", "f4");
+      output->tag("ResponseType", "f5");
+      output->tag("ResponseType", "f6");
     }
+    theResponse = new ElementResponse(this, 1, Vector(6));
 
-    return theResponse;
+  }
+  else if (strcmp(argv[0], "energy") == 0)
+  {
+    if (output != 0)
+    {
+      output->tag("ResponseType", "KineticEnergy");
+      output->tag("ResponseType", "PotentialEnergy");
+    }
+    theResponse = new ElementResponse(this, 2, Vector(2));
+  }
+
+  return theResponse;
 }
 
 int 

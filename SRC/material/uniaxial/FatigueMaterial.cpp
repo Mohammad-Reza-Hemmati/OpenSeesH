@@ -891,69 +891,84 @@ FatigueMaterial::Print(OPS_Stream &s, int flag)
 }
 
 Response* 
-FatigueMaterial::setResponse(const char **argv, int argc, OPS_Stream &theOutput)
+FatigueMaterial::setResponse(const char **argv, int argc, OPS_Stream *output)
 {
   if (argc == 0) 
     return 0;
 
   Response *theResponse = 0;
 
-  theOutput.tag("UniaxialMaterialOutput");
-  theOutput.attr("matType", this->getClassType());
-  theOutput.attr("matTag", this->getTag());
+  if (output != 0)
+  {
+    output->tag("UniaxialMaterialOutput");
+    output->attr("matType", this->getClassType());
+    output->attr("matTag", this->getTag());
+  }
 
 
   // stress
   if (strcmp(argv[0],"stress") == 0) {
-    theOutput.tag("ResponseType", "sigma11");
+    if (output != 0)
+      output->tag("ResponseType", "sigma11");
     theResponse =  new MaterialResponse(this, 1, this->getStress());
   }  
   // tangent
   else if (strcmp(argv[0],"tangent") == 0) {
-    theOutput.tag("ResponseType", "C11");
+    if (output != 0)
+      output->tag("ResponseType", "C11");
     theResponse =  new MaterialResponse(this, 2, this->getTangent());
   }
 
   // strain
   else if (strcmp(argv[0],"strain") == 0) {
-    theOutput.tag("ResponseType", "eps11");
+    if (output != 0)
+      output->tag("ResponseType", "eps11");
     theResponse =  new MaterialResponse(this, 3, this->getStrain());
   }
 
   // strain
   else if ((strcmp(argv[0],"stressStrain") == 0) || 
 	   (strcmp(argv[0],"stressANDstrain") == 0)) {
-    theOutput.tag("ResponseType", "sig11");
-    theOutput.tag("ResponseType", "eps11");
+    if (output != 0)
+    {
+      output->tag("ResponseType", "sig11");
+      output->tag("ResponseType", "eps11");
+    }
     theResponse =  new MaterialResponse(this, 4, Vector(2));
   }
 
  // damage 
   else if (strcmp(argv[0],"damage") == 0) {
     theResponse =  new MaterialResponse(this, 5, DI);
-    theOutput.tag("ResponseType", "DI");
+    if (output != 0)
+      output->tag("ResponseType", "DI");
     // added 6/9/2006
   }   
 
   else if (strcmp(argv[0],"cyclesAndRange") == 0) {
-    theOutput.tag("ResponseType", "UnknownResponse");    
-    theOutput.tag("ResponseType", "UnknownResponse");    
-    theOutput.tag("ResponseType", "UnknownResponse");    
-    theOutput.tag("ResponseType", "UnknownResponse");    
-    theOutput.tag("ResponseType", "UnknownResponse");    
-    theOutput.tag("ResponseType", "UnknownResponse");    
+    if (output != 0)
+    {
+      output->tag("ResponseType", "UnknownResponse");
+      output->tag("ResponseType", "UnknownResponse");
+      output->tag("ResponseType", "UnknownResponse");
+      output->tag("ResponseType", "UnknownResponse");
+      output->tag("ResponseType", "UnknownResponse");
+      output->tag("ResponseType", "UnknownResponse");
+    }
     theResponse =  new MaterialResponse(this, 6, Vector(6));
   }
 
   else if (strcmp(argv[0],"failure") == 0) {
     int res;
     theResponse =  new MaterialResponse(this, 7, res);
-    theOutput.tag("ResponseType", "Failure");
+    if (output != 0)
+      output->tag("ResponseType", "Failure");
   }
   // end add
 
 
-  theOutput.endTag();
+  if (output != 0)
+    output->endTag();
   return theResponse;
 }
 

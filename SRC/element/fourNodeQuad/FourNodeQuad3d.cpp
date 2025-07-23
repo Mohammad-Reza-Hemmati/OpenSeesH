@@ -1091,70 +1091,80 @@ FourNodeQuad3d::displaySelf(Renderer &theViewer, int displayMode, float fact, co
 }
 
 Response*
-FourNodeQuad3d::setResponse(const char **argv, int argc, 
-			  OPS_Stream &output)
+FourNodeQuad3d::setResponse(const char** argv, int argc,
+  OPS_Stream* output)
 {
-  Response *theResponse =0;
+  Response* theResponse = 0;
 
-  output.tag("ElementOutput");
-  output.attr("eleType","FourNodeQuad3d");
-  output.attr("eleTag",this->getTag());
-  output.attr("node1",connectedExternalNodes[0]);
-  output.attr("node2",connectedExternalNodes[1]);
-  output.attr("node3",connectedExternalNodes[2]);
-  output.attr("node4",connectedExternalNodes[3]);
+  if (output != 0)
+  {
+    output->tag("ElementOutput");
+    output->attr("eleType", "FourNodeQuad3d");
+    output->attr("eleTag", this->getTag());
+    output->attr("node1", connectedExternalNodes[0]);
+    output->attr("node2", connectedExternalNodes[1]);
+    output->attr("node3", connectedExternalNodes[2]);
+    output->attr("node4", connectedExternalNodes[3]);
+  }
 
   char dataOut[10];
-  if (strcmp(argv[0],"force") == 0 || strcmp(argv[0],"forces") == 0) {
+  if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0) {
 
-    for (int i=1; i<=4; i++) {
-      sprintf(dataOut,"P1_%d",i);
-      output.tag("ResponseType",dataOut);
-      sprintf(dataOut,"P2_%d",i);
-      output.tag("ResponseType",dataOut);
-    }
-    
-    theResponse =  new ElementResponse(this, 1, P);
-  }   
+    if (output != 0)
+      for (int i = 1; i <= 4; i++) {
+        sprintf(dataOut, "P1_%d", i);
+        output->tag("ResponseType", dataOut);
+        sprintf(dataOut, "P2_%d", i);
+        output->tag("ResponseType", dataOut);
+      }
 
-  else if (strcmp(argv[0],"material") == 0 || strcmp(argv[0],"integrPoint") == 0) {
-    
+    theResponse = new ElementResponse(this, 1, P);
+  }
+
+  else if (strcmp(argv[0], "material") == 0 || strcmp(argv[0], "integrPoint") == 0) {
+
     int pointNum = atoi(argv[1]);
     if (pointNum > 0 && pointNum <= 4) {
-      
-      output.tag("GaussPoint");
-      output.attr("number",pointNum);
-      output.attr("eta",pts[pointNum-1][0]);
-      output.attr("neta",pts[pointNum-1][1]);
 
-      theResponse =  theMaterial[pointNum-1]->setResponse(&argv[2], argc-2, output);
-      
-      output.endTag();
+      if (output != 0)
+      {
+        output->tag("GaussPoint");
+        output->attr("number", pointNum);
+        output->attr("eta", pts[pointNum - 1][0]);
+        output->attr("neta", pts[pointNum - 1][1]);
+      }
+
+      theResponse = theMaterial[pointNum - 1]->setResponse(&argv[2], argc - 2, output);
+
+      if (output != 0)
+        output->endTag();
 
     }
   }
-  else if ((strcmp(argv[0],"stresses") ==0) || (strcmp(argv[0],"stress") ==0)) {
-    for (int i=0; i<4; i++) {
-      output.tag("GaussPoint");
-      output.attr("number",i+1);
-      output.attr("eta",pts[i][0]);
-      output.attr("neta",pts[i][1]);
+  else if ((strcmp(argv[0], "stresses") == 0) || (strcmp(argv[0], "stress") == 0)) {
+    if (output != 0)
+      for (int i = 0; i < 4; i++) {
+        output->tag("GaussPoint");
+        output->attr("number", i + 1);
+        output->attr("eta", pts[i][0]);
+        output->attr("neta", pts[i][1]);
 
-      output.tag("NdMaterialOutput");
-      output.attr("classType", theMaterial[i]->getClassTag());
-      output.attr("tag", theMaterial[i]->getTag());
-      
-      output.tag("ResponseType","sigma11");
-      output.tag("ResponseType","sigma22");
-      output.tag("ResponseType","sigma12");
-      
-      output.endTag(); // GaussPoint
-      output.endTag(); // NdMaterialOutput
+        output->tag("NdMaterialOutput");
+        output->attr("classType", theMaterial[i]->getClassTag());
+        output->attr("tag", theMaterial[i]->getTag());
+
+        output->tag("ResponseType", "sigma11");
+        output->tag("ResponseType", "sigma22");
+        output->tag("ResponseType", "sigma12");
+
+        output->endTag(); // GaussPoint
+        output->endTag(); // NdMaterialOutput
       }
-    theResponse =  new ElementResponse(this, 3, Vector(12));
+    theResponse = new ElementResponse(this, 3, Vector(12));
   }
 
-  output.endTag(); // ElementOutput
+  if (output != 0)
+    output->endTag(); // ElementOutput
 
   return theResponse;
 }

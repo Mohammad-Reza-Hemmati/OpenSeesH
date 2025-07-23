@@ -1132,119 +1132,131 @@ NineNodeQuad::displaySelf(Renderer &theViewer, int displayMode, float fact, cons
 }
 
 Response*
-NineNodeQuad::setResponse(const char **argv, int argc,
-			  OPS_Stream &output)
+NineNodeQuad::setResponse(const char** argv, int argc,
+	OPS_Stream* output)
 {
-  Response *theResponse =0;
+	Response* theResponse = 0;
 
-  output.tag("ElementOutput");
-  output.attr("eleType","NineNodeQuad");
-  output.attr("eleTag",this->getTag());
-  output.attr("node1",connectedExternalNodes[0]);
-  output.attr("node2",connectedExternalNodes[1]);
-  output.attr("node3",connectedExternalNodes[2]);
-  output.attr("node4",connectedExternalNodes[3]);
-  output.attr("node5",connectedExternalNodes[4]);
-  output.attr("node6",connectedExternalNodes[5]);
-  output.attr("node7",connectedExternalNodes[6]);
-  output.attr("node8",connectedExternalNodes[7]);
-  output.attr("node9",connectedExternalNodes[8]);
+	if (output != 0)
+	{
+		output->tag("ElementOutput");
+		output->attr("eleType", "NineNodeQuad");
+		output->attr("eleTag", this->getTag());
+		output->attr("node1", connectedExternalNodes[0]);
+		output->attr("node2", connectedExternalNodes[1]);
+		output->attr("node3", connectedExternalNodes[2]);
+		output->attr("node4", connectedExternalNodes[3]);
+		output->attr("node5", connectedExternalNodes[4]);
+		output->attr("node6", connectedExternalNodes[5]);
+		output->attr("node7", connectedExternalNodes[6]);
+		output->attr("node8", connectedExternalNodes[7]);
+		output->attr("node9", connectedExternalNodes[8]);
+	}
 
-  char dataOut[10];
-  if (strcmp(argv[0],"force") == 0 || strcmp(argv[0],"forces") == 0) {
+	char dataOut[10];
+	if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0) {
 
-    for (int i=1; i<=nip; i++) {
-      sprintf(dataOut,"P1_%d",i);
-      output.tag("ResponseType",dataOut);
-      sprintf(dataOut,"P2_%d",i);
-      output.tag("ResponseType",dataOut);
-    }
+		if (output != 0)
+			for (int i = 1; i <= nip; i++) {
+				sprintf(dataOut, "P1_%d", i);
+				output->tag("ResponseType", dataOut);
+				sprintf(dataOut, "P2_%d", i);
+				output->tag("ResponseType", dataOut);
+			}
 
-    theResponse =  new ElementResponse(this, 1, P);
-  }
+		theResponse = new ElementResponse(this, 1, P);
+	}
 
-  else if (strcmp(argv[0],"material") == 0 || strcmp(argv[0],"integrPoint") == 0) {
+	else if (strcmp(argv[0], "material") == 0 || strcmp(argv[0], "integrPoint") == 0) {
 
-    int pointNum = atoi(argv[1]);
-    if (pointNum > 0 && pointNum <= nip) {
+		int pointNum = atoi(argv[1]);
+		if (pointNum > 0 && pointNum <= nip) {
 
-      output.tag("GaussPoint");
-      output.attr("number",pointNum);
-      output.attr("eta",pts[pointNum-1][0]);
-      output.attr("neta",pts[pointNum-1][1]);
+			if (output != 0)
+			{
+				output->tag("GaussPoint");
+				output->attr("number", pointNum);
+				output->attr("eta", pts[pointNum - 1][0]);
+				output->attr("neta", pts[pointNum - 1][1]);
+			}
 
-      theResponse =  theMaterial[pointNum-1]->setResponse(&argv[2], argc-2, output);
+			theResponse = theMaterial[pointNum - 1]->setResponse(&argv[2], argc - 2, output);
 
-      output.endTag();
+			if (output != 0)
+				output->endTag();
 
-    }
-  }
-  else if ((strcmp(argv[0],"stresses") ==0) || (strcmp(argv[0],"stress") ==0)) {
-    for (int i=0; i<nip; i++) {
-      output.tag("GaussPoint");
-      output.attr("number",i+1);
-      output.attr("eta",pts[i][0]);
-      output.attr("neta",pts[i][1]);
+		}
+	}
+	else if ((strcmp(argv[0], "stresses") == 0) || (strcmp(argv[0], "stress") == 0)) {
+		if (output != 0)
+			for (int i = 0; i < nip; i++) {
+				output->tag("GaussPoint");
+				output->attr("number", i + 1);
+				output->attr("eta", pts[i][0]);
+				output->attr("neta", pts[i][1]);
 
-      output.tag("NdMaterialOutput");
-      output.attr("classType", theMaterial[i]->getClassTag());
-      output.attr("tag", theMaterial[i]->getTag());
+				output->tag("NdMaterialOutput");
+				output->attr("classType", theMaterial[i]->getClassTag());
+				output->attr("tag", theMaterial[i]->getTag());
 
-      output.tag("ResponseType","sigma11");
-      output.tag("ResponseType","sigma22");
-      output.tag("ResponseType","sigma12");
+				output->tag("ResponseType", "sigma11");
+				output->tag("ResponseType", "sigma22");
+				output->tag("ResponseType", "sigma12");
 
-      output.endTag(); // GaussPoint
-      output.endTag(); // NdMaterialOutput
-      }
-    theResponse =  new ElementResponse(this, 3, Vector(3*nip));
-  }
+				output->endTag(); // GaussPoint
+				output->endTag(); // NdMaterialOutput
+			}
+		theResponse = new ElementResponse(this, 3, Vector(3 * nip));
+	}
 
-  else if ((strcmp(argv[0],"stressesAtNodes") ==0) || (strcmp(argv[0],"stressAtNodes") ==0)) {
-    for (int i=0; i<nnodes; i++) {
-      output.tag("NodalPoint");
-      output.attr("number",i+1);
-      // output.attr("eta",pts[i][0]);
-      // output.attr("neta",pts[i][1]);
+	else if ((strcmp(argv[0], "stressesAtNodes") == 0) || (strcmp(argv[0], "stressAtNodes") == 0)) {
+		if (output != 0)
+			for (int i = 0; i < nnodes; i++) {
+				output->tag("NodalPoint");
+				output->attr("number", i + 1);
+				// output->attr("eta",pts[i][0]);
+				// output->attr("neta",pts[i][1]);
 
-      // output.tag("NdMaterialOutput");
-      // output.attr("classType", theMaterial[i]->getClassTag());
-      // output.attr("tag", theMaterial[i]->getTag());
+				// output->tag("NdMaterialOutput");
+				// output->attr("classType", theMaterial[i]->getClassTag());
+				// output->attr("tag", theMaterial[i]->getTag());
 
-      output.tag("ResponseType","sigma11");
-      output.tag("ResponseType","sigma22");
-      output.tag("ResponseType","sigma12");
+				output->tag("ResponseType", "sigma11");
+				output->tag("ResponseType", "sigma22");
+				output->tag("ResponseType", "sigma12");
 
-      output.endTag(); // GaussPoint
-      // output.endTag(); // NdMaterialOutput
-      }
-    theResponse =  new ElementResponse(this, 11, Vector(3*nnodes));
-  }
+				output->endTag(); // GaussPoint
+				// output->endTag(); // NdMaterialOutput
+			}
+		theResponse = new ElementResponse(this, 11, Vector(3 * nnodes));
+	}
 
-  else if ((strcmp(argv[0],"strain") ==0) || (strcmp(argv[0],"strains") ==0)) {
-    for (int i=0; i<nip; i++) {
-      output.tag("GaussPoint");
-      output.attr("number",i+1);
-      output.attr("eta",pts[i][0]);
-      output.attr("neta",pts[i][1]);
+	else if ((strcmp(argv[0], "strain") == 0) || (strcmp(argv[0], "strains") == 0)) {
+		if (output != 0)
+			for (int i = 0; i < nip; i++) {
+				output->tag("GaussPoint");
+				output->attr("number", i + 1);
+				output->attr("eta", pts[i][0]);
+				output->attr("neta", pts[i][1]);
 
-      output.tag("NdMaterialOutput");
-      output.attr("classType", theMaterial[i]->getClassTag());
-      output.attr("tag", theMaterial[i]->getTag());
+				output->tag("NdMaterialOutput");
+				output->attr("classType", theMaterial[i]->getClassTag());
+				output->attr("tag", theMaterial[i]->getTag());
 
-      output.tag("ResponseType","eta11");
-      output.tag("ResponseType","eta22");
-      output.tag("ResponseType","eta12");
+				output->tag("ResponseType", "eta11");
+				output->tag("ResponseType", "eta22");
+				output->tag("ResponseType", "eta12");
 
-      output.endTag(); // GaussPoint
-      output.endTag(); // NdMaterialOutput
-      }
-    theResponse =  new ElementResponse(this, 4, Vector(3*nip));
-  }
+				output->endTag(); // GaussPoint
+				output->endTag(); // NdMaterialOutput
+			}
+		theResponse = new ElementResponse(this, 4, Vector(3 * nip));
+	}
 
-  output.endTag(); // ElementOutput
+	if (output != 0)
+		output->endTag(); // ElementOutput
 
-  return theResponse;
+	return theResponse;
 }
 
 int

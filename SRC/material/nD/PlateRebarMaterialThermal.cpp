@@ -394,42 +394,49 @@ PlateRebarMaterialThermal::recvSelf(int commitTag, Channel &theChannel, FEM_Obje
  
 
 Response*
-PlateRebarMaterialThermal::setResponse (const char **argv, int argc, OPS_Stream &output)
+PlateRebarMaterialThermal::setResponse(const char** argv, int argc, OPS_Stream* output)
 {
-	static Vector tempData(2);
-	  static Information infoData(tempData);
-	Response *theResponse =0;
-	const char *matType = this->getType();
+  static Vector tempData(2);
+  static Information infoData(tempData);
+  Response* theResponse = 0;
+  const char* matType = this->getType();
 
-	output.tag("UniaxialMaterialOutput");
-	output.attr("matType",this->getClassType());
-	output.attr("matTag",this->getTag());
+  if (output != 0)
+  {
+    output->tag("UniaxialMaterialOutput");
+    output->attr("matType", this->getClassType());
+    output->attr("matTag", this->getTag());
+  }
 
-	if (strcmp(argv[0],"stress") == 0 ){
-		output.tag("ResponseType", "sigma11");
-		theResponse =  new MaterialResponse(theMat, 1, theMat->getStress());
-	}
-	else if (strcmp(argv[0],"strain") == 0 ){
-		output.tag("ResponseType", "eps11");
-    theResponse =  new MaterialResponse(theMat, 3, theMat->getStrain());
+  if (strcmp(argv[0], "stress") == 0) {
+    if (output != 0)
+      output->tag("ResponseType", "sigma11");
+    theResponse = new MaterialResponse(theMat, 1, theMat->getStress());
   }
-	else if (strcmp(argv[0], "tangent") == 0){
-    output.tag("ResponseType", "C11");
-    theResponse =  new MaterialResponse(theMat, 2, theMat->getTangent());
+  else if (strcmp(argv[0], "strain") == 0) {
+    if (output != 0)
+      output->tag("ResponseType", "eps11");
+    theResponse = new MaterialResponse(theMat, 3, theMat->getStrain());
   }
-	else if (strcmp(argv[0], "TempAndElong") == 0){
-	output.tag("ResponseType", "temp11");
-	if((theMat->getVariable("TempAndElong", infoData))!=0){
-			 opserr<<"Warning: invalid tag in uniaxialMaterial:getVariable"<<endln;
-			 return 0;
-	 }
-	tempData = infoData.getData();
-    theResponse =  new MaterialResponse(this, 4, tempData);
+  else if (strcmp(argv[0], "tangent") == 0) {
+    if (output != 0)
+      output->tag("ResponseType", "C11");
+    theResponse = new MaterialResponse(theMat, 2, theMat->getTangent());
   }
-	else
-		return 0;
+  else if (strcmp(argv[0], "TempAndElong") == 0) {
+    if (output != 0)
+      output->tag("ResponseType", "temp11");
+    if ((theMat->getVariable("TempAndElong", infoData)) != 0) {
+      opserr << "Warning: invalid tag in uniaxialMaterial:getVariable" << endln;
+      return 0;
+    }
+    tempData = infoData.getData();
+    theResponse = new MaterialResponse(this, 4, tempData);
+  }
+  else
+    return 0;
 
-	return theResponse;
+  return theResponse;
 }
 
 int PlateRebarMaterialThermal::getResponse (int responseID, Information &matInfo)

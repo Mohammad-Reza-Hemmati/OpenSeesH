@@ -550,138 +550,154 @@ void  ShellNLDKGT::Print( OPS_Stream &s, int flag )
 }
 
 Response*
-ShellNLDKGT::setResponse(const char **argv, int argc, OPS_Stream &output)
+ShellNLDKGT::setResponse(const char** argv, int argc, OPS_Stream* output)
 {
-  Response *theResponse = 0;
+	Response* theResponse = 0;
 
-  output.tag("ElementOutput");
-  output.attr("eleType", "ShellNLDKGT");
-  output.attr("eleTag",this->getTag());
-  int numNodes = this->getNumExternalNodes();
-  const ID &nodes = this->getExternalNodes();
-  static char nodeData[32];                           
+	if (output != 0)
+	{
+		output->tag("ElementOutput");
+		output->attr("eleType", "ShellNLDKGT");
+		output->attr("eleTag", this->getTag());
+	}
+	int numNodes = this->getNumExternalNodes();
+	const ID& nodes = this->getExternalNodes();
+	static char nodeData[32];
 
-  for (int i=0; i<numNodes; i++) {
-    sprintf(nodeData,"node%d",i+1);
-    output.attr(nodeData,nodes(i));
-  }
+	if (output != 0)
+		for (int i = 0; i < numNodes; i++) {
+			sprintf(nodeData, "node%d", i + 1);
+			output->attr(nodeData, nodes(i));
+		}
 
-  if (strcmp(argv[0],"force") == 0 || strcmp(argv[0],"forces") == 0 ||
-      strcmp(argv[0],"globalForce") == 0 || strcmp(argv[0],"globalForces") == 0) {
-    const Vector &force = this->getResistingForce();
-    int size = force.Size();
-    for (int i=0; i<size; i++) {
-      sprintf(nodeData,"P%d",i+1);
-      output.tag("ResponseType",nodeData);
-    }
-    theResponse = new ElementResponse(this, 1, this->getResistingForce());
-  } 
+	if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0 ||
+		strcmp(argv[0], "globalForce") == 0 || strcmp(argv[0], "globalForces") == 0) {
+		if (output != 0)
+		{
+			const Vector& force = this->getResistingForce();
+			int size = force.Size();
+			for (int i = 0; i < size; i++) {
+				sprintf(nodeData, "P%d", i + 1);
+				output->tag("ResponseType", nodeData);
+			}
+		}
+		theResponse = new ElementResponse(this, 1, this->getResistingForce());
+	}
 
-  else if (strcmp(argv[0],"material") == 0 || strcmp(argv[0],"Material") == 0 ||
-	   strcmp(argv[0],"section") == 0) {
-    if (argc < 2) {
-      opserr << "ShellNLDKGT::setResponse() - need to specify more data\n";
-      return 0;
-    }
-    int pointNum = atoi(argv[1]);
-    if (pointNum > 0 && pointNum <= 4) {                         
-      
-      output.tag("GaussPoint");
-      output.attr("number",pointNum);
-      output.attr("eta",sg[pointNum-1]);
-      output.attr("neta",tg[pointNum-1]);
-      
-      theResponse =  materialPointers[pointNum-1]->setResponse(&argv[2], argc-2, output);
-      
-      output.endTag();
-    }
+	else if (strcmp(argv[0], "material") == 0 || strcmp(argv[0], "Material") == 0 ||
+		strcmp(argv[0], "section") == 0) {
+		if (argc < 2) {
+			opserr << "ShellNLDKGT::setResponse() - need to specify more data\n";
+			return 0;
+		}
+		int pointNum = atoi(argv[1]);
+		if (pointNum > 0 && pointNum <= 4) {
 
-  } else if (strcmp(argv[0],"stresses") ==0) {
+			if (output != 0)
+			{
+				output->tag("GaussPoint");
+				output->attr("number", pointNum);
+				output->attr("eta", sg[pointNum - 1]);
+				output->attr("neta", tg[pointNum - 1]);
+			}
 
-    for (int i=0; i<4; i++) {      
-      output.tag("GaussPoint");
-      output.attr("number",i+1);
-      output.attr("eta",sg[i]);
-      output.attr("neta",tg[i]);
-      
-      output.tag("SectionForceDeformation");
-      output.attr("classType", materialPointers[i]->getClassTag());
-      output.attr("tag", materialPointers[i]->getTag());
-      
-      output.tag("ResponseType","p11");
-      output.tag("ResponseType","p22");
-      output.tag("ResponseType","p12");
-      output.tag("ResponseType","m11");
-      output.tag("ResponseType","m22");
-      output.tag("ResponseType","m12");
-      output.tag("ResponseType","q1");
-      output.tag("ResponseType","q2");
-      
-      output.endTag(); // GaussPoint
-      output.endTag(); // NdMaterialOutput
-    }
-    
-    theResponse =  new ElementResponse(this, 2, Vector(32));
-  }
-  
-  else if (strcmp(argv[0],"strains") ==0) {
+			theResponse = materialPointers[pointNum - 1]->setResponse(&argv[2], argc - 2, output);
 
-    for (int i=0; i<4; i++) {
-      output.tag("GaussPoint");
-      output.attr("number",i+1);
-      output.attr("eta",sg[i]);
-      output.attr("neta",tg[i]);
-      
-      output.tag("SectionForceDeformation");
-      output.attr("classType", materialPointers[i]->getClassTag());
-      output.attr("tag", materialPointers[i]->getTag());
-      
-      output.tag("ResponseType","eps11");
-      output.tag("ResponseType","eps22");
-      output.tag("ResponseType","gamma12");
-      output.tag("ResponseType","theta11");
-      output.tag("ResponseType","theta22");
-      output.tag("ResponseType","theta33");
-      output.tag("ResponseType","gamma13");
-      output.tag("ResponseType","gamma23");
-      
-      output.endTag(); // GaussPoint
-      output.endTag(); // NdMaterialOutput
-    }
-    
-    theResponse =  new ElementResponse(this, 3, Vector(32));
-  }
+			if (output != 0)
+				output->endTag();
+		}
 
-  else if (theDamping[0] && strcmp(argv[0],"dampingStresses") ==0) {
+	}
+	else if (strcmp(argv[0], "stresses") == 0) {
 
-    for (int i=0; i<4; i++) {
-      output.tag("GaussPoint");
-      output.attr("number",i+1);
-      output.attr("eta",sg[i]);
-      output.attr("neta",tg[i]);
-      
-      output.tag("SectionForceDeformation");
-      output.attr("classType", theDamping[i]->getClassTag());
-      output.attr("tag", theDamping[i]->getTag());
-      
-      output.tag("ResponseType","p11");
-      output.tag("ResponseType","p22");
-      output.tag("ResponseType","p12");
-      output.tag("ResponseType","m11");
-      output.tag("ResponseType","m22");
-      output.tag("ResponseType","m12");
-      output.tag("ResponseType","q1");
-      output.tag("ResponseType","q2");
-      
-      output.endTag(); // GaussPoint
-      output.endTag(); // NdMaterialOutput
-    }
-    
-    theResponse =  new ElementResponse(this, 4, Vector(32));
-  }
+		if (output != 0)
+			for (int i = 0; i < 4; i++) {
+				output->tag("GaussPoint");
+				output->attr("number", i + 1);
+				output->attr("eta", sg[i]);
+				output->attr("neta", tg[i]);
 
-  output.endTag();
-  return theResponse;
+				output->tag("SectionForceDeformation");
+				output->attr("classType", materialPointers[i]->getClassTag());
+				output->attr("tag", materialPointers[i]->getTag());
+
+				output->tag("ResponseType", "p11");
+				output->tag("ResponseType", "p22");
+				output->tag("ResponseType", "p12");
+				output->tag("ResponseType", "m11");
+				output->tag("ResponseType", "m22");
+				output->tag("ResponseType", "m12");
+				output->tag("ResponseType", "q1");
+				output->tag("ResponseType", "q2");
+
+				output->endTag(); // GaussPoint
+				output->endTag(); // NdMaterialOutput
+			}
+
+		theResponse = new ElementResponse(this, 2, Vector(32));
+	}
+
+	else if (strcmp(argv[0], "strains") == 0) {
+
+		if (output != 0)
+			for (int i = 0; i < 4; i++) {
+				output->tag("GaussPoint");
+				output->attr("number", i + 1);
+				output->attr("eta", sg[i]);
+				output->attr("neta", tg[i]);
+
+				output->tag("SectionForceDeformation");
+				output->attr("classType", materialPointers[i]->getClassTag());
+				output->attr("tag", materialPointers[i]->getTag());
+
+				output->tag("ResponseType", "eps11");
+				output->tag("ResponseType", "eps22");
+				output->tag("ResponseType", "gamma12");
+				output->tag("ResponseType", "theta11");
+				output->tag("ResponseType", "theta22");
+				output->tag("ResponseType", "theta33");
+				output->tag("ResponseType", "gamma13");
+				output->tag("ResponseType", "gamma23");
+
+				output->endTag(); // GaussPoint
+				output->endTag(); // NdMaterialOutput
+			}
+
+		theResponse = new ElementResponse(this, 3, Vector(32));
+	}
+
+	else if (theDamping[0] && strcmp(argv[0], "dampingStresses") == 0) {
+
+		if (output != 0)
+			for (int i = 0; i < 4; i++) {
+				output->tag("GaussPoint");
+				output->attr("number", i + 1);
+				output->attr("eta", sg[i]);
+				output->attr("neta", tg[i]);
+
+				output->tag("SectionForceDeformation");
+				output->attr("classType", theDamping[i]->getClassTag());
+				output->attr("tag", theDamping[i]->getTag());
+
+				output->tag("ResponseType", "p11");
+				output->tag("ResponseType", "p22");
+				output->tag("ResponseType", "p12");
+				output->tag("ResponseType", "m11");
+				output->tag("ResponseType", "m22");
+				output->tag("ResponseType", "m12");
+				output->tag("ResponseType", "q1");
+				output->tag("ResponseType", "q2");
+
+				output->endTag(); // GaussPoint
+				output->endTag(); // NdMaterialOutput
+			}
+
+		theResponse = new ElementResponse(this, 4, Vector(32));
+	}
+
+	if (output != 0)
+		output->endTag();
+	return theResponse;
 }
 
 int

@@ -53,7 +53,7 @@ class HTElementRecorder: public HTRecorder
   public:
     HTElementRecorder();
     HTElementRecorder(int tag, const ID *eleID, 
-		    char **argv, 
+		    const char **argv, 
 		    int argc,
 		    bool echoTime, 
 		    HeatTransferDomain &theDomain, 

@@ -1513,7 +1513,7 @@ ElasticBeam2d::displaySelf(Renderer& theViewer, int displayMode, float fact, con
 }
 
 Response*
-ElasticBeam2d::setResponse(const char** argv, int argc, OPS_Stream& output)
+ElasticBeam2d::setResponse(const char** argv, int argc, OPS_Stream* output)
 {
 #ifdef _CSS
 	Response* theResponse = Element::setResponse(argv, argc, output);
@@ -1523,23 +1523,28 @@ ElasticBeam2d::setResponse(const char** argv, int argc, OPS_Stream& output)
 	Response* theResponse = 0;
 #endif // _CSS
 
-
-	output.tag("ElementOutput");
-	output.attr("eleType", "ElasticBeam2d");
-	output.attr("eleTag", this->getTag());
-	output.attr("node1", connectedExternalNodes[0]);
-	output.attr("node2", connectedExternalNodes[1]);
+	if (output != 0)
+	{
+		output->tag("ElementOutput");
+		output->attr("eleType", "ElasticBeam2d");
+		output->attr("eleTag", this->getTag());
+		output->attr("node1", connectedExternalNodes[0]);
+		output->attr("node2", connectedExternalNodes[1]);
+	}
 
 	// global forces
 	if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0 ||
 		strcmp(argv[0], "globalForce") == 0 || strcmp(argv[0], "globalForces") == 0) {
 
-		output.tag("ResponseType", "Px_1");
-		output.tag("ResponseType", "Py_1");
-		output.tag("ResponseType", "Mz_1");
-		output.tag("ResponseType", "Px_2");
-		output.tag("ResponseType", "Py_2");
-		output.tag("ResponseType", "Mz_2");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "Px_1");
+			output->tag("ResponseType", "Py_1");
+			output->tag("ResponseType", "Mz_1");
+			output->tag("ResponseType", "Px_2");
+			output->tag("ResponseType", "Py_2");
+			output->tag("ResponseType", "Mz_2");
+		}
 
 		theResponse = new ElementResponse(this, 2, P);
 
@@ -1547,12 +1552,15 @@ ElasticBeam2d::setResponse(const char** argv, int argc, OPS_Stream& output)
 	}
 	else if (strcmp(argv[0], "localForce") == 0 || strcmp(argv[0], "localForces") == 0) {
 
-		output.tag("ResponseType", "N_1");
-		output.tag("ResponseType", "V_1");
-		output.tag("ResponseType", "M_1");
-		output.tag("ResponseType", "N_2");
-		output.tag("ResponseType", "V_2");
-		output.tag("ResponseType", "M_2");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "N_1");
+			output->tag("ResponseType", "V_1");
+			output->tag("ResponseType", "M_1");
+			output->tag("ResponseType", "N_2");
+			output->tag("ResponseType", "V_2");
+			output->tag("ResponseType", "M_2");
+		}
 
 		theResponse = new ElementResponse(this, 3, P);
 
@@ -1560,19 +1568,24 @@ ElasticBeam2d::setResponse(const char** argv, int argc, OPS_Stream& output)
 	}
 	else if (strcmp(argv[0], "basicForce") == 0 || strcmp(argv[0], "basicForces") == 0) {
 
-		output.tag("ResponseType", "N");
-		output.tag("ResponseType", "M_1");
-		output.tag("ResponseType", "M_2");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "N");
+			output->tag("ResponseType", "M_1");
+			output->tag("ResponseType", "M_2");
+		}
 
 		theResponse = new ElementResponse(this, 4, Vector(3));
 
 	}
 	// basic stiffness -
 	else if (strcmp(argv[0], "basicStiffness") == 0) {
-
-		output.tag("ResponseType", "N");
-		output.tag("ResponseType", "M1");
-		output.tag("ResponseType", "M2");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "N");
+			output->tag("ResponseType", "M1");
+			output->tag("ResponseType", "M2");
+		}
 
 		theResponse = new ElementResponse(this, 19, Matrix(3, 3));
 
@@ -1580,12 +1593,15 @@ ElasticBeam2d::setResponse(const char** argv, int argc, OPS_Stream& output)
 	}
 	else if (theDamping && (strcmp(argv[0], "globalDampingForce") == 0 || strcmp(argv[0], "globalDampingForces") == 0)) {
 
-		output.tag("ResponseType", "Px_1");
-		output.tag("ResponseType", "Py_1");
-		output.tag("ResponseType", "Mz_1");
-		output.tag("ResponseType", "Px_2");
-		output.tag("ResponseType", "Py_2");
-		output.tag("ResponseType", "Mz_2");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "Px_1");
+			output->tag("ResponseType", "Py_1");
+			output->tag("ResponseType", "Mz_1");
+			output->tag("ResponseType", "Px_2");
+			output->tag("ResponseType", "Py_2");
+			output->tag("ResponseType", "Mz_2");
+		}
 
 		theResponse = new ElementResponse(this, 21, P);
 
@@ -1593,12 +1609,15 @@ ElasticBeam2d::setResponse(const char** argv, int argc, OPS_Stream& output)
 	}
 	else if (theDamping && (strcmp(argv[0], "localDampingForce") == 0 || strcmp(argv[0], "localDampingForces") == 0)) {
 
-		output.tag("ResponseType", "N_1");
-		output.tag("ResponseType", "V_1");
-		output.tag("ResponseType", "M_1");
-		output.tag("ResponseType", "N_2");
-		output.tag("ResponseType", "V_2");
-		output.tag("ResponseType", "M_2");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "N_1");
+			output->tag("ResponseType", "V_1");
+			output->tag("ResponseType", "M_1");
+			output->tag("ResponseType", "N_2");
+			output->tag("ResponseType", "V_2");
+			output->tag("ResponseType", "M_2");
+		}
 
 		theResponse = new ElementResponse(this, 22, P);
 
@@ -1606,9 +1625,12 @@ ElasticBeam2d::setResponse(const char** argv, int argc, OPS_Stream& output)
 	}
 	else if (theDamping && (strcmp(argv[0], "basicDampingForce") == 0 || strcmp(argv[0], "basicDampingForces") == 0)) {
 
-		output.tag("ResponseType", "N");
-		output.tag("ResponseType", "M_1");
-		output.tag("ResponseType", "M_2");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "N");
+			output->tag("ResponseType", "M_1");
+			output->tag("ResponseType", "M_2");
+		}
 
 		theResponse = new ElementResponse(this, 23, Vector(3));
 
@@ -1616,12 +1638,15 @@ ElasticBeam2d::setResponse(const char** argv, int argc, OPS_Stream& output)
 	}
 	else if (strcmp(argv[0], "RayleighForces") == 0 || strcmp(argv[0], "rayleighForces") == 0) {
 
-		output.tag("ResponseType", "Px_1");
-		output.tag("ResponseType", "Py_1");
-		output.tag("ResponseType", "Mz_1");
-		output.tag("ResponseType", "Px_2");
-		output.tag("ResponseType", "Py_2");
-		output.tag("ResponseType", "Mz_2");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "Px_1");
+			output->tag("ResponseType", "Py_1");
+			output->tag("ResponseType", "Mz_1");
+			output->tag("ResponseType", "Px_2");
+			output->tag("ResponseType", "Py_2");
+			output->tag("ResponseType", "Mz_2");
+		}
 
 		theResponse = new ElementResponse(this, 6, P);
 
@@ -1631,18 +1656,24 @@ ElasticBeam2d::setResponse(const char** argv, int argc, OPS_Stream& output)
 		strcmp(argv[0], "basicDeformations") == 0 ||
 		strcmp(argv[0], "basicDeformation") == 0) {
 
-		output.tag("ResponseType", "eps");
-		output.tag("ResponseType", "theta1");
-		output.tag("ResponseType", "theta2");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "eps");
+			output->tag("ResponseType", "theta1");
+			output->tag("ResponseType", "theta2");
+		}
 		theResponse = new ElementResponse(this, 5, Vector(3));
 
 		// chord rotation -
 	}
 	else if (strcmp(argv[0], "chordRotation") == 0 || strcmp(argv[0], "chordDeformation") == 0) {
 
-		output.tag("ResponseType", "eps");
-		output.tag("ResponseType", "theta1");
-		output.tag("ResponseType", "theta2");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "eps");
+			output->tag("ResponseType", "theta1");
+			output->tag("ResponseType", "theta2");
+		}
 
 		theResponse = new ElementResponse(this, 5, Vector(3));
 	}
@@ -1655,13 +1686,17 @@ ElasticBeam2d::setResponse(const char** argv, int argc, OPS_Stream& output)
 
 			double xi = atof(argv[1]);
 			if (xi >= 0 && xi <= 1) {
-				output.tag("InternalForce");
-				output.attr("xi", xi);
+				if (output != 0)
+				{
+					output->tag("InternalForce");
+					output->attr("xi", xi);
+				}
 
-				theResponse = new ElementResponse(this, 6, Vector(3));
+				theResponse = new ElementResponse(this, 7, Vector(3));
 				Information& info = theResponse->getInformation();
 				info.theDouble = xi;
-				output.endTag();
+				if (output != 0)
+					output->endTag();
 
 			}
 			else {
@@ -1675,7 +1710,8 @@ ElasticBeam2d::setResponse(const char** argv, int argc, OPS_Stream& output)
 	}
 #endif // _CSS
 
-	output.endTag(); // ElementOutput
+	if (output != 0)
+		output->endTag(); // ElementOutput
 
 	if (theResponse == 0)
 		theResponse = theCoordTransf->setResponse(argv, argc, output);
@@ -1776,8 +1812,7 @@ ElasticBeam2d::getResponse(int responseID, Information& eleInfo)
 	case 7:
 		L = eleInfo.theDouble;
 		computeSectionForces(force, L);
-		eleInfo.setVector(force);
-		break;
+		return eleInfo.setVector(force);
 	case 8:
 		N = 0;    //the elastic strain energy
 		for (int i = 0; i < 3; i++)
@@ -1785,8 +1820,7 @@ ElasticBeam2d::getResponse(int responseID, Information& eleInfo)
 			N += v[i] * q(i);
 		}
 		N *= 0.5;
-		eleInfo.setDouble(N);
-		break;
+		return eleInfo.setDouble(N);
 #endif // _CSS
 	default:
 		return -1;

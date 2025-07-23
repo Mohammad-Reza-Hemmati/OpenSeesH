@@ -955,7 +955,7 @@ void TripleFrictionPendulum::Print(OPS_Stream &s, int flag)
 
 
 Response* TripleFrictionPendulum::setResponse(const char **argv, int argc,
-    OPS_Stream &output)
+    OPS_Stream *output)
 {
     Response *theResponse = 0;
 #ifdef _CSS
@@ -964,11 +964,14 @@ Response* TripleFrictionPendulum::setResponse(const char **argv, int argc,
         return theResponse;
 #endif // _CSS
 
-    output.tag("ElementOutput");
-    output.attr("eleType","TripleFrictionPendulum");
-    output.attr("eleTag",this->getTag());
-    output.attr("node1",externalNodes[0]);
-    output.attr("node2",externalNodes[1]);
+    if (output != 0)
+    {
+      output->tag("ElementOutput");
+      output->attr("eleType", "TripleFrictionPendulum");
+      output->attr("eleTag", this->getTag());
+      output->attr("node1", externalNodes[0]);
+      output->attr("node2", externalNodes[1]);
+    }
     
     // global forces
     if (strcmp(argv[0],"force") == 0 ||
@@ -976,18 +979,21 @@ Response* TripleFrictionPendulum::setResponse(const char **argv, int argc,
         strcmp(argv[0],"globalForce") == 0 ||
         strcmp(argv[0],"globalForces") == 0)
     {
-        output.tag("ResponseType","Px_1");
-        output.tag("ResponseType","Py_1");
-        output.tag("ResponseType","Pz_1");
-        output.tag("ResponseType","Mx_1");
-        output.tag("ResponseType","My_1");
-        output.tag("ResponseType","Mz_1");
-        output.tag("ResponseType","Px_2");
-        output.tag("ResponseType","Py_2");
-        output.tag("ResponseType","Pz_2");
-        output.tag("ResponseType","Mx_2");
-        output.tag("ResponseType","My_2");
-        output.tag("ResponseType","Mz_2");
+      if (output != 0)
+      {
+        output->tag("ResponseType", "Px_1");
+        output->tag("ResponseType", "Py_1");
+        output->tag("ResponseType", "Pz_1");
+        output->tag("ResponseType", "Mx_1");
+        output->tag("ResponseType", "My_1");
+        output->tag("ResponseType", "Mz_1");
+        output->tag("ResponseType", "Px_2");
+        output->tag("ResponseType", "Py_2");
+        output->tag("ResponseType", "Pz_2");
+        output->tag("ResponseType", "Mx_2");
+        output->tag("ResponseType", "My_2");
+        output->tag("ResponseType", "Mz_2");
+      }
         
         theResponse = new ElementResponse(this, 1, eleR);
     }
@@ -995,18 +1001,21 @@ Response* TripleFrictionPendulum::setResponse(const char **argv, int argc,
     else if (strcmp(argv[0],"localForce") == 0 ||
         strcmp(argv[0],"localForces") == 0)
     {
-        output.tag("ResponseType","N_1");
-        output.tag("ResponseType","Vy_1");
-        output.tag("ResponseType","Vz_1");
-        output.tag("ResponseType","T_1");
-        output.tag("ResponseType","My_1");
-        output.tag("ResponseType","Mz_1");
-        output.tag("ResponseType","N_2");
-        output.tag("ResponseType","Vy_2");
-        output.tag("ResponseType","Vz_2");
-        output.tag("ResponseType","T_2");
-        output.tag("ResponseType","My_2");
-        output.tag("ResponseType","Mz_2");
+      if (output != 0)
+      {
+        output->tag("ResponseType", "N_1");
+        output->tag("ResponseType", "Vy_1");
+        output->tag("ResponseType", "Vz_1");
+        output->tag("ResponseType", "T_1");
+        output->tag("ResponseType", "My_1");
+        output->tag("ResponseType", "Mz_1");
+        output->tag("ResponseType", "N_2");
+        output->tag("ResponseType", "Vy_2");
+        output->tag("ResponseType", "Vz_2");
+        output->tag("ResponseType", "T_2");
+        output->tag("ResponseType", "My_2");
+        output->tag("ResponseType", "Mz_2");
+      }
         
         theResponse = new ElementResponse(this, 2, Vector(12));
     }
@@ -1014,12 +1023,15 @@ Response* TripleFrictionPendulum::setResponse(const char **argv, int argc,
     else if (strcmp(argv[0],"basicForce") == 0 ||
         strcmp(argv[0],"basicForces") == 0)
     {
-        output.tag("ResponseType","qb1");
-        output.tag("ResponseType","qb2");
-        output.tag("ResponseType","qb3");
-        output.tag("ResponseType","qb4");
-        output.tag("ResponseType","qb5");
-        output.tag("ResponseType","qb6");
+      if (output != 0)
+      {
+        output->tag("ResponseType", "qb1");
+        output->tag("ResponseType", "qb2");
+        output->tag("ResponseType", "qb3");
+        output->tag("ResponseType", "qb4");
+        output->tag("ResponseType", "qb5");
+        output->tag("ResponseType", "qb6");
+      }
         
         theResponse = new ElementResponse(this, 3, Vector(6));
     }
@@ -1027,18 +1039,21 @@ Response* TripleFrictionPendulum::setResponse(const char **argv, int argc,
     else if (strcmp(argv[0],"localDisplacement") == 0 ||
         strcmp(argv[0],"localDisplacements") == 0)
     {
-        output.tag("ResponseType","ux_1");
-        output.tag("ResponseType","uy_1");
-        output.tag("ResponseType","uz_1");
-        output.tag("ResponseType","rx_1");
-        output.tag("ResponseType","ry_1");
-        output.tag("ResponseType","rz_1");
-        output.tag("ResponseType","ux_2");
-        output.tag("ResponseType","uy_2");
-        output.tag("ResponseType","uz_2");
-        output.tag("ResponseType","rx_2");
-        output.tag("ResponseType","ry_2");
-        output.tag("ResponseType","rz_2");
+      if (output != 0)
+      {
+        output->tag("ResponseType", "ux_1");
+        output->tag("ResponseType", "uy_1");
+        output->tag("ResponseType", "uz_1");
+        output->tag("ResponseType", "rx_1");
+        output->tag("ResponseType", "ry_1");
+        output->tag("ResponseType", "rz_1");
+        output->tag("ResponseType", "ux_2");
+        output->tag("ResponseType", "uy_2");
+        output->tag("ResponseType", "uz_2");
+        output->tag("ResponseType", "rx_2");
+        output->tag("ResponseType", "ry_2");
+        output->tag("ResponseType", "rz_2");
+      }
         
         theResponse = new ElementResponse(this, 4, Vector(12));
     }
@@ -1050,12 +1065,15 @@ Response* TripleFrictionPendulum::setResponse(const char **argv, int argc,
         strcmp(argv[0],"basicDisplacement") == 0 ||
         strcmp(argv[0],"basicDisplacements") == 0)
     {
-        output.tag("ResponseType","ub1");
-        output.tag("ResponseType","ub2");
-        output.tag("ResponseType","ub3");
-        output.tag("ResponseType","ub4");
-        output.tag("ResponseType","ub5");
-        output.tag("ResponseType","ub6");
+      if (output != 0)
+      {
+        output->tag("ResponseType", "ub1");
+        output->tag("ResponseType", "ub2");
+        output->tag("ResponseType", "ub3");
+        output->tag("ResponseType", "ub4");
+        output->tag("ResponseType", "ub5");
+        output->tag("ResponseType", "ub6");
+      }
         
         theResponse = new ElementResponse(this, 5, Vector(6));
     }
@@ -1065,12 +1083,15 @@ Response* TripleFrictionPendulum::setResponse(const char **argv, int argc,
         strcmp(argv[0],"compDisplacement") == 0 ||
         strcmp(argv[0],"compDisplacements") == 0)
     {
-        output.tag("ResponseType","d1x");
-        output.tag("ResponseType","d1y");
-        output.tag("ResponseType","d3x");
-        output.tag("ResponseType","d3y");
-        output.tag("ResponseType","d5x");
-        output.tag("ResponseType","d5y");
+      if (output != 0)
+      {
+        output->tag("ResponseType", "d1x");
+        output->tag("ResponseType", "d1y");
+        output->tag("ResponseType", "d3x");
+        output->tag("ResponseType", "d3y");
+        output->tag("ResponseType", "d5x");
+        output->tag("ResponseType", "d5y");
+      }
         
         theResponse = new ElementResponse(this, 6, Vector(6));
     }
@@ -1092,7 +1113,8 @@ Response* TripleFrictionPendulum::setResponse(const char **argv, int argc,
         }
     }
     
-    output.endTag(); // ElementOutput
+    if (output != 0)
+      output->endTag(); // ElementOutput
     
     return theResponse;
 }

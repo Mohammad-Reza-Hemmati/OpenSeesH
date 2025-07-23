@@ -921,80 +921,94 @@ CorotTrussSection::computeCurrentStrain(void)
 }
 
 Response*
-CorotTrussSection::setResponse(const char **argv, int argc, OPS_Stream &output)
+CorotTrussSection::setResponse(const char** argv, int argc, OPS_Stream* output)
 {
-    Response *theResponse = 0;
+  Response* theResponse = 0;
+  if (output != 0)
+  {
+    output->tag("ElementOutput");
+    output->attr("eleType", "Truss");
+    output->attr("eleTag", this->getTag());
+    output->attr("node1", connectedExternalNodes[0]);
+    output->attr("node2", connectedExternalNodes[1]);
+  }
 
-    output.tag("ElementOutput");
-    output.attr("eleType","Truss");
-    output.attr("eleTag",this->getTag());
-    output.attr("node1",connectedExternalNodes[0]);
-    output.attr("node2",connectedExternalNodes[1]);
+  //
+  // we compare argv[0] for known response types for the CorotTruss
+  //
 
-    //
-    // we compare argv[0] for known response types for the CorotTruss
-    //
+  if ((strcmp(argv[0], "force") == 0) || (strcmp(argv[0], "forces") == 0)
+    || (strcmp(argv[0], "globalForce") == 0) || (strcmp(argv[0], "globalForces") == 0)) {
+    if (output != 0)
+    {
+      char outputData[10];
+      int numDOFperNode = numDOF / 2;
+      for (int i = 0; i < numDOFperNode; i++) {
+        sprintf(outputData, "P1_%d", i + 1);
+        output->tag("ResponseType", outputData);
+      }
+      for (int j = 0; j < numDOFperNode; j++) {
+        sprintf(outputData, "P2_%d", j + 1);
+        output->tag("ResponseType", outputData);
+      }
+    }
+    theResponse = new ElementResponse(this, 1, Vector(numDOF));
 
-    if ((strcmp(argv[0],"force") == 0) || (strcmp(argv[0],"forces") == 0) 
-        || (strcmp(argv[0],"globalForce") == 0) || (strcmp(argv[0],"globalForces") == 0)){
-            char outputData[10];
-            int numDOFperNode = numDOF/2;
-            for (int i=0; i<numDOFperNode; i++) {
-                sprintf(outputData,"P1_%d", i+1);
-                output.tag("ResponseType", outputData);
-            }
-            for (int j=0; j<numDOFperNode; j++) {
-                sprintf(outputData,"P2_%d", j+1);
-                output.tag("ResponseType", outputData);
-            }
-            theResponse =  new ElementResponse(this, 1, Vector(numDOF));
+  }
+  else if ((strcmp(argv[0], "axialForce") == 0) || (strcmp(argv[0], "basicForce") == 0) ||
+    (strcmp(argv[0], "basicForces") == 0)) {
+    if (output != 0)
+      output->tag("ResponseType", "N");
+    theResponse = new ElementResponse(this, 2, 0.0);
 
-    } else if ((strcmp(argv[0],"axialForce") == 0) || (strcmp(argv[0],"basicForce") == 0) || 
-        (strcmp(argv[0],"basicForces") == 0)) {
-            output.tag("ResponseType", "N");
-            theResponse =  new ElementResponse(this, 2, 0.0);
+  }
+  else if (strcmp(argv[0], "defo") == 0 || strcmp(argv[0], "deformation") == 0 ||
+    strcmp(argv[0], "deformations") == 0 || strcmp(argv[0], "basicDefo") == 0 ||
+    strcmp(argv[0], "basicDeformation") == 0 || strcmp(argv[0], "basicDeformations") == 0) {
 
-    } else if (strcmp(argv[0],"defo") == 0 || strcmp(argv[0],"deformation") == 0 ||
-        strcmp(argv[0],"deformations") == 0 || strcmp(argv[0],"basicDefo") == 0 ||
-        strcmp(argv[0],"basicDeformation") == 0 || strcmp(argv[0],"basicDeformations") == 0) {
-
-            output.tag("ResponseType", "U");
-            theResponse = new ElementResponse(this, 3, 0.0);
+    if (output != 0)
+      output->tag("ResponseType", "U");
+    theResponse = new ElementResponse(this, 3, 0.0);
 
     // a section quantity
-    }
-    else if (strcmp(argv[0], "section") == 0) {
-        if (argc > 1) {
-            // we need at least one more argument otherwise 
-            // there is no need to forward this call to the material
-            // by default assume the old call style for backward compatibility "material result"
-            int offset = 1;
-            bool is_valid = true;
-            // in case the user specifies the gauss point id... "section 1 result"
-            if (argc > 2) {
-                int sectionNum = atoi(argv[1]);
-                if (sectionNum == 1) {
-                    // this is the only supported gauss id
-                    offset = 2;
-                }
-                else if (sectionNum > 1) {
-                    // this is a number, but not within the valid range
-                    is_valid = false;
-                }
-                // if it is 0, then it is not a number, forward it as usual...
-            }
-            if (is_valid) {
-                output.tag("GaussPointOutput");
-                output.attr("number", 1);
-                output.attr("eta", 0.0);
-                theResponse = theSection->setResponse(&argv[offset], argc - offset, output);
-                output.endTag();
-            }
+  }
+  else if (strcmp(argv[0], "section") == 0) {
+    if (argc > 1) {
+      // we need at least one more argument otherwise 
+      // there is no need to forward this call to the material
+      // by default assume the old call style for backward compatibility "material result"
+      int offset = 1;
+      bool is_valid = true;
+      // in case the user specifies the gauss point id... "section 1 result"
+      if (argc > 2) {
+        int sectionNum = atoi(argv[1]);
+        if (sectionNum == 1) {
+          // this is the only supported gauss id
+          offset = 2;
         }
+        else if (sectionNum > 1) {
+          // this is a number, but not within the valid range
+          is_valid = false;
+        }
+        // if it is 0, then it is not a number, forward it as usual...
+      }
+      if (is_valid) {
+        if (output != 0)
+        {
+          output->tag("GaussPointOutput");
+          output->attr("number", 1);
+          output->attr("eta", 0.0);
+        }
+        theResponse = theSection->setResponse(&argv[offset], argc - offset, output);
+        if (output != 0)
+          output->endTag();
+      }
     }
+  }
 
-    output.endTag();
-    return theResponse;
+  if (output != 0)
+    output->endTag();
+  return theResponse;
 }
 
 int 

@@ -949,105 +949,114 @@ void TwoNodeLinkSection::Print(OPS_Stream &s, int flag)
 }
 
 
-Response* TwoNodeLinkSection::setResponse(const char **argv, int argc,
-    OPS_Stream &output)
+Response* TwoNodeLinkSection::setResponse(const char** argv, int argc,
+  OPS_Stream* output)
 {
-    Response *theResponse = 0;
-    
-    output.tag("ElementOutput");
-    output.attr("eleType","TwoNodeLinkSection");
-    output.attr("eleTag",this->getTag());
-    output.attr("node1",connectedExternalNodes[0]);
-    output.attr("node2",connectedExternalNodes[1]);
-    
-    char outputData[80];
-    
-    // global forces
-    if (strcmp(argv[0],"force") == 0 || strcmp(argv[0],"forces") == 0 ||
-        strcmp(argv[0],"globalForce") == 0 || strcmp(argv[0],"globalForces") == 0)
-    {
-        for (int i=0; i<numDOF; i++)  {
-            sprintf(outputData,"P%d",i+1);
-            output.tag("ResponseType",outputData);
-        }
-        theResponse = new ElementResponse(this, 1, *theVector);
-    }
-    // local forces
-    else if (strcmp(argv[0],"localForce") == 0 || strcmp(argv[0],"localForces") == 0)
-    {
-        for (int i=0; i<numDOF; i++)  {
-            sprintf(outputData,"p%d",i+1);
-            output.tag("ResponseType",outputData);
-        }
-        theResponse = new ElementResponse(this, 2, *theVector);
-    }
-    // basic forces
-    else if (strcmp(argv[0],"basicForce") == 0 || strcmp(argv[0],"basicForces") == 0)
-    {
-      int numDIR = theSection->getOrder();
-      for (int i=0; i<numDIR; i++)  {
-	sprintf(outputData,"q%d",i+1);
-	output.tag("ResponseType",outputData);
-      }
-      theResponse = new ElementResponse(this, 3, Vector(numDIR));
-    }
-    // local displacements
-    else if (strcmp(argv[0],"localDisplacement") == 0 ||
-        strcmp(argv[0],"localDisplacements") == 0)
-    {
-        for (int i=0; i<numDOF; i++)  {
-            sprintf(outputData,"dl%d",i+1);
-            output.tag("ResponseType",outputData);
-        }
-        theResponse = new ElementResponse(this, 4, Vector(numDOF));
-    }
-    // basic displacements
-    else if (strcmp(argv[0],"deformation") == 0 || strcmp(argv[0],"deformations") == 0 || 
-        strcmp(argv[0],"basicDeformation") == 0 || strcmp(argv[0],"basicDeformations") == 0 ||
-        strcmp(argv[0],"basicDisplacement") == 0 || strcmp(argv[0],"basicDisplacements") == 0)
-    {
-      int numDIR = theSection->getOrder();
-      for (int i=0; i<numDIR; i++)  {
-	sprintf(outputData,"db%d",i+1);
-	output.tag("ResponseType",outputData);
-      }
-      theResponse = new ElementResponse(this, 5, Vector(numDIR));
-    }
-    // basic deformations and basic forces
-    else if (strcmp(argv[0],"defoANDforce") == 0 || strcmp(argv[0],"deformationANDforce") == 0 ||
-        strcmp(argv[0],"deformationsANDforces") == 0)
-    {
-      int numDIR = theSection->getOrder();
-      for (int i=0; i<numDIR; i++)  {
-	sprintf(outputData,"db%d",i+1);
-	output.tag("ResponseType",outputData);
-      }
-      for (int i=0; i<numDIR; i++)  {
-	sprintf(outputData,"q%d",i+1);
-	output.tag("ResponseType",outputData);
-        }
-      theResponse = new ElementResponse(this, 6, Vector(numDIR*2));
-    }
-    // material output
-    else if (strcmp(argv[0],"section") == 0)  {
-        if (argc > 1)  {
-	  theResponse =  theSection->setResponse(&argv[1], argc-1, output);
-        }
-    }
+  Response* theResponse = 0;
 
-    if (strcmp(argv[0],"xaxis") == 0) {
-      theResponse = new ElementResponse(this, 20, Vector(3));
-    }
-    if (strcmp(argv[0],"yaxis") == 0) {
-      theResponse = new ElementResponse(this, 21, Vector(3));
-    }
-    if (strcmp(argv[0],"zaxis") == 0) {
-      theResponse = new ElementResponse(this, 22, Vector(3));
-    }
+  if (output != 0)
+  {
+    output->tag("ElementOutput");
+    output->attr("eleType", "TwoNodeLinkSection");
+    output->attr("eleTag", this->getTag());
+    output->attr("node1", connectedExternalNodes[0]);
+    output->attr("node2", connectedExternalNodes[1]);
+  }
 
-    output.endTag(); // ElementOutput
-    
-    return theResponse;
+  char outputData[80];
+
+  // global forces
+  if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0 ||
+    strcmp(argv[0], "globalForce") == 0 || strcmp(argv[0], "globalForces") == 0)
+  {
+    if (output != 0)
+      for (int i = 0; i < numDOF; i++) {
+        sprintf(outputData, "P%d", i + 1);
+        output->tag("ResponseType", outputData);
+      }
+    theResponse = new ElementResponse(this, 1, *theVector);
+  }
+  // local forces
+  else if (strcmp(argv[0], "localForce") == 0 || strcmp(argv[0], "localForces") == 0)
+  {
+    if (output != 0)
+      for (int i = 0; i < numDOF; i++) {
+        sprintf(outputData, "p%d", i + 1);
+        output->tag("ResponseType", outputData);
+      }
+    theResponse = new ElementResponse(this, 2, *theVector);
+  }
+  // basic forces
+  else if (strcmp(argv[0], "basicForce") == 0 || strcmp(argv[0], "basicForces") == 0)
+  {
+    int numDIR = theSection->getOrder();
+    if (output != 0)
+      for (int i = 0; i < numDIR; i++) {
+        sprintf(outputData, "q%d", i + 1);
+        output->tag("ResponseType", outputData);
+      }
+    theResponse = new ElementResponse(this, 3, Vector(numDIR));
+  }
+  // local displacements
+  else if (strcmp(argv[0], "localDisplacement") == 0 ||
+    strcmp(argv[0], "localDisplacements") == 0)
+  {
+    if (output != 0)
+      for (int i = 0; i < numDOF; i++) {
+        sprintf(outputData, "dl%d", i + 1);
+        output->tag("ResponseType", outputData);
+      }
+    theResponse = new ElementResponse(this, 4, Vector(numDOF));
+  }
+  // basic displacements
+  else if (strcmp(argv[0], "deformation") == 0 || strcmp(argv[0], "deformations") == 0 ||
+    strcmp(argv[0], "basicDeformation") == 0 || strcmp(argv[0], "basicDeformations") == 0 ||
+    strcmp(argv[0], "basicDisplacement") == 0 || strcmp(argv[0], "basicDisplacements") == 0)
+  {
+    int numDIR = theSection->getOrder();
+    if (output != 0)
+      for (int i = 0; i < numDIR; i++) {
+        sprintf(outputData, "db%d", i + 1);
+        output->tag("ResponseType", outputData);
+      }
+    theResponse = new ElementResponse(this, 5, Vector(numDIR));
+  }
+  // basic deformations and basic forces
+  else if (strcmp(argv[0], "defoANDforce") == 0 || strcmp(argv[0], "deformationANDforce") == 0 ||
+    strcmp(argv[0], "deformationsANDforces") == 0)
+  {
+    int numDIR = theSection->getOrder();
+    for (int i = 0; i < numDIR; i++) {
+      sprintf(outputData, "db%d", i + 1);
+      output->tag("ResponseType", outputData);
+    }
+    for (int i = 0; i < numDIR; i++) {
+      sprintf(outputData, "q%d", i + 1);
+      output->tag("ResponseType", outputData);
+    }
+    theResponse = new ElementResponse(this, 6, Vector(numDIR * 2));
+  }
+  // material output
+  else if (strcmp(argv[0], "section") == 0) {
+    if (argc > 1) {
+      theResponse = theSection->setResponse(&argv[1], argc - 1, output);
+    }
+  }
+
+  if (strcmp(argv[0], "xaxis") == 0) {
+    theResponse = new ElementResponse(this, 20, Vector(3));
+  }
+  if (strcmp(argv[0], "yaxis") == 0) {
+    theResponse = new ElementResponse(this, 21, Vector(3));
+  }
+  if (strcmp(argv[0], "zaxis") == 0) {
+    theResponse = new ElementResponse(this, 22, Vector(3));
+  }
+
+  if (output != 0)
+    output->endTag(); // ElementOutput
+
+  return theResponse;
 }
 
 

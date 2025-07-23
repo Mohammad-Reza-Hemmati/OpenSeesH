@@ -49,7 +49,7 @@ class SmearedSteelDoubleLayerT2DMaterial01 : public NDMaterial
 	  const Matrix& getTangent(void);
 	  const Matrix& getInitialTangent(void);
 
-	  Response* setResponse(const char** argv, int argc, OPS_Stream& theOutputStream);
+	  Response* setResponse(const char** argv, int argc, OPS_Stream * theOutputStream);
 	  int getResponse(int responseID, Information& matInformation);
 
 	  const Vector& getStress(void);

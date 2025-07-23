@@ -40,36 +40,36 @@ using std::setiosflags;
 #include <ID.h>
 #include <ArrayOfTaggedObjects.h>
 #include <MapOfTaggedObjects.h>	
-#include <HeatTransferDomain/DomainComponents/HeatTransferDomain.h>
-#include "HeatTransferDomain/DomainComponents/HeatTransferNode/HeatTransferNode.h"
+#include <HeatTransferDomain.h>
+#include "HeatTransferNode.h"
 // includes for the simple mesh classes
-#include "SimpleMesh/Simple_Line.h"  
-#include "SimpleMesh/Simple_Brick.h"  
-#include "SimpleMesh/Simple_Block.h"  
-#include "SimpleMesh/Simple_Isection.h"  
-#include "SimpleMesh/Simple_IsecProtected.h"  
-#include "SimpleMesh/Simple_Isection3D.h"  
-#include "SimpleMesh/Simple_Boundary.h"  
-#include "SimpleMesh/HTConstants.h"  
-#include "HeatTransferDomain/DomainComponents/HeatTransferElement/QuadFour.h"  
-#include "HeatTransferDomain/DomainComponents/HeatTransferElement/BrickEight.h"  
-#include "HeatTransferDomain/DomainComponents/TemperatureBC/TemperatureBC.h"  
-#include "HeatTransferDomain/DomainComponents/MP_TemperatureBC/MP_TemperatureBC.h"  
-#include "HeatTransferDomain/DomainComponents/HeatFluxBC/Convection.h"  
-#include "HeatTransferMaterial/CarbonSteelEC3.h"  
-#include "HeatTransferMaterial/ConcreteEC2.h"  
-#include "HeatTransferMaterial/SimpleMaterial.h"  
-#include "HeatTransferMaterial/SFRMCoating.h"  
-#include "HeatTransferMaterial/TimberHTMaterial.h"  
-#include "HeatTransferAnalysis/HT_TransientAnalysis.h"  
-#include "HeatTransferAnalysis/HeatTransferIntegrator/BackwardDifference.h"  
-#include "HeatTransferAnalysis/HeatTransferAnalysisModel/HT_AnalysisModel.h"  
-#include "HeatTransferAnalysis/HeatTransferSolutionAlgorithm/HT_SolutionAlgorithm.h"  
-#include "HeatTransferAnalysis/HeatTransferSolutionAlgorithm/LinearAlgorithm.h"  
-#include "HeatTransferAnalysis/HeatTransferSolutionAlgorithm/NewtonMethod.h"  
-#include "HeatTransferAnalysis/ConvergenceTest/CTestNormTempIncr.h"  
-#include "HeatTransferAnalysis/TemperatureBCHandler/PenaltyBC_Handler.h"  
-#include "HeatTransferAnalysis/HeatTransferDOFNumber/HT_DOF_Numberer.h"
+#include "Simple_Line.h"  
+#include "Simple_Brick.h"  
+#include "Simple_Block.h"  
+#include "Simple_Isection.h"  
+#include "Simple_IsecProtected.h"  
+#include "Simple_Isection3D.h"  
+#include "Simple_Boundary.h"  
+#include "HTConstants.h"  
+#include "HeatTransferElement/QuadFour.h"  
+#include "HeatTransferElement/BrickEight.h"  
+#include "TemperatureBC/TemperatureBC.h"  
+#include "MP_TemperatureBC/MP_TemperatureBC.h"  
+#include "HeatFluxBC/Convection.h"  
+#include "CarbonSteelEC3.h"  
+#include "ConcreteEC2.h"  
+#include "SimpleMaterial.h"  
+#include "SFRMCoating.h"  
+#include "TimberHTMaterial.h"  
+#include "HT_TransientAnalysis.h"  
+#include "HeatTransferIntegrator/BackwardDifference.h"  
+#include "HeatTransferAnalysisModel/HT_AnalysisModel.h"  
+#include "HeatTransferSolutionAlgorithm/HT_SolutionAlgorithm.h"  
+#include "HeatTransferSolutionAlgorithm/LinearAlgorithm.h"  
+#include "HeatTransferSolutionAlgorithm/NewtonMethod.h"  
+#include "ConvergenceTest/CTestNormTempIncr.h"  
+#include "TemperatureBCHandler/PenaltyBC_Handler.h"  
+#include "HeatTransferDOFNumber/HT_DOF_Numberer.h"
 
 #include <RCM.h>
 #include <BandGenLinSOE.h>
@@ -80,19 +80,19 @@ using std::setiosflags;
 #include <SparseGenColLinSOE.h>
 
 //include fire models
-#include "fire/Idealised_Uniform_Fires/ParametricFireEC1.h"  
-#include "fire/Idealised_Uniform_Fires/NorminalFireEC1.h"  
-#include "fire/Idealised_Nonuniform_fires/LocalizedFireEC1.h"  
-#include "fire/Idealised_Nonuniform_fires/Idealised_Local_Fire.h"  
-#include "fire/Idealised_Nonuniform_fires/LocalizedFireSFPE.h"  
-#include "fire/Idealised_Nonuniform_fires/AlpertCeilingJetModel.h"  
-#include "fire/Idealised_Nonuniform_fires/NaturalFire.h"  
-#include "fire/Idealised_Uniform_Fires/UserDefinedFire.h"  
-#include "HeatTransferDomain/DomainComponents/BoundaryPattern/BoundaryPattern.h"  
-#include "HeatTransferDomain/DomainComponents/BoundaryPattern/FireImposedPattern.h"  
-#include "HTRecorder/HTNodeRecorder.h"  
-#include "HTRecorder/HTRecorderToStru.h"  
-#include "Interpreter/HeatTransferModule.h"  
+#include "Idealised_Uniform_Fires/ParametricFireEC1.h"  
+#include "Idealised_Uniform_Fires/NorminalFireEC1.h"  
+#include "Idealised_Nonuniform_fires/LocalizedFireEC1.h"  
+#include "Idealised_Nonuniform_fires/Idealised_Local_Fire.h"  
+#include "Idealised_Nonuniform_fires/LocalizedFireSFPE.h"  
+#include "Idealised_Nonuniform_fires/AlpertCeilingJetModel.h"  
+#include "Idealised_Nonuniform_fires/NaturalFire.h"  
+#include "Idealised_Uniform_Fires/UserDefinedFire.h"  
+#include "BoundaryPattern.h"  
+#include "FireImposedPattern.h"  
+#include "HTNodeRecorder.h"  
+#include "HTRecorderToStru.h"  
+#include "HeatTransferModule.h"  
 #include "interpreter/PythonWrapper.h"
 
 #include <elementAPI.h>
@@ -506,8 +506,8 @@ int OPS_addHTMaterial()
 		int size = 1;
 		//opserr << "python test: " << size << endln;
 		int* sizeList = &size;
-		double* data = new double [50];
-		OPS_GetListInput(sizeList, data);
+		Vector data(50);
+		OPS_GetDoubleListInput(sizeList, &data);
 		opserr <<"size "<< *sizeList<< ", python data: "<<data[1] << endln;
 		theHTMaterial = new CarbonSteelEC3(HTMaterialTag);
 	}
@@ -1707,7 +1707,7 @@ OPS_HTNodeSet()
 	for (int i = 0; i < numNodes; i++) {
 		data[i] = (int)(NodeRange(i));
 	}
-	if (OPS_SetIntOutput(&numNodes, data) < 0) {
+	if (OPS_SetIntOutput(&numNodes, data, false) < 0) {
 		opserr << "WARNING HeatTransferModule failed to set outputs for HTNodeSet\n";
 		delete[] data;
 		return -1;
@@ -2982,7 +2982,7 @@ int OPS_getHTtime()
 	if (theHTDomain == 0) return -1;
 	double factor = theHTDomain->getCurrentTime();
 
-	if (OPS_SetDoubleOutput(&numdata, &factor) < 0) {
+	if (OPS_SetDoubleOutput(&numdata, &factor, false) < 0) {
 		opserr << "WARNING failed to set load factor\n";
 		return -1;
 	}
@@ -3035,7 +3035,7 @@ int OPS_HTOutput()
 		}
 		double firePar = thefire->getFirePars(FireParTag);
 		//opserr << "fireparTag " << FireParTag << "firepar " << firePar << endln;
-		if (OPS_SetDoubleOutput(&dataNum, &firePar) < 0) {
+		if (OPS_SetDoubleOutput(&dataNum, &firePar, false) < 0) {
 			opserr << "WARNING failed to return fire pars for fire model "<< FireModelTag<<"\n";
 			return -1;
 		}
@@ -3064,7 +3064,7 @@ int OPS_HTOutput()
 
 		if (strcmp(option, "-temp") == 0 || strcmp(option, "temp") == 0 || strcmp(option, "Temp") == 0) {
 			double NodeTemp = theNode->getTemperature()(0)-273.15;
-			if (OPS_SetDoubleOutput(&dataNum, &NodeTemp) < 0) {
+			if (OPS_SetDoubleOutput(&dataNum, &NodeTemp, false) < 0) {
 				opserr << "WARNING failed to return temperature for node " << nodetag << "\n";
 				return -1;
 			}
@@ -3103,7 +3103,7 @@ int OPS_HTOutput()
 				data[i]= theNode->getTemperature()(0) - 273.15;
 			}
 
-			if (OPS_SetDoubleOutput(&numNodes, data) < 0) {
+			if (OPS_SetDoubleOutput(&numNodes, data, false) < 0) {
 				opserr << "WARNING failed to return temperature for node set" << nodesetTag << "\n";
 				delete[] data;
 				return -1;
@@ -3323,7 +3323,7 @@ int OPS_GetFireOut() {
 
 			double incq = thefire->getFireOut(60.0, locs);
 
-			if (OPS_SetDoubleOutput(&dataNum, &incq) < 0) {
+			if (OPS_SetDoubleOutput(&dataNum, &incq, false) < 0) {
 				opserr << "WARNING failed to return fire pars for fire model " << FireModelTag << "\n";
 				return -1;
 			}

@@ -114,7 +114,7 @@ class ShellMITC4 : public Element {
 		           &theBroker );
 
 
-    Response* setResponse( const char **argv, int argc, OPS_Stream &output );
+    Response* setResponse( const char **argv, int argc, OPS_Stream *output );
     int getResponse( int responseID, Information &eleInfo );
 
   int setParameter(const char **argv, int argc, Parameter &param);

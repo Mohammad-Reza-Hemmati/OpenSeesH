@@ -559,16 +559,18 @@ ResidElementRecorder::recvSelf(int commitTag, Channel& theChannel,
 
 	 if (theHandler != 0)
 		  delete theHandler;
+	 if (idData(3) != 0)
+	 {
+		 theHandler = theBroker.getPtrNewStream(idData(3));
+		 if (theHandler == 0) {
+			 opserr << "NodeRecorder::sendSelf() - failed to get a data output handler\n";
+			 return -1;
+		 }
 
-	 theHandler = theBroker.getPtrNewStream(idData(3));
-	 if (theHandler == 0) {
-		  opserr << "NodeRecorder::sendSelf() - failed to get a data output handler\n";
-		  return -1;
-	 }
-
-	 if (theHandler->recvSelf(commitTag, theChannel, theBroker) < 0) {
-		  delete theHandler;
-		  theHandler = 0;
+		 if (theHandler->recvSelf(commitTag, theChannel, theBroker) < 0) {
+			 delete theHandler;
+			 theHandler = 0;
+		 }
 	 }
 
 	 //
@@ -640,7 +642,7 @@ ResidElementRecorder::initialize(void)
 						  theResponses[i] = 0;
 						  continue;
 					 }
-					 theResponses[i] = theEle->setResponse((const char**)responseArgs, numArgs, *theHandler);
+					 theResponses[i] = theEle->setResponse((const char**)responseArgs, numArgs, theHandler);
 					 if (theResponses[i] == 0)
 						  continue;
 					 Information& eleInfo = theResponses[i]->getInformation();
@@ -675,7 +677,7 @@ ResidElementRecorder::initialize(void)
 								if (echoTimeFlag == true)
 									 theHandler->tag("ResidualElementOutput");
 
-						  theResponses[ii] = theEle->setResponse((const char**)responseArgs, numArgs, *theHandler);
+						  theResponses[ii] = theEle->setResponse((const char**)responseArgs, numArgs, theHandler);
 						  if (theResponses[ii] != 0) {
 								// from the response type determine no of cols for each      
 								Information& eleInfo = theResponses[ii]->getInformation();
@@ -756,7 +758,7 @@ ResidElementRecorder::initialize(void)
 		  Element* theEle;
 
 		  while ((theEle = theElements()) != 0) {
-				Response* theResponse = theEle->setResponse((const char**)responseArgs, numArgs, *theHandler);
+				Response* theResponse = theEle->setResponse((const char**)responseArgs, numArgs, theHandler);
 				if (theResponse != 0) {
 					 if (numResponse == numEle) {
 						  Response** theNextResponses = new Response * [numEle * 2];

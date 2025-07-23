@@ -1443,7 +1443,7 @@ ZeroLength::Print(OPS_Stream& s, int flag)
 }
 
 Response*
-ZeroLength::setResponse(const char** argv, int argc, OPS_Stream& output)
+ZeroLength::setResponse(const char** argv, int argc, OPS_Stream* output)
 {
 #ifdef _CSS
 	Response* theResponse = Element::setResponse(argv, argc, output);
@@ -1453,11 +1453,14 @@ ZeroLength::setResponse(const char** argv, int argc, OPS_Stream& output)
 	Response* theResponse = 0;
 #endif // _CSS
 
-	output.tag("ElementOutput");
-	output.attr("eleType", "ZeroLength");
-	output.attr("eleTag", this->getTag());
-	output.attr("node1", connectedExternalNodes[0]);
-	output.attr("node2", connectedExternalNodes[1]);
+	if (output != 0)
+	{
+		output->tag("ElementOutput");
+		output->attr("eleType", "ZeroLength");
+		output->attr("eleTag", this->getTag());
+		output->attr("node1", connectedExternalNodes[0]);
+		output->attr("node2", connectedExternalNodes[1]);
+	}
 
 	char outputData[20];
 
@@ -1465,13 +1468,16 @@ ZeroLength::setResponse(const char** argv, int argc, OPS_Stream& output)
 		|| (strcmp(argv[0], "globalForces") == 0) || (strcmp(argv[0], "globalforces") == 0)) {
 
 		int numDOFperNode = numDOF / 2;
-		for (int i = 0; i < numDOFperNode; i++) {
-			sprintf(outputData, "P1_%d", i + 1);
-			output.tag("ResponseType", outputData);
-		}
-		for (int j = 0; j < numDOFperNode; j++) {
-			sprintf(outputData, "P2_%d", j + 1);
-			output.tag("ResponseType", outputData);
+		if (output != 0)
+		{
+			for (int i = 0; i < numDOFperNode; i++) {
+				sprintf(outputData, "P1_%d", i + 1);
+				output->tag("ResponseType", outputData);
+			}
+			for (int j = 0; j < numDOFperNode; j++) {
+				sprintf(outputData, "P2_%d", j + 1);
+				output->tag("ResponseType", outputData);
+			}
 		}
 		theResponse = new ElementResponse(this, 1, Vector(numDOF));
 
@@ -1479,29 +1485,32 @@ ZeroLength::setResponse(const char** argv, int argc, OPS_Stream& output)
 	else if ((strcmp(argv[0], "basicForce") == 0 || strcmp(argv[0], "basicForces") == 0) ||
 		(strcmp(argv[0], "localForce") == 0 || strcmp(argv[0], "localForces") == 0)) {
 
-		for (int i = 0; i < numMaterials1d; i++) {
-			sprintf(outputData, "P%d", i + 1);
-			output.tag("ResponseType", outputData);
-		}
+		if (output != 0)
+			for (int i = 0; i < numMaterials1d; i++) {
+				sprintf(outputData, "P%d", i + 1);
+				output->tag("ResponseType", outputData);
+			}
 		theResponse = new ElementResponse(this, 2, Vector(numMaterials1d));
 
 	}
 	else if (strcmp(argv[0], "defo") == 0 || strcmp(argv[0], "deformations") == 0 ||
 		strcmp(argv[0], "deformation") == 0 || strcmp(argv[0], "basicDeformation") == 0) {
 
-		for (int i = 0; i < numMaterials1d; i++) {
-			sprintf(outputData, "e%d", i + 1);
-			output.tag("ResponseType", outputData);
-		}
+		if (output != 0)
+			for (int i = 0; i < numMaterials1d; i++) {
+				sprintf(outputData, "e%d", i + 1);
+				output->tag("ResponseType", outputData);
+			}
 		theResponse = new ElementResponse(this, 3, Vector(numMaterials1d));
 
 	}
 	else if (strcmp(argv[0], "basicStiffness") == 0) {
 
-		for (int i = 0; i < numMaterials1d; i++) {
-			sprintf(outputData, "e%d", i + 1);
-			output.tag("ResponseType", outputData);
-		}
+		if (output != 0)
+			for (int i = 0; i < numMaterials1d; i++) {
+				sprintf(outputData, "e%d", i + 1);
+				output->tag("ResponseType", outputData);
+			}
 		theResponse = new ElementResponse(this, 13, Matrix(numMaterials1d, numMaterials1d));
 
 	}
@@ -1510,13 +1519,16 @@ ZeroLength::setResponse(const char** argv, int argc, OPS_Stream& output)
 		(strcmp(argv[0], "deformationsANDforces") == 0)) {
 
 		int i;
-		for (i = 0; i < numMaterials1d; i++) {
-			sprintf(outputData, "e%d", i + 1);
-			output.tag("ResponseType", outputData);
-		}
-		for (i = 0; i < numMaterials1d; i++) {
-			sprintf(outputData, "P%d", i + 1);
-			output.tag("ResponseType", outputData);
+		if (output != 0)
+		{
+			for (i = 0; i < numMaterials1d; i++) {
+				sprintf(outputData, "e%d", i + 1);
+				output->tag("ResponseType", outputData);
+			}
+			for (i = 0; i < numMaterials1d; i++) {
+				sprintf(outputData, "P%d", i + 1);
+				output->tag("ResponseType", outputData);
+			}
 		}
 		theResponse = new ElementResponse(this, 4, Vector(2 * numMaterials1d));
 
@@ -1535,7 +1547,8 @@ ZeroLength::setResponse(const char** argv, int argc, OPS_Stream& output)
 	}
 #ifdef _CSS
 	else if (strcmp(argv[0], "Energy") == 0 || strcmp(argv[0], "energy") == 0) {
-		output.tag("ResponseType", "Energy");
+		if (output != 0)
+			output->tag("ResponseType", "Energy");
 		theResponse = new ElementResponse(this, 5, 0.0);
 	}
 #endif // _CSS
@@ -1564,13 +1577,16 @@ ZeroLength::setResponse(const char** argv, int argc, OPS_Stream& output)
 
 		char outputData[20];
 		int numDOFperNode = numDOF / 2;
-		for (int i = 0; i < numDOFperNode; i++) {
-			sprintf(outputData, "P1_%d", i + 1);
-			output.tag("ResponseType", outputData);
-		}
-		for (int j = 0; j < numDOFperNode; j++) {
-			sprintf(outputData, "P2_%d", j + 1);
-			output.tag("ResponseType", outputData);
+		if (output != 0)
+		{
+			for (int i = 0; i < numDOFperNode; i++) {
+				sprintf(outputData, "P1_%d", i + 1);
+				output->tag("ResponseType", outputData);
+			}
+			for (int j = 0; j < numDOFperNode; j++) {
+				sprintf(outputData, "P2_%d", j + 1);
+				output->tag("ResponseType", outputData);
+			}
 		}
 		theResponse = new ElementResponse(this, 31, Vector(numDOF));
 	}
@@ -1581,10 +1597,8 @@ ZeroLength::setResponse(const char** argv, int argc, OPS_Stream& output)
 		theResponse = new ElementResponse(this, 32, Vector(numMaterials1d));
 	}
 
-	output.endTag();
-
-
-
+	if (output != 0)
+		output->endTag();
 
 	return theResponse;
 }

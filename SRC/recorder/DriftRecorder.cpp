@@ -128,128 +128,128 @@ int
 DriftRecorder::record(int commitTag, double timeStamp)
 {
 
-	 if (theDomain == 0 || ndI == 0 || ndJ == 0) {
-		  return 0;
-	 }
+	if (theDomain == 0 || ndI == 0 || ndJ == 0) {
+		return 0;
+	}
 
 
-	 if (initializationDone == false)
-		  if (this->initialize() != 0) {
-				opserr << "DriftRecorder::record() - failed in initialize()\n";
-				return -1;
-		  }
+	if (initializationDone == false)
+		if (this->initialize() != 0) {
+			opserr << "DriftRecorder::record() - failed in initialize()\n";
+			return -1;
+		}
 
-	 if (numNodes == 0 || data == 0)
-		  return 0;
+	if (numNodes == 0 || data == 0)
+		return 0;
 
-	 bool doRec = true;
-	 if (deltaT != 0.0)
-	 {
-		  if (timeStamp < nextTimeStampToRecord - deltaT)
-		  {
-				nextTimeStampToRecord = 0;
-		  }
-		  doRec = (timeStamp - nextTimeStampToRecord >= -deltaT * relDeltaTTol);
-		  if (doRec)
-				nextTimeStampToRecord = timeStamp + deltaT;
-	 }
-	 if (!doRec)
-		  return 0;
+	bool doRec = true;
+	if (deltaT != 0.0)
+	{
+		if (timeStamp < nextTimeStampToRecord - deltaT)
+		{
+			nextTimeStampToRecord = 0;
+		}
+		doRec = (timeStamp - nextTimeStampToRecord >= -deltaT * relDeltaTTol);
+		if (doRec)
+			nextTimeStampToRecord = timeStamp + deltaT;
+	}
+	if (!doRec)
+		return 0;
 
-	 int timeOffset = 0;
-	 if (echoTimeFlag == true) {
-		  (*data)(0) = theDomain->getCurrentTime();
-		  timeOffset = 1;
-	 }
+	int timeOffset = 0;
+	if (echoTimeFlag == true) {
+		(*data)(0) = theDomain->getCurrentTime();
+		timeOffset = 1;
+	}
 #ifdef _CSS
-	 if (procDataMethod)
-	 {
-		  int nProcOuts;
-		  int nVals = numNodes;
-		  if (procGrpNum == -1)
-				if (procDataMethod != 0)
-					 nProcOuts = 1;
-				else
-					 nProcOuts = nVals;
-		  else {
-				nProcOuts = nVals / procGrpNum;
-				if (nProcOuts * procGrpNum < nVals)
-					 nProcOuts++;
-		  }
-		  double* vals = 0, * val, val1 = 0;
-		  vals = new double[nProcOuts];
-		  for (int i = 0; i < nProcOuts; i++)
-				vals[i] = 0;
-		  int iGrpN = 0;
-		  int nextGrpN = procGrpNum;
-		  val = &vals[iGrpN];
-		  int loc = timeOffset;
-		  for (int i = 0; i < numNodes; i++) {
-				Node* nodeI = theNodes[2 * i];
-				Node* nodeJ = theNodes[2 * i + 1];
+	if (procDataMethod)
+	{
+		int nProcOuts;
+		int nVals = numNodes;
+		if (procGrpNum == -1)
+			if (procDataMethod != 0)
+				nProcOuts = 1;
+			else
+				nProcOuts = nVals;
+		else {
+			nProcOuts = nVals / procGrpNum;
+			if (nProcOuts * procGrpNum < nVals)
+				nProcOuts++;
+		}
+		double* vals = 0, * val, val1 = 0;
+		vals = new double[nProcOuts];
+		for (int i = 0; i < nProcOuts; i++)
+			vals[i] = 0;
+		int iGrpN = 0;
+		int nextGrpN = procGrpNum;
+		val = &vals[iGrpN];
+		int loc = timeOffset;
+		for (int i = 0; i < numNodes; i++) {
+			Node* nodeI = theNodes[2 * i];
+			Node* nodeJ = theNodes[2 * i + 1];
 
-				if ((*oneOverL)(i) != 0.0) {
-					 const Vector& dispI = nodeI->getTrialDisp();
-					 const Vector& dispJ = nodeJ->getTrialDisp();
+			if ((*oneOverL)(i) != 0.0) {
+				const Vector& dispI = nodeI->getTrialDisp();
+				const Vector& dispJ = nodeJ->getTrialDisp();
 
-					 double dx = dispJ(dof) - dispI(dof);
+				double dx = dispJ(dof) - dispI(dof);
 
-					 val1 = dx * (*oneOverL)(i);
+				val1 = dx * (*oneOverL)(i);
 
-				}
-				else
-					 val1 = 0.0;
+			}
+			else
+				val1 = 0.0;
 
-				if (procGrpNum != -1 && i == nextGrpN)
-				{
-					 iGrpN++;
-					 nextGrpN += procGrpNum;
-					 val = &vals[iGrpN];
-				}
-				if (i == 0 && procDataMethod != 1)
-					 *val = fabs(val1);
-				if (procDataMethod == 1)
-					 *val += val1;
-				else if (procDataMethod == 2 && val1 > *val)
-					 *val = val1;
-				else if (procDataMethod == 3 && val1 < *val)
-					 *val = val1;
-				else if (procDataMethod == 4 && fabs(val1) > *val)
-					 *val = fabs(val1);
-				else if (procDataMethod == 5 && fabs(val1) < *val)
-					 *val = fabs(val1);
-		  }
-		  for (int i = 0; i < nProcOuts; i++)
-		  {
-				val = &vals[i];
-				(*data)(loc++) = *val;
-		  }
-		  delete[] vals;
-	 }
-	 else
+			if (procGrpNum != -1 && i == nextGrpN)
+			{
+				iGrpN++;
+				nextGrpN += procGrpNum;
+				val = &vals[iGrpN];
+			}
+			if (i == 0 && procDataMethod != 1)
+				*val = fabs(val1);
+			if (procDataMethod == 1)
+				*val += val1;
+			else if (procDataMethod == 2 && val1 > *val)
+				*val = val1;
+			else if (procDataMethod == 3 && val1 < *val)
+				*val = val1;
+			else if (procDataMethod == 4 && fabs(val1) > *val)
+				*val = fabs(val1);
+			else if (procDataMethod == 5 && fabs(val1) < *val)
+				*val = fabs(val1);
+		}
+		for (int i = 0; i < nProcOuts; i++)
+		{
+			val = &vals[i];
+			(*data)(loc++) = *val;
+		}
+		delete[] vals;
+	}
+	else
 #endif // _CSS
 
-		  for (int i = 0; i < numNodes; i++) {
-				Node* nodeI = theNodes[2 * i];
-				Node* nodeJ = theNodes[2 * i + 1];
+		for (int i = 0; i < numNodes; i++) {
+			Node* nodeI = theNodes[2 * i];
+			Node* nodeJ = theNodes[2 * i + 1];
 
-				if ((*oneOverL)(i) != 0.0) {
-					 const Vector& dispI = nodeI->getTrialDisp();
-					 const Vector& dispJ = nodeJ->getTrialDisp();
+			if ((*oneOverL)(i) != 0.0) {
+				const Vector& dispI = nodeI->getTrialDisp();
+				const Vector& dispJ = nodeJ->getTrialDisp();
 
-					 double dx = dispJ(dof) - dispI(dof);
+				double dx = dispJ(dof) - dispI(dof);
 
-					 (*data)(i + timeOffset) = dx * (*oneOverL)(i);
+				(*data)(i + timeOffset) = dx * (*oneOverL)(i);
 
-				}
-				else
-					 (*data)(i + timeOffset) = 0.0;
-		  }
-	 if (theOutputHandler != 0)
-		  theOutputHandler->write(*data);
+			}
+			else
+				(*data)(i + timeOffset) = 0.0;
+		}
+	if (theOutputHandler != 0)
+		theOutputHandler->write(*data);
 
 
-	 return 0;
+	return 0;
 }
 
 int
@@ -282,8 +282,10 @@ DriftRecorder::sendSelf(int commitTag, Channel& theChannel)
 	 idData(2) = dof;
 	 idData(3) = perpDirn;
 	 if (theOutputHandler != 0) {
-		  idData(4) = theOutputHandler->getClassTag();
+		 idData(4) = theOutputHandler->getClassTag();
 	 }
+	 else
+		 idData(4) = 0;
 	 if (echoTimeFlag == true)
 		  idData(5) = 0;
 	 else
@@ -392,16 +394,18 @@ DriftRecorder::recvSelf(int commitTag, Channel& theChannel,
 
 	 if (theOutputHandler != 0)
 		  delete theOutputHandler;
+	 if (idData(4) != 0)
+	 {
+		 theOutputHandler = theBroker.getPtrNewStream(idData(4));
+		 if (theOutputHandler == 0) {
+			 opserr << "DriftRecorder::sendSelf() - failed to get a data output handler\n";
+			 return -1;
+		 }
 
-	 theOutputHandler = theBroker.getPtrNewStream(idData(4));
-	 if (theOutputHandler == 0) {
-		  opserr << "DriftRecorder::sendSelf() - failed to get a data output handler\n";
-		  return -1;
-	 }
-
-	 if (theOutputHandler->recvSelf(commitTag, theChannel, theBroker) < 0) {
-		  delete theOutputHandler;
-		  theOutputHandler = 0;
+		 if (theOutputHandler->recvSelf(commitTag, theChannel, theBroker) < 0) {
+			 delete theOutputHandler;
+			 theOutputHandler = 0;
+		 }
 	 }
 
 	 return 0;
@@ -580,7 +584,10 @@ double DriftRecorder::getRecordedValue(int clmnId, int rowOffset, bool reset)
 	 if (!initializationDone)
 		  return res;
 	 if (clmnId >= data->Size())
-		  return res;
+	 {
+		 opserr << "DriftRecorder::getRecordedValue: columnId exceeds valid range" << endln;
+		 return 0;
+	 }
 	 res = (*data)(clmnId);
 	 return res;
 }

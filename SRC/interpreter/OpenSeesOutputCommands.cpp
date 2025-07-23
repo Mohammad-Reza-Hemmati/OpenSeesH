@@ -3044,9 +3044,7 @@ int OPS_sectionForce()
 	argvv[1] = b;
 	argvv[2] = c;
 
-	DummyStream dummy;
-
-	Response* theResponse = theElement->setResponse(argvv, argcc, dummy);
+	Response* theResponse = theElement->setResponse(argvv, argcc, 0);
 	if (theResponse == 0) {
 		return 0;
 	}
@@ -3139,9 +3137,7 @@ int OPS_sectionDeformation()
 	argvv[1] = b;
 	argvv[2] = c;
 
-	DummyStream dummy;
-
-	Response* theResponse = theElement->setResponse(argvv, argcc, dummy);
+	Response* theResponse = theElement->setResponse(argvv, argcc, 0);
 	if (theResponse == 0) {
 		return 0;
 	}
@@ -3233,9 +3229,7 @@ int OPS_sectionStiffness()
 	argvv[1] = b;
 	argvv[2] = c;
 
-	DummyStream dummy;
-
-	Response* theResponse = theElement->setResponse(argvv, argcc, dummy);
+	Response* theResponse = theElement->setResponse(argvv, argcc, 0);
 	if (theResponse == 0) {
 		return 0;
 	}
@@ -3319,9 +3313,7 @@ int OPS_sectionFlexibility()
 	argvv[1] = b;
 	argvv[2] = c;
 
-	DummyStream dummy;
-
-	Response* theResponse = theElement->setResponse(argvv, argcc, dummy);
+	Response* theResponse = theElement->setResponse(argvv, argcc, 0);
 	if (theResponse == 0) {
 		return 0;
 	}
@@ -3405,9 +3397,7 @@ int OPS_cbdiDisplacement()
 	const char* argvv[1];
 	argvv[0] = a;
 
-	DummyStream dummy;
-
-	Response* theResponse = theElement->setResponse(argvv, argcc, dummy);
+	Response* theResponse = theElement->setResponse(argvv, argcc, 0);
 	if (theResponse == 0) {
 		return 0;
 		return 0;
@@ -3475,15 +3465,13 @@ int OPS_basicDeformation()
 	const char* argvv[1];
 	argvv[0] = a;
 
-	DummyStream dummy;
-
-	Response* theResponse = theElement->setResponse(argvv, argcc, dummy);
+	Response* theResponse = theElement->setResponse(argvv, argcc, 0);
 
 	// Try "basicDeformations"
 	if (theResponse == 0) {
 		char a[80] = "basicDeformations";
 		argvv[0] = a;
-		theResponse = theElement->setResponse(argvv, argcc, dummy);
+		theResponse = theElement->setResponse(argvv, argcc, 0);
 	}
 
 	if (theResponse == 0) {
@@ -3560,15 +3548,13 @@ int OPS_basicForce()
 	const char* argvv[1];
 	argvv[0] = a;
 
-	DummyStream dummy;
-
-	Response* theResponse = theElement->setResponse(argvv, argcc, dummy);
+	Response* theResponse = theElement->setResponse(argvv, argcc, 0);
 
 	// Try "basicForces"
 	if (theResponse == 0) {
 		char a[80] = "basicForces";
 		argvv[0] = a;
-		theResponse = theElement->setResponse(argvv, argcc, dummy);
+		theResponse = theElement->setResponse(argvv, argcc, 0);
 	}
 
 	if (theResponse == 0) {
@@ -3645,9 +3631,7 @@ int OPS_basicStiffness()
 	const char* argvv[1];
 	argvv[0] = a;
 
-	DummyStream dummy;
-
-	Response* theResponse = theElement->setResponse(argvv, argcc, dummy);
+	Response* theResponse = theElement->setResponse(argvv, argcc, 0);
 	if (theResponse == 0) {
 		return 0;
 	}
@@ -3988,9 +3972,7 @@ int OPS_sensSectionForce()
 		argvv[1] = c;
 	}
 
-	DummyStream dummy;
-
-	Response* theResponse = theElement->setResponse(argvv, argcc, dummy);
+	Response* theResponse = theElement->setResponse(argvv, argcc, 0);
 	if (theResponse == 0) {
 		numData = 1;
 		double res = 0.0;

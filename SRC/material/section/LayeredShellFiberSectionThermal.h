@@ -73,7 +73,7 @@ class LayeredShellFiberSectionThermal : public SectionForceDeformation{
     //send back order of strain in vector form
     int getOrder( ) const ;
 
-    Response *setResponse(const char **argv, int argc, OPS_Stream &s);
+    Response *setResponse(const char **argv, int argc, OPS_Stream *s);
     int getResponse(int responseID, Information &info);
 
     // parameters

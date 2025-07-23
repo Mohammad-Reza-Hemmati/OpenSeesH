@@ -5,11 +5,11 @@
 // 
 // Description: This file contains the LayeredMembraneSection class definition
 // A LayeredMembraneSection is a subclass of the sectionForceDeformation class and corresponds to the abstract representation
-// for the stress-strain behavior for a Reinforced Concrete Layer Membrane Element in the Finite Element Method or Structural Analysis. 
+// for the stress-strain behavior for a Reinforced Concrete Layer Membrane Element in the Finite Element Method or Structural Analysioutput-> 
 //
 // Reference:
 // 1. Rojas, F., Anderson, J. C., Massone, L. M. (2016). A nonlinear quadrilateral layered membrane element with drilling degrees of freedom for 
-// the modeling of reinforced concrete walls. Engineering Structures, 124, 521-538.
+// the modeling of reinforced concrete walloutput-> Engineering Structures, 124, 521-538.
 //
 // Source: \OpenSees\SRC\material\section\LayeredMembraneSection
 //
@@ -168,7 +168,7 @@ LayeredMembraneSection::LayeredMembraneSection(int tag,		                       
 	The2DMaterials = new NDMaterial * [numberLayers];
 
 	if (The2DMaterials == 0) {
-		opserr << "LayeredMembraneSection::LayeredMembraneSection() - Failed to allocate pointers for ND materials.\n";
+		opserr << "LayeredMembraneSection::LayeredMembraneSection() - Failed to allocate pointers for ND materialoutput->\n";
 		exit(-1);
 	}
 
@@ -561,46 +561,55 @@ void LayeredMembraneSection::Print(OPS_Stream& s, int flag)
 
 }
 
-Response* LayeredMembraneSection::setResponse(const char** argv, int argc, OPS_Stream& s)
+Response* LayeredMembraneSection::setResponse(const char** argv, int argc, OPS_Stream* output)
 {
 	Response* theResponse = 0;
 	if (strcmp(argv[0], "panel_strain") == 0 || strcmp(argv[0], "Panel_Strain") == 0 || strcmp(argv[0], "Panel_strain") == 0) {
-		s.tag("SectionOutput");
-		s.attr("secType", "LayeredMembraneSection");
-		s.attr("secTag", this->getTag());
-		s.tag("ResponseType", "eps11");
-		s.tag("ResponseType", "eps22");
-		s.tag("ResponseType", "eps12");
-		s.endTag();
+		if (output != 0)
+		{
+			output->tag("SectionOutput");
+			output->attr("secType", "LayeredMembraneSection");
+			output->attr("secTag", this->getTag());
+			output->tag("ResponseType", "eps11");
+			output->tag("ResponseType", "eps22");
+			output->tag("ResponseType", "eps12");
+			output->endTag();
+		}
 
 		Vector data1(3);
 		data1.Zero();
 
-		theResponse = new MaterialResponse(this, 1,data1);
+		theResponse = new MaterialResponse(this, 1, data1);
 
 	}
 	else if (strcmp(argv[0], "panel_force") == 0 || strcmp(argv[0], "Panel_Force") == 0 || strcmp(argv[0], "Panel_force") == 0) {
-		s.tag("SectionOutput");
-		s.attr("secType", "LayeredMembraneSection");
-		s.attr("secTag", this->getTag());
-		s.tag("ResponseType", "Nxx");
-		s.tag("ResponseType", "Nyy");
-		s.tag("ResponseType", "Nxy");
-		s.endTag();
+		if (output != 0)
+		{
+			output->tag("SectionOutput");
+			output->attr("secType", "LayeredMembraneSection");
+			output->attr("secTag", this->getTag());
+			output->tag("ResponseType", "Nxx");
+			output->tag("ResponseType", "Nyy");
+			output->tag("ResponseType", "Nxy");
+			output->endTag();
+		}
 
 		Vector data2(3);
 		data2.Zero();
 
-		theResponse = new MaterialResponse(this,2,data2);
+		theResponse = new MaterialResponse(this, 2, data2);
 
 	}
 	else if (strcmp(argv[0], "getBendingParameters") == 0) {
-		s.tag("SectionOutput");
-		s.attr("secType", "LayeredMembraneSection");
-		s.attr("secTag", this->getTag());
-		s.tag("ResponseType", "Eave");
-		s.tag("ResponseType", "Tave");
-		s.endTag();
+		if (output != 0)
+		{
+			output->tag("SectionOutput");
+			output->attr("secType", "LayeredMembraneSection");
+			output->attr("secTag", this->getTag());
+			output->tag("ResponseType", "Eave");
+			output->tag("ResponseType", "Tave");
+			output->endTag();
+		}
 
 		Vector data3(2);
 		data3.Zero();
@@ -608,13 +617,16 @@ Response* LayeredMembraneSection::setResponse(const char** argv, int argc, OPS_S
 		theResponse = new MaterialResponse(this, 3, data3);
 	}
 	else if (strcmp(argv[0], "panel_avg_stress") == 0 || strcmp(argv[0], "Panel_AvgStress") == 0) {
-		s.tag("SectionOutput");
-		s.attr("secType", "LayeredMembraneSection");
-		s.attr("secTag", this->getTag());
-		s.tag("ResponseType", "sigma11");
-		s.tag("ResponseType", "sigma22");
-		s.tag("ResponseType", "sigma12");
-		s.endTag();
+		if (output != 0)
+		{
+			output->tag("SectionOutput");
+			output->attr("secType", "LayeredMembraneSection");
+			output->attr("secTag", this->getTag());
+			output->tag("ResponseType", "sigma11");
+			output->tag("ResponseType", "sigma22");
+			output->tag("ResponseType", "sigma12");
+			output->endTag();
+		}
 
 		Vector data4(3);
 		data4.Zero();
@@ -628,16 +640,19 @@ Response* LayeredMembraneSection::setResponse(const char** argv, int argc, OPS_S
 		}
 		int pointNum = atoi(argv[1]);
 		if (pointNum > 0 && pointNum <= numberLayers) {
-			s.tag("LayerOutput");
-			s.attr("number", pointNum);
-			s.attr("thickness", t[pointNum]);
+			if (output != 0)
+			{
+				output->tag("LayerOutput");
+				output->attr("number", pointNum);
+				output->attr("thickness", t[pointNum]);
+			}
 
-			theResponse = The2DMaterials[pointNum - 1]->setResponse(&argv[2], argc - 2, s);
+			theResponse = The2DMaterials[pointNum - 1]->setResponse(&argv[2], argc - 2, output);
 		}
 	}
 	else {
 
-		return this->SectionForceDeformation::setResponse(argv, argc, s);
+		return this->SectionForceDeformation::setResponse(argv, argc, output);
 	}
 
 	return theResponse;

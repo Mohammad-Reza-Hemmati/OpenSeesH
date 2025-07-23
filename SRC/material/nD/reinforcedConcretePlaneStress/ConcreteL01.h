@@ -47,7 +47,7 @@ class ConcreteL01 : public UniaxialMaterial
 	       FEM_ObjectBroker &theBroker);    
 
   Response *setResponse (const char **argv, int argc, 
-			 OPS_Stream &theOutputStream);
+			 OPS_Stream *theOutputStream);
   int getResponse (int responseID, Information &matInformation);      
 
   void Print(OPS_Stream &s, int flag =0);

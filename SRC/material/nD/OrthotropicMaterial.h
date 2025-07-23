@@ -82,7 +82,7 @@ public:
 
 	// parameters and responses
 	int setParameter(const char** argv, int argc, Parameter& param);
-	Response* setResponse(const char** argv, int argc, OPS_Stream& s);
+	Response* setResponse(const char** argv, int argc, OPS_Stream * s);
 
 private:
 	// the mapped isotropic material

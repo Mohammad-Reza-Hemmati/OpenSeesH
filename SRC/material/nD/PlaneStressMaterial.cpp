@@ -636,7 +636,7 @@ PlaneStressMaterial::setParameter(const char **argv, int argc,
   return theMaterial->setParameter(argv, argc, param);
 }
 
-Response* PlaneStressMaterial::setResponse(const char** argv, int argc, OPS_Stream& s)
+Response* PlaneStressMaterial::setResponse(const char** argv, int argc, OPS_Stream * s)
 {
     // for strain, stress and tangent use the base class implementation
         // so that the output will be that of the adapter

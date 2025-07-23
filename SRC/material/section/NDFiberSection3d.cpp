@@ -1300,7 +1300,7 @@ NDFiberSection3d::Print(OPS_Stream &s, int flag)
 
 Response*
 NDFiberSection3d::setResponse(const char **argv, int argc,
-			      OPS_Stream &output)
+			      OPS_Stream *output)
 {
   Response *theResponse =0;
 
@@ -1401,30 +1401,34 @@ NDFiberSection3d::setResponse(const char **argv, int argc,
     }
     
     if (key < numFibers && key >= 0) {
-      output.tag("FiberOutput");
-      output.attr("yLoc",matData[3*key]);
-      output.attr("zLoc",matData[3*key+1]);
-      output.attr("area",matData[3*key+2]);
+      if (output != 0)
+      {
+        output->tag("FiberOutput");
+        output->attr("yLoc", matData[3 * key]);
+        output->attr("zLoc", matData[3 * key + 1]);
+        output->attr("area", matData[3 * key + 2]);
+      }
       
       theResponse = theMaterials[key]->setResponse(&argv[passarg], argc-passarg, output);
       
-      output.endTag();
+      if (output != 0)
+        output->endTag();
     }
 
   }
   else if (strcmp(argv[0],"fiberData") == 0) {
     int numData = numFibers*9;
     for (int j = 0; j < numFibers; j++) {
-      output.tag("FiberOutput");
-      output.attr("yLoc", matData[3*j]);
-      output.attr("zLoc", matData[3*j+1]);
-      output.attr("area", matData[3*j+2]);    
-      output.tag("ResponseType","yCoord");
-      output.tag("ResponseType","zCoord");
-      output.tag("ResponseType","area");
-      output.tag("ResponseType","stress");
-      output.tag("ResponseType","strain");
-      output.endTag();
+      output->tag("FiberOutput");
+      output->attr("yLoc", matData[3*j]);
+      output->attr("zLoc", matData[3*j+1]);
+      output->attr("area", matData[3*j+2]);    
+      output->tag("ResponseType","yCoord");
+      output->tag("ResponseType","zCoord");
+      output->tag("ResponseType","area");
+      output->tag("ResponseType","stress");
+      output->tag("ResponseType","strain");
+      output->endTag();
     }
     Vector theResponseData(numData);
     theResponse = new MaterialResponse(this, 5, theResponseData);
@@ -1433,18 +1437,18 @@ NDFiberSection3d::setResponse(const char **argv, int argc,
   else if (strcmp(argv[0],"fiberData2") == 0) {
     int numData = numFibers*10;
     for (int j = 0; j < numFibers; j++) {
-      output.tag("FiberOutput");
-      output.attr("yLoc", matData[3*j]);
-      output.attr("zLoc", matData[3*j+1]);
-      output.attr("area", matData[3*j+2]);    
-      output.attr("material", theMaterials[j]->getTag());
-      output.tag("ResponseType","yCoord");
-      output.tag("ResponseType","zCoord");
-      output.tag("ResponseType","area");
-      output.tag("ResponseType","material");
-      output.tag("ResponseType","stress");
-      output.tag("ResponseType","strain");
-      output.endTag();
+      output->tag("FiberOutput");
+      output->attr("yLoc", matData[3*j]);
+      output->attr("zLoc", matData[3*j+1]);
+      output->attr("area", matData[3*j+2]);    
+      output->attr("material", theMaterials[j]->getTag());
+      output->tag("ResponseType","yCoord");
+      output->tag("ResponseType","zCoord");
+      output->tag("ResponseType","area");
+      output->tag("ResponseType","material");
+      output->tag("ResponseType","stress");
+      output->tag("ResponseType","strain");
+      output->endTag();
     }
     Vector theResponseData(numData);
     theResponse = new MaterialResponse(this, 55, theResponseData);

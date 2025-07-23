@@ -665,16 +665,18 @@ EnvelopeElementRecorder::recvSelf(int commitTag, Channel& theChannel,
 
 	 if (theHandler != 0)
 		  delete theHandler;
+	 if (idData(3) != 0)
+	 {
+		 theHandler = theBroker.getPtrNewStream(idData(3));
+		 if (theHandler == 0) {
+			 opserr << "NodeRecorder::sendSelf() - failed to get a data output handler\n";
+			 return -1;
+		 }
 
-	 theHandler = theBroker.getPtrNewStream(idData(3));
-	 if (theHandler == 0) {
-		  opserr << "NodeRecorder::sendSelf() - failed to get a data output handler\n";
-		  return -1;
-	 }
-
-	 if (theHandler->recvSelf(commitTag, theChannel, theBroker) < 0) {
-		  delete theHandler;
-		  theHandler = 0;
+		 if (theHandler->recvSelf(commitTag, theChannel, theBroker) < 0) {
+			 delete theHandler;
+			 theHandler = 0;
+		 }
 	 }
 
 	 //
@@ -748,7 +750,7 @@ EnvelopeElementRecorder::initialize(void)
 						  theResponses[i] = 0;
 						  continue;
 					 }
-					 theResponses[i] = theEle->setResponse((const char**)responseArgs, numArgs, *theHandler);
+					 theResponses[i] = theEle->setResponse((const char**)responseArgs, numArgs, theHandler);
 					 if (theResponses[i] == 0)
 						  continue;
 					 Information& eleInfo = theResponses[i]->getInformation();
@@ -794,7 +796,7 @@ EnvelopeElementRecorder::initialize(void)
 								if (echoTimeFlag == true)
 									 theHandler->tag("EnvelopeElementOutput");
 
-						  theResponses[ii] = theEle->setResponse((const char**)responseArgs, numArgs, *theHandler);
+						  theResponses[ii] = theEle->setResponse((const char**)responseArgs, numArgs, theHandler);
 						  if (theResponses[ii] != 0) {
 								// from the response type determine no of cols for each      
 								Information& eleInfo = theResponses[ii]->getInformation();
@@ -876,7 +878,7 @@ EnvelopeElementRecorder::initialize(void)
 		  Element* theEle;
 
 		  while ((theEle = theElements()) != 0) {
-				Response* theResponse = theEle->setResponse((const char**)responseArgs, numArgs, *theHandler);
+				Response* theResponse = theEle->setResponse((const char**)responseArgs, numArgs, theHandler);
 				if (theResponse != 0) {
 					 if (numResponse == numEle) {
 						  Response** theNextResponses = new Response * [numEle * 2];
@@ -939,7 +941,15 @@ double EnvelopeElementRecorder::getRecordedValue(int clmnId, int rowOffset, bool
 	 if (!initializationDone)
 		  return res;
 	 if (clmnId >= data->noCols())
-		  return res;
+	 {
+		 opserr << "EnvelopeElementRecorder::getRecordedValue: columnId exceeds valid range" << endln;
+		 return 0;
+	 }
+	 if (rowOffset > 2 || rowOffset < 0)
+	 {
+		 opserr << "EnvelopeElementRecorder::getRecordedValue: 0 < rowOffset < 2 not met" << endln;
+		 return 0;
+	 }
 	 res = (*data)(2 - rowOffset, clmnId);
 	 if (reset)
 		  first = true;

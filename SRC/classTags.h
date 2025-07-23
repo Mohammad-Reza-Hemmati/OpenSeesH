@@ -123,6 +123,7 @@
 #define MAT_TAG_Concrete01			 4
 #define MAT_TAG_Concrete01A			 444
 #define MAT_TAG_Steel01				 5
+#define MAT_TAG_Steel_01				 55555
 #define MAT_TAG_Hardening			 6
 #define MAT_TAG_Hysteretic			 7
 #define MAT_TAG_HystereticSM		1969  // Silvia Mazzoni, 2022

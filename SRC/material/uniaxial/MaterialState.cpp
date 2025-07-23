@@ -55,7 +55,7 @@ MaterialState::getVariable(int variableID, double &info)
 }
 
 Response*
-MaterialState::setResponse(const char **argv, int argc, OPS_Stream &s)
+MaterialState::setResponse(const char **argv, int argc, OPS_Stream *s)
 {
   return 0;
 }

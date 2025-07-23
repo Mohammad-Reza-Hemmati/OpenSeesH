@@ -619,55 +619,68 @@ ZeroLengthSection::Print(OPS_Stream &s, int flag)
 }
 
 Response*
-ZeroLengthSection::setResponse(const char **argv, int argc, OPS_Stream &output)
+ZeroLengthSection::setResponse(const char** argv, int argc, OPS_Stream* output)
 {
-    Response *theResponse = 0;
+	Response* theResponse = 0;
 
-    output.tag("ElementOutput");
-    output.attr("eleType","ZeroLengthSection");
-    output.attr("eleTag",this->getTag());
-    output.attr("node1",connectedExternalNodes[0]);
-    output.attr("node2",connectedExternalNodes[1]);
+	if (output != 0)
+	{
+		output->tag("ElementOutput");
+		output->attr("eleType", "ZeroLengthSection");
+		output->attr("eleTag", this->getTag());
+		output->attr("node1", connectedExternalNodes[0]);
+		output->attr("node2", connectedExternalNodes[1]);
+	}
 
-    char outputData[20];
-    // element forces
-    if ((strcmp(argv[0],"force") == 0) || (strcmp(argv[0],"forces") == 0)
-        || (strcmp(argv[0],"globalForces") == 0) || (strcmp(argv[0],"globalforces") == 0)) {
+	char outputData[20];
+	// element forces
+	if ((strcmp(argv[0], "force") == 0) || (strcmp(argv[0], "forces") == 0)
+		|| (strcmp(argv[0], "globalForces") == 0) || (strcmp(argv[0], "globalforces") == 0)) {
 
-            for (int i=0; i<P->Size(); i++) {
-                sprintf(outputData,"P%d",i+1);
-                output.tag("ResponseType",outputData);
-            }
-            theResponse = new ElementResponse(this, 1, *P);
+		if (output != 0)
+			for (int i = 0; i < P->Size(); i++) {
+				sprintf(outputData, "P%d", i + 1);
+				output->tag("ResponseType", outputData);
+			}
+		theResponse = new ElementResponse(this, 1, *P);
 
-    } else if ((strcmp(argv[0],"basicForce") == 0) || (strcmp(argv[0],"basicForces") == 0) ||
-	       (strcmp(argv[0],"localForce") == 0) || (strcmp(argv[0],"localForces") == 0)) {
+	}
+	else if ((strcmp(argv[0], "basicForce") == 0) || (strcmp(argv[0], "basicForces") == 0) ||
+		(strcmp(argv[0], "localForce") == 0) || (strcmp(argv[0], "localForces") == 0)) {
 
-        for (int i=0; i<order; i++) {
-            sprintf(outputData,"P%d",i+1);
-            output.tag("ResponseType",outputData);
-        }
-        theResponse = new ElementResponse(this, 2, Vector(order));
+		if (output != 0)
+			for (int i = 0; i < order; i++) {
+				sprintf(outputData, "P%d", i + 1);
+				output->tag("ResponseType", outputData);
+			}
+		theResponse = new ElementResponse(this, 2, Vector(order));
 
-    } else if (strcmp(argv[0],"basicStiffness") == 0) {
+	}
+	else if (strcmp(argv[0], "basicStiffness") == 0) {
 
-      theResponse = new ElementResponse(this, 13, Matrix(order,order));
+		theResponse = new ElementResponse(this, 13, Matrix(order, order));
 
 
-    } else if (strcmp(argv[0],"defo") == 0 || strcmp(argv[0],"deformations") == 0 ||
-        strcmp(argv[0],"deformation") == 0 || strcmp(argv[0],"basicDeformation") == 0) {
+	}
+	else if (strcmp(argv[0], "defo") == 0 || strcmp(argv[0], "deformations") == 0 ||
+		strcmp(argv[0], "deformation") == 0 || strcmp(argv[0], "basicDeformation") == 0) {
 
-            for (int i=0; i<order; i++) {
-                sprintf(outputData,"e%d",i+1);
-                output.tag("ResponseType",outputData);
-            }
-            theResponse = new ElementResponse(this, 3, Vector(order));
+		if (output != 0)
+			for (int i = 0; i < order; i++) {
+				sprintf(outputData, "e%d", i + 1);
+				output->tag("ResponseType", outputData);
+			}
+		theResponse = new ElementResponse(this, 3, Vector(order));
 
-    // a section quantity
-    } else if (strcmp(argv[0],"section") == 0) {
-		output.tag("GaussPointOutput");
-		output.attr("number", 1);
-		output.attr("eta", 0.0);
+		// a section quantity
+	}
+	else if (strcmp(argv[0], "section") == 0) {
+		if (output != 0)
+		{
+			output->tag("GaussPointOutput");
+			output->attr("number", 1);
+			output->attr("eta", 0.0);
+		}
 		if (argc > 1) {
 			// we need at least one more argument otherwise 
 			// there is no need to forward this call to the material
@@ -693,21 +706,23 @@ ZeroLengthSection::setResponse(const char **argv, int argc, OPS_Stream &output)
 				theResponse = theSection->setResponse(&argv[1], argc - 1, output);
 			}
 		}
-		output.endTag();
-    }
+		if (output != 0)
+			output->endTag();
+	}
 
-    if (strcmp(argv[0],"xaxis") == 0) {
-      theResponse = new ElementResponse(this, 20, Vector(3));
-    }
-    if (strcmp(argv[0],"yaxis") == 0) {
-      theResponse = new ElementResponse(this, 21, Vector(3));
-    }
-    if (strcmp(argv[0],"zaxis") == 0) {
-      theResponse = new ElementResponse(this, 22, Vector(3));
-    }
-    
-    output.endTag();
-    return theResponse;
+	if (strcmp(argv[0], "xaxis") == 0) {
+		theResponse = new ElementResponse(this, 20, Vector(3));
+	}
+	if (strcmp(argv[0], "yaxis") == 0) {
+		theResponse = new ElementResponse(this, 21, Vector(3));
+	}
+	if (strcmp(argv[0], "zaxis") == 0) {
+		theResponse = new ElementResponse(this, 22, Vector(3));
+	}
+
+	if (output != 0)
+		output->endTag();
+	return theResponse;
 
 }
 

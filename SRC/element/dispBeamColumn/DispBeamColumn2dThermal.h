@@ -97,7 +97,7 @@ class DispBeamColumn2dThermal : public Element
     int displaySelf(Renderer &theViewer, int displayMode, float fact, const char **displayModes, int numModes);
     void Print(OPS_Stream &s, int flag =0);
 
-    Response *setResponse(const char **argv, int argc, OPS_Stream &s);
+    Response *setResponse(const char **argv, int argc, OPS_Stream *s);
     int getResponse(int responseID, Information &eleInfo);
 
     // AddingSensitivity:BEGIN //////////////////////////////////////////

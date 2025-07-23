@@ -1037,137 +1037,165 @@ void HDR::Print(OPS_Stream &s, int flag)
 }
 
 
-Response* HDR::setResponse(const char **argv, int argc,
-    OPS_Stream &output)
+Response* HDR::setResponse(const char** argv, int argc,
+  OPS_Stream* output)
 {
-    Response *theResponse = 0;
-    
-    output.tag("ElementOutput");
-    output.attr("eleType","HDR");
-    output.attr("eleTag",this->getTag());
-    output.attr("node1",connectedExternalNodes[0]);
-    output.attr("node2",connectedExternalNodes[1]);
-    
-    // global forces
-    if (strcmp(argv[0],"force") == 0 || strcmp(argv[0],"forces") == 0 ||
-        strcmp(argv[0],"globalForce") == 0 || strcmp(argv[0],"globalForces") == 0)
+  Response* theResponse = 0;
+
+  if (output != 0)
+  {
+    output->tag("ElementOutput");
+    output->attr("eleType", "HDR");
+    output->attr("eleTag", this->getTag());
+    output->attr("node1", connectedExternalNodes[0]);
+    output->attr("node2", connectedExternalNodes[1]);
+  }
+
+  // global forces
+  if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0 ||
+    strcmp(argv[0], "globalForce") == 0 || strcmp(argv[0], "globalForces") == 0)
+  {
+    if (output != 0)
     {
-        output.tag("ResponseType","Px_1");
-        output.tag("ResponseType","Py_1");
-        output.tag("ResponseType","Pz_1");
-        output.tag("ResponseType","Mx_1");
-        output.tag("ResponseType","My_1");
-        output.tag("ResponseType","Mz_1");
-        output.tag("ResponseType","Px_2");
-        output.tag("ResponseType","Py_2");
-        output.tag("ResponseType","Pz_2");
-        output.tag("ResponseType","Mx_2");
-        output.tag("ResponseType","My_2");
-        output.tag("ResponseType","Mz_2");
-        
-        theResponse = new ElementResponse(this, 1, theVector);
+      output->tag("ResponseType", "Px_1");
+      output->tag("ResponseType", "Py_1");
+      output->tag("ResponseType", "Pz_1");
+      output->tag("ResponseType", "Mx_1");
+      output->tag("ResponseType", "My_1");
+      output->tag("ResponseType", "Mz_1");
+      output->tag("ResponseType", "Px_2");
+      output->tag("ResponseType", "Py_2");
+      output->tag("ResponseType", "Pz_2");
+      output->tag("ResponseType", "Mx_2");
+      output->tag("ResponseType", "My_2");
+      output->tag("ResponseType", "Mz_2");
     }
-    // local forces
-    else if (strcmp(argv[0],"localForce") == 0 || strcmp(argv[0],"localForces") == 0)
+
+    theResponse = new ElementResponse(this, 1, theVector);
+  }
+  // local forces
+  else if (strcmp(argv[0], "localForce") == 0 || strcmp(argv[0], "localForces") == 0)
+  {
+    if (output != 0)
     {
-        output.tag("ResponseType","N_ 1");
-        output.tag("ResponseType","Vy_1");
-        output.tag("ResponseType","Vz_1");
-        output.tag("ResponseType","T_1");
-        output.tag("ResponseType","My_1");
-        output.tag("ResponseType","Tz_1");
-        output.tag("ResponseType","N_2");
-        output.tag("ResponseType","Py_2");
-        output.tag("ResponseType","Pz_2");
-        output.tag("ResponseType","T_2");
-        output.tag("ResponseType","My_2");
-        output.tag("ResponseType","Mz_2");
-        
-        theResponse = new ElementResponse(this, 2, theVector);
+      output->tag("ResponseType", "N_ 1");
+      output->tag("ResponseType", "Vy_1");
+      output->tag("ResponseType", "Vz_1");
+      output->tag("ResponseType", "T_1");
+      output->tag("ResponseType", "My_1");
+      output->tag("ResponseType", "Tz_1");
+      output->tag("ResponseType", "N_2");
+      output->tag("ResponseType", "Py_2");
+      output->tag("ResponseType", "Pz_2");
+      output->tag("ResponseType", "T_2");
+      output->tag("ResponseType", "My_2");
+      output->tag("ResponseType", "Mz_2");
     }
-    // basic forces
-    else if (strcmp(argv[0],"basicForce") == 0 || strcmp(argv[0],"basicForces") == 0)
+
+    theResponse = new ElementResponse(this, 2, theVector);
+  }
+  // basic forces
+  else if (strcmp(argv[0], "basicForce") == 0 || strcmp(argv[0], "basicForces") == 0)
+  {
+    if (output != 0)
     {
-        output.tag("ResponseType","qb1");
-        output.tag("ResponseType","qb2");
-        output.tag("ResponseType","qb3");
-        output.tag("ResponseType","qb4");
-        output.tag("ResponseType","qb5");
-        output.tag("ResponseType","qb6");
-        
-        theResponse = new ElementResponse(this, 3, Vector(6));
+      output->tag("ResponseType", "qb1");
+      output->tag("ResponseType", "qb2");
+      output->tag("ResponseType", "qb3");
+      output->tag("ResponseType", "qb4");
+      output->tag("ResponseType", "qb5");
+      output->tag("ResponseType", "qb6");
     }
-    // local displacements
-    else if (strcmp(argv[0],"localDisplacement") == 0 ||
-        strcmp(argv[0],"localDisplacements") == 0)
+
+    theResponse = new ElementResponse(this, 3, Vector(6));
+  }
+  // local displacements
+  else if (strcmp(argv[0], "localDisplacement") == 0 ||
+    strcmp(argv[0], "localDisplacements") == 0)
+  {
+    if (output != 0)
     {
-        output.tag("ResponseType","ux_1");
-        output.tag("ResponseType","uy_1");
-        output.tag("ResponseType","uz_1");
-        output.tag("ResponseType","rx_1");
-        output.tag("ResponseType","ry_1");
-        output.tag("ResponseType","rz_1");
-        output.tag("ResponseType","ux_2");
-        output.tag("ResponseType","uy_2");
-        output.tag("ResponseType","uz_2");
-        output.tag("ResponseType","rx_2");
-        output.tag("ResponseType","ry_2");
-        output.tag("ResponseType","rz_2");
-        
-        theResponse = new ElementResponse(this, 4, theVector);
+      output->tag("ResponseType", "ux_1");
+      output->tag("ResponseType", "uy_1");
+      output->tag("ResponseType", "uz_1");
+      output->tag("ResponseType", "rx_1");
+      output->tag("ResponseType", "ry_1");
+      output->tag("ResponseType", "rz_1");
+      output->tag("ResponseType", "ux_2");
+      output->tag("ResponseType", "uy_2");
+      output->tag("ResponseType", "uz_2");
+      output->tag("ResponseType", "rx_2");
+      output->tag("ResponseType", "ry_2");
+      output->tag("ResponseType", "rz_2");
     }
-    // basic displacements
-    else if (strcmp(argv[0],"deformation") == 0 || strcmp(argv[0],"deformations") == 0 ||
-        strcmp(argv[0],"basicDeformation") == 0 || strcmp(argv[0],"basicDeformations") == 0 ||
-        strcmp(argv[0],"basicDisplacement") == 0 || strcmp(argv[0],"basicDisplacements") == 0)
+
+    theResponse = new ElementResponse(this, 4, theVector);
+  }
+  // basic displacements
+  else if (strcmp(argv[0], "deformation") == 0 || strcmp(argv[0], "deformations") == 0 ||
+    strcmp(argv[0], "basicDeformation") == 0 || strcmp(argv[0], "basicDeformations") == 0 ||
+    strcmp(argv[0], "basicDisplacement") == 0 || strcmp(argv[0], "basicDisplacements") == 0)
+  {
+    if (output != 0)
     {
-        output.tag("ResponseType","ub1");
-        output.tag("ResponseType","ub2");
-        output.tag("ResponseType","ub3");
-        output.tag("ResponseType","ub4");
-        output.tag("ResponseType","ub5");
-        output.tag("ResponseType","ub6");
-        
-        theResponse = new ElementResponse(this, 5, Vector(6));
+      output->tag("ResponseType", "ub1");
+      output->tag("ResponseType", "ub2");
+      output->tag("ResponseType", "ub3");
+      output->tag("ResponseType", "ub4");
+      output->tag("ResponseType", "ub5");
+      output->tag("ResponseType", "ub6");
     }
-    // hysteretic and damage evolution parameters
-    else if (strcmp(argv[0],"Evolution") == 0 || strcmp(argv[0],"evolution") == 0 || 
-        strcmp(argv[0],"EvolutionParameter") == 0 || strcmp(argv[0],"evolutionparameter") == 0 ||
-        strcmp(argv[0],"z") == 0)
+
+    theResponse = new ElementResponse(this, 5, Vector(6));
+  }
+  // hysteretic and damage evolution parameters
+  else if (strcmp(argv[0], "Evolution") == 0 || strcmp(argv[0], "evolution") == 0 ||
+    strcmp(argv[0], "EvolutionParameter") == 0 || strcmp(argv[0], "evolutionparameter") == 0 ||
+    strcmp(argv[0], "z") == 0)
+  {
+    if (output != 0)
     {
-        output.tag("ResponseType","DSplus");
-        output.tag("ResponseType","DSminus");
-        output.tag("ResponseType","DS");
-        output.tag("ResponseType","DM");
-        output.tag("ResponseType","Delta");
-        
-        theResponse = new ElementResponse(this, 6, Vector(5));
+      output->tag("ResponseType", "DSplus");
+      output->tag("ResponseType", "DSminus");
+      output->tag("ResponseType", "DS");
+      output->tag("ResponseType", "DM");
+      output->tag("ResponseType", "Delta");
     }
-    // basic stiffness
-    else if (strcmp(argv[0],"kb") == 0 || strcmp(argv[0],"basicStiff") == 0 ||
-        strcmp(argv[0],"basicStiffness") == 0)
+
+    theResponse = new ElementResponse(this, 6, Vector(5));
+  }
+  // basic stiffness
+  else if (strcmp(argv[0], "kb") == 0 || strcmp(argv[0], "basicStiff") == 0 ||
+    strcmp(argv[0], "basicStiffness") == 0)
+  {
+    if (output != 0)
     {
-        output.tag("ResponseType","kb22");
-        output.tag("ResponseType","kb23");
-        output.tag("ResponseType","kb32");
-        output.tag("ResponseType","kb33");
-        
-        theResponse = new ElementResponse(this, 7, Vector(4));
+      output->tag("ResponseType", "kb22");
+      output->tag("ResponseType", "kb23");
+      output->tag("ResponseType", "kb32");
+      output->tag("ResponseType", "kb33");
     }
-    // parameters
-    else if (strcmp(argv[0],"param") == 0 || strcmp(argv[0],"Param") == 0 ||
-        strcmp(argv[0],"parameters") == 0 || strcmp(argv[0],"Parameters") == 0)
+
+    theResponse = new ElementResponse(this, 7, Vector(4));
+  }
+  // parameters
+  else if (strcmp(argv[0], "param") == 0 || strcmp(argv[0], "Param") == 0 ||
+    strcmp(argv[0], "parameters") == 0 || strcmp(argv[0], "Parameters") == 0)
+  {
+    if (output != 0)
     {
-        output.tag("ResponseType","Fcn");
-        output.tag("ResponseType","Fcrn");
-        output.tag("ResponseType","Kv");
-        
-        theResponse = new ElementResponse(this, 8, Vector(3));
+      output->tag("ResponseType", "Fcn");
+      output->tag("ResponseType", "Fcrn");
+      output->tag("ResponseType", "Kv");
     }
-    
-    output.endTag(); // ElementOutput
-    
-    return theResponse;
+
+    theResponse = new ElementResponse(this, 8, Vector(3));
+  }
+
+  if (output != 0)
+    output->endTag(); // ElementOutput
+
+  return theResponse;
 }
 
 

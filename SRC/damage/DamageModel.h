@@ -69,7 +69,7 @@ class DamageModel :  public TaggedObject, public MovableObject
     
     virtual DamageModel *getCopy (void) = 0;
     
-    virtual Response *setResponse(const char **argv, int argc, OPS_Stream &theOutputStream);
+    virtual Response *setResponse(const char **argv, int argc, OPS_Stream *theOutputStream);
     virtual int getResponse(int responseID, Information &info);
     
     virtual int sendSelf(int commitTag, Channel &theChannel) = 0;  

@@ -2540,191 +2540,219 @@ void TripleFrictionPendulumX::Print(OPS_Stream& s, int flag)
 
 
 Response* TripleFrictionPendulumX::setResponse(const char** argv, int argc,
-    OPS_Stream& output)
+  OPS_Stream* output)
 {
-    Response* theResponse = 0;
+  Response* theResponse = 0;
 
-    output.tag("ElementOutput");
-    output.attr("eleType", "TripleFrictionPendulumX");
-    output.attr("eleTag", this->getTag());
-    output.attr("node1", externalNodes[0]);
-    output.attr("node2", externalNodes[1]);
+  if (output != 0)
+  {
+    output->tag("ElementOutput");
+    output->attr("eleType", "TripleFrictionPendulumX");
+    output->attr("eleTag", this->getTag());
+    output->attr("node1", externalNodes[0]);
+    output->attr("node2", externalNodes[1]);
+  }
 
-    // global forces
-    if (strcmp(argv[0], "force") == 0 ||
-        strcmp(argv[0], "forces") == 0 ||
-        strcmp(argv[0], "globalForce") == 0 ||
-        strcmp(argv[0], "globalForces") == 0)
+  // global forces
+  if (strcmp(argv[0], "force") == 0 ||
+    strcmp(argv[0], "forces") == 0 ||
+    strcmp(argv[0], "globalForce") == 0 ||
+    strcmp(argv[0], "globalForces") == 0)
+  {
+    if (output != 0)
     {
-        output.tag("ResponseType", "Px_1");
-        output.tag("ResponseType", "Py_1");
-        output.tag("ResponseType", "Pz_1");
-        output.tag("ResponseType", "Mx_1");
-        output.tag("ResponseType", "My_1");
-        output.tag("ResponseType", "Mz_1");
-        output.tag("ResponseType", "Px_2");
-        output.tag("ResponseType", "Py_2");
-        output.tag("ResponseType", "Pz_2");
-        output.tag("ResponseType", "Mx_2");
-        output.tag("ResponseType", "My_2");
-        output.tag("ResponseType", "Mz_2");
-
-        theResponse = new ElementResponse(this, 1, eleR);
+      output->tag("ResponseType", "Px_1");
+      output->tag("ResponseType", "Py_1");
+      output->tag("ResponseType", "Pz_1");
+      output->tag("ResponseType", "Mx_1");
+      output->tag("ResponseType", "My_1");
+      output->tag("ResponseType", "Mz_1");
+      output->tag("ResponseType", "Px_2");
+      output->tag("ResponseType", "Py_2");
+      output->tag("ResponseType", "Pz_2");
+      output->tag("ResponseType", "Mx_2");
+      output->tag("ResponseType", "My_2");
+      output->tag("ResponseType", "Mz_2");
     }
-    // local forces
-    else if (strcmp(argv[0], "localForce") == 0 ||
-        strcmp(argv[0], "localForces") == 0)
+
+    theResponse = new ElementResponse(this, 1, eleR);
+  }
+  // local forces
+  else if (strcmp(argv[0], "localForce") == 0 ||
+    strcmp(argv[0], "localForces") == 0)
+  {
+    if (output != 0)
     {
-        output.tag("ResponseType", "N_1");
-        output.tag("ResponseType", "Vy_1");
-        output.tag("ResponseType", "Vz_1");
-        output.tag("ResponseType", "T_1");
-        output.tag("ResponseType", "My_1");
-        output.tag("ResponseType", "Mz_1");
-        output.tag("ResponseType", "N_2");
-        output.tag("ResponseType", "Vy_2");
-        output.tag("ResponseType", "Vz_2");
-        output.tag("ResponseType", "T_2");
-        output.tag("ResponseType", "My_2");
-        output.tag("ResponseType", "Mz_2");
-
-        theResponse = new ElementResponse(this, 2, Vector(12));
+      output->tag("ResponseType", "N_1");
+      output->tag("ResponseType", "Vy_1");
+      output->tag("ResponseType", "Vz_1");
+      output->tag("ResponseType", "T_1");
+      output->tag("ResponseType", "My_1");
+      output->tag("ResponseType", "Mz_1");
+      output->tag("ResponseType", "N_2");
+      output->tag("ResponseType", "Vy_2");
+      output->tag("ResponseType", "Vz_2");
+      output->tag("ResponseType", "T_2");
+      output->tag("ResponseType", "My_2");
+      output->tag("ResponseType", "Mz_2");
     }
-    // basic forces
-    else if (strcmp(argv[0], "basicForce") == 0 ||
-        strcmp(argv[0], "basicForces") == 0)
+
+    theResponse = new ElementResponse(this, 2, Vector(12));
+  }
+  // basic forces
+  else if (strcmp(argv[0], "basicForce") == 0 ||
+    strcmp(argv[0], "basicForces") == 0)
+  {
+    if (output != 0)
     {
-        output.tag("ResponseType", "qb1");
-        output.tag("ResponseType", "qb2");
-        output.tag("ResponseType", "qb3");
-        output.tag("ResponseType", "qb4");
-        output.tag("ResponseType", "qb5");
-        output.tag("ResponseType", "qb6");
-
-        theResponse = new ElementResponse(this, 3, Vector(6));
+      output->tag("ResponseType", "qb1");
+      output->tag("ResponseType", "qb2");
+      output->tag("ResponseType", "qb3");
+      output->tag("ResponseType", "qb4");
+      output->tag("ResponseType", "qb5");
+      output->tag("ResponseType", "qb6");
     }
-    // local displacements
-    else if (strcmp(argv[0], "localDisplacement") == 0 ||
-        strcmp(argv[0], "localDisplacements") == 0)
+
+    theResponse = new ElementResponse(this, 3, Vector(6));
+  }
+  // local displacements
+  else if (strcmp(argv[0], "localDisplacement") == 0 ||
+    strcmp(argv[0], "localDisplacements") == 0)
+  {
+    if (output != 0)
     {
-        output.tag("ResponseType", "ux_1");
-        output.tag("ResponseType", "uy_1");
-        output.tag("ResponseType", "uz_1");
-        output.tag("ResponseType", "rx_1");
-        output.tag("ResponseType", "ry_1");
-        output.tag("ResponseType", "rz_1");
-        output.tag("ResponseType", "ux_2");
-        output.tag("ResponseType", "uy_2");
-        output.tag("ResponseType", "uz_2");
-        output.tag("ResponseType", "rx_2");
-        output.tag("ResponseType", "ry_2");
-        output.tag("ResponseType", "rz_2");
-
-        theResponse = new ElementResponse(this, 4, Vector(12));
+      output->tag("ResponseType", "ux_1");
+      output->tag("ResponseType", "uy_1");
+      output->tag("ResponseType", "uz_1");
+      output->tag("ResponseType", "rx_1");
+      output->tag("ResponseType", "ry_1");
+      output->tag("ResponseType", "rz_1");
+      output->tag("ResponseType", "ux_2");
+      output->tag("ResponseType", "uy_2");
+      output->tag("ResponseType", "uz_2");
+      output->tag("ResponseType", "rx_2");
+      output->tag("ResponseType", "ry_2");
+      output->tag("ResponseType", "rz_2");
     }
-    // basic displacements
-    else if (strcmp(argv[0], "deformation") == 0 ||
-        strcmp(argv[0], "deformations") == 0 ||
-        strcmp(argv[0], "basicDeformation") == 0 ||
-        strcmp(argv[0], "basicDeformations") == 0 ||
-        strcmp(argv[0], "basicDisplacement") == 0 ||
-        strcmp(argv[0], "basicDisplacements") == 0)
+
+    theResponse = new ElementResponse(this, 4, Vector(12));
+  }
+  // basic displacements
+  else if (strcmp(argv[0], "deformation") == 0 ||
+    strcmp(argv[0], "deformations") == 0 ||
+    strcmp(argv[0], "basicDeformation") == 0 ||
+    strcmp(argv[0], "basicDeformations") == 0 ||
+    strcmp(argv[0], "basicDisplacement") == 0 ||
+    strcmp(argv[0], "basicDisplacements") == 0)
+  {
+    if (output != 0)
     {
-        output.tag("ResponseType", "ub1");
-        output.tag("ResponseType", "ub2");
-        output.tag("ResponseType", "ub3");
-        output.tag("ResponseType", "ub4");
-        output.tag("ResponseType", "ub5");
-        output.tag("ResponseType", "ub6");
-
-        theResponse = new ElementResponse(this, 5, Vector(6));
+      output->tag("ResponseType", "ub1");
+      output->tag("ResponseType", "ub2");
+      output->tag("ResponseType", "ub3");
+      output->tag("ResponseType", "ub4");
+      output->tag("ResponseType", "ub5");
+      output->tag("ResponseType", "ub6");
     }
-    // displacement components
-    else if (strcmp(argv[0], "compDeformation") == 0 ||
-        strcmp(argv[0], "compDeformations") == 0 ||
-        strcmp(argv[0], "compDisplacement") == 0 ||
-        strcmp(argv[0], "compDisplacements") == 0)
+
+    theResponse = new ElementResponse(this, 5, Vector(6));
+  }
+  // displacement components
+  else if (strcmp(argv[0], "compDeformation") == 0 ||
+    strcmp(argv[0], "compDeformations") == 0 ||
+    strcmp(argv[0], "compDisplacement") == 0 ||
+    strcmp(argv[0], "compDisplacements") == 0)
+  {
+    if (output != 0)
     {
-        output.tag("ResponseType", "d1x");
-        output.tag("ResponseType", "d3x");
-        output.tag("ResponseType", "d5x");
-        output.tag("ResponseType", "d1y");
-        output.tag("ResponseType", "d3y");
-        output.tag("ResponseType", "d5y");
-        output.tag("ResponseType", "v1x");
-        output.tag("ResponseType", "v3x");
-        output.tag("ResponseType", "v5x");
-        output.tag("ResponseType", "v1y");
-        output.tag("ResponseType", "v3y");
-        output.tag("ResponseType", "v5y");
-
-
-        theResponse = new ElementResponse(this, 6, Vector(12));
+      output->tag("ResponseType", "d1x");
+      output->tag("ResponseType", "d3x");
+      output->tag("ResponseType", "d5x");
+      output->tag("ResponseType", "d1y");
+      output->tag("ResponseType", "d3y");
+      output->tag("ResponseType", "d5y");
+      output->tag("ResponseType", "v1x");
+      output->tag("ResponseType", "v3x");
+      output->tag("ResponseType", "v5x");
+      output->tag("ResponseType", "v1y");
+      output->tag("ResponseType", "v3y");
+      output->tag("ResponseType", "v5y");
     }
 
-    // parameters
-    else if (strcmp(argv[0], "param") == 0 || strcmp(argv[0], "Param") == 0 ||
-        strcmp(argv[0], "parameters") == 0 || strcmp(argv[0], "Parameters") == 0)
+
+    theResponse = new ElementResponse(this, 6, Vector(12));
+  }
+
+  // parameters
+  else if (strcmp(argv[0], "param") == 0 || strcmp(argv[0], "Param") == 0 ||
+    strcmp(argv[0], "parameters") == 0 || strcmp(argv[0], "Parameters") == 0)
+  {
+    if (output != 0)
     {
-        output.tag("ResponseType", "Temp2 and 3");
-        output.tag("ResponseType", "Temp1");
-        output.tag("ResponseType", "Temp4");
-        output.tag("ResponseType", "Temp1 at depth");
-        output.tag("ResponseType", "Temp4 at depth");
-        output.tag("ResponseType", "COF 2 and 3");
-        output.tag("ResponseType", "COF1");
-        output.tag("ResponseType", "COF4");
-        output.tag("ResponseType", "HEATFLUX 2 and 3");
-        output.tag("ResponseType", "HEATFLUX1");
-        output.tag("ResponseType", "HEATFLUX4");
-        output.tag("ResponseType", "kpF 2 and 3");
-        output.tag("ResponseType", "kpF 1");
-        output.tag("ResponseType", "kpF 4");
-        output.tag("ResponseType", "kTF 2 and 3");
-        output.tag("ResponseType", "kTF 1");
-        output.tag("ResponseType", "kTF 4");
-        output.tag("ResponseType", "kVF 2 and 3");
-        output.tag("ResponseType", "kVF 1");
-        output.tag("ResponseType", "kVF 4");
-        
-        theResponse = new ElementResponse(this, 7, Vector(20));
+      output->tag("ResponseType", "Temp2 and 3");
+      output->tag("ResponseType", "Temp1");
+      output->tag("ResponseType", "Temp4");
+      output->tag("ResponseType", "Temp1 at depth");
+      output->tag("ResponseType", "Temp4 at depth");
+      output->tag("ResponseType", "COF 2 and 3");
+      output->tag("ResponseType", "COF1");
+      output->tag("ResponseType", "COF4");
+      output->tag("ResponseType", "HEATFLUX 2 and 3");
+      output->tag("ResponseType", "HEATFLUX1");
+      output->tag("ResponseType", "HEATFLUX4");
+      output->tag("ResponseType", "kpF 2 and 3");
+      output->tag("ResponseType", "kpF 1");
+      output->tag("ResponseType", "kpF 4");
+      output->tag("ResponseType", "kTF 2 and 3");
+      output->tag("ResponseType", "kTF 1");
+      output->tag("ResponseType", "kTF 4");
+      output->tag("ResponseType", "kVF 2 and 3");
+      output->tag("ResponseType", "kVF 1");
+      output->tag("ResponseType", "kVF 4");
     }
 
-    // Surface History
-    else if (strcmp(argv[0], "Surface") == 0 || strcmp(argv[0], "SurfaceHistory") == 0)
+    theResponse = new ElementResponse(this, 7, Vector(20));
+  }
+
+  // Surface History
+  else if (strcmp(argv[0], "Surface") == 0 || strcmp(argv[0], "SurfaceHistory") == 0)
+  {
+    if (output != 0)
     {
-        output.tag("ResponseType", "Surface_disp_1x");
-        output.tag("ResponseType", "Surface_disp_2x");
-        output.tag("ResponseType", "Surface_disp_3x");
-        output.tag("ResponseType", "Surface_disp_4x");
-        output.tag("ResponseType", "Surface_disp_1y");
-        output.tag("ResponseType", "Surface_disp_2y");
-        output.tag("ResponseType", "Surface_disp_3y");
-        output.tag("ResponseType", "Surface_disp_4y");
-        output.tag("ResponseType", "Surface_vel_1x");
-        output.tag("ResponseType", "Surface_vel_2x");
-        output.tag("ResponseType", "Surface_vel_3x");
-        output.tag("ResponseType", "Surface_vel_4x");
-        output.tag("ResponseType", "Surface_vel_1y");
-        output.tag("ResponseType", "Surface_vel_2y");
-        output.tag("ResponseType", "Surface_vel_3y");
-        output.tag("ResponseType", "Surface_vel_4y");
-
-        theResponse = new ElementResponse(this, 8, Vector(16));
+      output->tag("ResponseType", "Surface_disp_1x");
+      output->tag("ResponseType", "Surface_disp_2x");
+      output->tag("ResponseType", "Surface_disp_3x");
+      output->tag("ResponseType", "Surface_disp_4x");
+      output->tag("ResponseType", "Surface_disp_1y");
+      output->tag("ResponseType", "Surface_disp_2y");
+      output->tag("ResponseType", "Surface_disp_3y");
+      output->tag("ResponseType", "Surface_disp_4y");
+      output->tag("ResponseType", "Surface_vel_1x");
+      output->tag("ResponseType", "Surface_vel_2x");
+      output->tag("ResponseType", "Surface_vel_3x");
+      output->tag("ResponseType", "Surface_vel_4x");
+      output->tag("ResponseType", "Surface_vel_1y");
+      output->tag("ResponseType", "Surface_vel_2y");
+      output->tag("ResponseType", "Surface_vel_3y");
+      output->tag("ResponseType", "Surface_vel_4y");
     }
 
-    // material output
-    else if (strcmp(argv[0], "material") == 0) {
-        if (argc > 2) {
-            int matNum = atoi(argv[1]);
-            if (matNum >= 1 && matNum <= 4)
-                theResponse = theMaterials[matNum - 1]->setResponse(&argv[2], argc - 2, output);
-        }
+    theResponse = new ElementResponse(this, 8, Vector(16));
+  }
+
+  // material output
+  else if (strcmp(argv[0], "material") == 0) {
+    if (argc > 2) {
+      int matNum = atoi(argv[1]);
+      if (matNum >= 1 && matNum <= 4)
+        theResponse = theMaterials[matNum - 1]->setResponse(&argv[2], argc - 2, output);
     }
+  }
 
-    output.endTag(); // ElementOutput
+  if (output != 0)
+    output->endTag(); // ElementOutput
 
-    return theResponse;
+  return theResponse;
 }
 
 

@@ -1688,16 +1688,17 @@ ModIMKPeakOriented02::envelNegCap2(double fy,double alphaNeg,double alphaCap,dou
 
 Response *
 ModIMKPeakOriented02::setResponse (const char **argv, int argc,
-                                 OPS_Stream &theOutputStream)
+                                 OPS_Stream * output)
 {
   //by default, See if the response is one of the defaults
-  Response *theResponse = UniaxialMaterial::setResponse(argv, argc, theOutputStream);
+  Response *theResponse = UniaxialMaterial::setResponse(argv, argc, output);
  
   if (theResponse != 0)      
     return theResponse;
  
   if ((strcmp(argv[0],"dres") == 0)) {
-    theOutputStream.tag("ResponseType", "dres");
+    if (output != 0)
+      output->tag("ResponseType", "dres");
     theResponse =  new MaterialResponse(this, 101, dres);
   }
  

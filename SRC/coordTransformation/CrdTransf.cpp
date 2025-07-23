@@ -141,7 +141,7 @@ CrdTransf::getRigidOffsets(Vector &offsets)
 }
 
 Response*
-CrdTransf::setResponse(const char **argv, int argc, OPS_Stream &theHandler)
+CrdTransf::setResponse(const char **argv, int argc, OPS_Stream *theHandler)
 {
   if (argc < 1)
     return 0;

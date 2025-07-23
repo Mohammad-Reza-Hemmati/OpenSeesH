@@ -2908,362 +2908,421 @@ ForceBeamColumn3d::getInitialDeformations(Vector &v0)
   }
 
   Response*
-  ForceBeamColumn3d::setResponse(const char **argv, int argc, OPS_Stream &output)
+    ForceBeamColumn3d::setResponse(const char** argv, int argc, OPS_Stream* output)
   {
-    Response *theResponse = 0;
-    
-    output.tag("ElementOutput");
-    output.attr("eleType","ForceBeamColumn3d");
-    output.attr("eleTag",this->getTag());
-    output.attr("node1",connectedExternalNodes[0]);
-    output.attr("node2",connectedExternalNodes[1]);
+    Response* theResponse = 0;
+
+    if (output != 0)
+    {
+      output->tag("ElementOutput");
+      output->attr("eleType", "ForceBeamColumn3d");
+      output->attr("eleTag", this->getTag());
+      output->attr("node1", connectedExternalNodes[0]);
+      output->attr("node2", connectedExternalNodes[1]);
+    }
 
     //
     // we compare argv[0] for known response types 
     //
 
     // global force - 
-    if (strcmp(argv[0],"forces") == 0 || strcmp(argv[0],"force") == 0
-	|| strcmp(argv[0],"globalForce") == 0 || strcmp(argv[0],"globalForces") == 0) {
+    if (strcmp(argv[0], "forces") == 0 || strcmp(argv[0], "force") == 0
+      || strcmp(argv[0], "globalForce") == 0 || strcmp(argv[0], "globalForces") == 0) {
 
-      output.tag("ResponseType","Px_1");
-      output.tag("ResponseType","Py_1");
-      output.tag("ResponseType","Pz_1");
-      output.tag("ResponseType","Mx_1");
-      output.tag("ResponseType","My_1");
-      output.tag("ResponseType","Mz_1");
-      output.tag("ResponseType","Px_2");
-      output.tag("ResponseType","Py_2");
-      output.tag("ResponseType","Pz_2");
-      output.tag("ResponseType","Mx_2");
-      output.tag("ResponseType","My_2");
-      output.tag("ResponseType","Mz_2");
+      if (output != 0)
+      {
+        output->tag("ResponseType", "Px_1");
+        output->tag("ResponseType", "Py_1");
+        output->tag("ResponseType", "Pz_1");
+        output->tag("ResponseType", "Mx_1");
+        output->tag("ResponseType", "My_1");
+        output->tag("ResponseType", "Mz_1");
+        output->tag("ResponseType", "Px_2");
+        output->tag("ResponseType", "Py_2");
+        output->tag("ResponseType", "Pz_2");
+        output->tag("ResponseType", "Mx_2");
+        output->tag("ResponseType", "My_2");
+        output->tag("ResponseType", "Mz_2");
+      }
 
 
       theResponse = new ElementResponse(this, 1, theVector);
 
-    // local force -
-    }  else if (strcmp(argv[0],"localForce") == 0 || strcmp(argv[0],"localForces") == 0) {
+      // local force -
+    }
+    else if (strcmp(argv[0], "localForce") == 0 || strcmp(argv[0], "localForces") == 0) {
 
-      output.tag("ResponseType","N_1");
-      output.tag("ResponseType","Vy_1");
-      output.tag("ResponseType","Vz_1");
-      output.tag("ResponseType","T_1");
-      output.tag("ResponseType","My_1");
-      output.tag("ResponseType","Mz_1");
-      output.tag("ResponseType","N_2");
-      output.tag("ResponseType","Vy_2");
-      output.tag("ResponseType","Vz_2");
-      output.tag("ResponseType","T_2");
-      output.tag("ResponseType","My_2");
-      output.tag("ResponseType","Mz_2");
-      
+      if (output != 0)
+      {
+        output->tag("ResponseType", "N_1");
+        output->tag("ResponseType", "Vy_1");
+        output->tag("ResponseType", "Vz_1");
+        output->tag("ResponseType", "T_1");
+        output->tag("ResponseType", "My_1");
+        output->tag("ResponseType", "Mz_1");
+        output->tag("ResponseType", "N_2");
+        output->tag("ResponseType", "Vy_2");
+        output->tag("ResponseType", "Vz_2");
+        output->tag("ResponseType", "T_2");
+        output->tag("ResponseType", "My_2");
+        output->tag("ResponseType", "Mz_2");
+      }
+
       theResponse = new ElementResponse(this, 2, theVector);
 
-    // basic force -
-    } else if (strcmp(argv[0],"basicForce") == 0 || strcmp(argv[0],"basicForces") == 0) {
-      
-      output.tag("ResponseType","N");
-      output.tag("ResponseType","Mz_1");
-      output.tag("ResponseType","Mz_2");
-      output.tag("ResponseType","My_1");
-      output.tag("ResponseType","My_2");
-      output.tag("ResponseType","T");            
-      
-      theResponse =  new ElementResponse(this, 7, Vector(6));
+      // basic force -
+    }
+    else if (strcmp(argv[0], "basicForce") == 0 || strcmp(argv[0], "basicForces") == 0) {
 
-    // basic stiffness -
-    } else if (strcmp(argv[0],"basicStiffness") == 0) {
+      if (output != 0)
+      {
+        output->tag("ResponseType", "N");
+        output->tag("ResponseType", "Mz_1");
+        output->tag("ResponseType", "Mz_2");
+        output->tag("ResponseType", "My_1");
+        output->tag("ResponseType", "My_2");
+        output->tag("ResponseType", "T");
+      }
 
-      output.tag("ResponseType","N");
-      output.tag("ResponseType","Mz_1");
-      output.tag("ResponseType","Mz_2");
-      output.tag("ResponseType","My_1");
-      output.tag("ResponseType","My_2");
-      output.tag("ResponseType","T");                  
-      
-      theResponse =  new ElementResponse(this, 19, Matrix(6,6));
-      
-    //global damping force -
-    } else if (theDamping && (strcmp(argv[0],"globalDampingForce") == 0 || strcmp(argv[0],"globalDampingForces") == 0)) {
+      theResponse = new ElementResponse(this, 7, Vector(6));
 
-      output.tag("ResponseType","Px_1");
-      output.tag("ResponseType","Py_1");
-      output.tag("ResponseType","Pz_1");
-      output.tag("ResponseType","Mx_1");
-      output.tag("ResponseType","My_1");
-      output.tag("ResponseType","Mz_1");
-      output.tag("ResponseType","Px_2");
-      output.tag("ResponseType","Py_2");
-      output.tag("ResponseType","Pz_2");
-      output.tag("ResponseType","Mx_2");
-      output.tag("ResponseType","My_2");
-      output.tag("ResponseType","Mz_2");
+      // basic stiffness -
+    }
+    else if (strcmp(argv[0], "basicStiffness") == 0) {
+
+      if (output != 0)
+      {
+        output->tag("ResponseType", "N");
+        output->tag("ResponseType", "Mz_1");
+        output->tag("ResponseType", "Mz_2");
+        output->tag("ResponseType", "My_1");
+        output->tag("ResponseType", "My_2");
+        output->tag("ResponseType", "T");
+      }
+
+      theResponse = new ElementResponse(this, 19, Matrix(6, 6));
+
+      //global damping force -
+    }
+    else if (theDamping && (strcmp(argv[0], "globalDampingForce") == 0 || strcmp(argv[0], "globalDampingForces") == 0)) {
+
+      if (output != 0)
+      {
+        output->tag("ResponseType", "Px_1");
+        output->tag("ResponseType", "Py_1");
+        output->tag("ResponseType", "Pz_1");
+        output->tag("ResponseType", "Mx_1");
+        output->tag("ResponseType", "My_1");
+        output->tag("ResponseType", "Mz_1");
+        output->tag("ResponseType", "Px_2");
+        output->tag("ResponseType", "Py_2");
+        output->tag("ResponseType", "Pz_2");
+        output->tag("ResponseType", "Mx_2");
+        output->tag("ResponseType", "My_2");
+        output->tag("ResponseType", "Mz_2");
+      }
 
 
       theResponse = new ElementResponse(this, 21, theVector);
 
-    // local damping force -
-    } else if (theDamping && (strcmp(argv[0],"localDampingForce") == 0 || strcmp(argv[0],"localDampingForces") == 0)) {
+      // local damping force -
+    }
+    else if (theDamping && (strcmp(argv[0], "localDampingForce") == 0 || strcmp(argv[0], "localDampingForces") == 0)) {
 
-      output.tag("ResponseType","N_1");
-      output.tag("ResponseType","Vy_1");
-      output.tag("ResponseType","Vz_1");
-      output.tag("ResponseType","T_1");
-      output.tag("ResponseType","My_1");
-      output.tag("ResponseType","Mz_1");
-      output.tag("ResponseType","N_2");
-      output.tag("ResponseType","Vy_2");
-      output.tag("ResponseType","Vz_2");
-      output.tag("ResponseType","T_2");
-      output.tag("ResponseType","My_2");
-      output.tag("ResponseType","Mz_2");
-      
+      if (output != 0)
+      {
+        output->tag("ResponseType", "N_1");
+        output->tag("ResponseType", "Vy_1");
+        output->tag("ResponseType", "Vz_1");
+        output->tag("ResponseType", "T_1");
+        output->tag("ResponseType", "My_1");
+        output->tag("ResponseType", "Mz_1");
+        output->tag("ResponseType", "N_2");
+        output->tag("ResponseType", "Vy_2");
+        output->tag("ResponseType", "Vz_2");
+        output->tag("ResponseType", "T_2");
+        output->tag("ResponseType", "My_2");
+        output->tag("ResponseType", "Mz_2");
+      }
+
       theResponse = new ElementResponse(this, 22, theVector);
 
-    } else if (theDamping && (strcmp(argv[0],"basicDampingForce") == 0 || strcmp(argv[0],"basicDampingForces") == 0)) {
+    }
+    else if (theDamping && (strcmp(argv[0], "basicDampingForce") == 0 || strcmp(argv[0], "basicDampingForces") == 0)) {
 
-      output.tag("ResponseType","N");
-      output.tag("ResponseType","Mz_1");
-      output.tag("ResponseType","Mz_2");
-      output.tag("ResponseType","My_1");
-      output.tag("ResponseType","My_2");
-      output.tag("ResponseType","T");
-    
+      if (output != 0)
+      {
+        output->tag("ResponseType", "N");
+        output->tag("ResponseType", "Mz_1");
+        output->tag("ResponseType", "Mz_2");
+        output->tag("ResponseType", "My_1");
+        output->tag("ResponseType", "My_2");
+        output->tag("ResponseType", "T");
+      }
+
       theResponse = new ElementResponse(this, 23, Vector(6));
-      
-    // chord rotation -
-    }  else if (strcmp(argv[0],"chordRotation") == 0 || strcmp(argv[0],"chordDeformation") == 0 
-		|| strcmp(argv[0],"basicDeformation") == 0) {
-      
-      output.tag("ResponseType","eps");
-      output.tag("ResponseType","thetaZ_1");
-      output.tag("ResponseType","thetaZ_2");
-      output.tag("ResponseType","thetaY_1");
-      output.tag("ResponseType","thetaY_2");
-      output.tag("ResponseType","thetaX");
-      
+
+      // chord rotation -
+    }
+    else if (strcmp(argv[0], "chordRotation") == 0 || strcmp(argv[0], "chordDeformation") == 0
+      || strcmp(argv[0], "basicDeformation") == 0) {
+
+      if (output != 0)
+      {
+        output->tag("ResponseType", "eps");
+        output->tag("ResponseType", "thetaZ_1");
+        output->tag("ResponseType", "thetaZ_2");
+        output->tag("ResponseType", "thetaY_1");
+        output->tag("ResponseType", "thetaY_2");
+        output->tag("ResponseType", "thetaX");
+      }
+
       theResponse = new ElementResponse(this, 3, Vector(6));
-      
+
       // plastic rotation -
-    } else if (strcmp(argv[0],"plasticRotation") == 0 || strcmp(argv[0],"plasticDeformation") == 0) {
-      
-      output.tag("ResponseType","epsP");
-      output.tag("ResponseType","thetaZP_1");
-      output.tag("ResponseType","thetaZP_2");
-      output.tag("ResponseType","thetaYP_1");
-      output.tag("ResponseType","thetaYP_2");
-      output.tag("ResponseType","thetaXP");
-      
+    }
+    else if (strcmp(argv[0], "plasticRotation") == 0 || strcmp(argv[0], "plasticDeformation") == 0) {
+
+      if (output != 0)
+      {
+        output->tag("ResponseType", "epsP");
+        output->tag("ResponseType", "thetaZP_1");
+        output->tag("ResponseType", "thetaZP_2");
+        output->tag("ResponseType", "thetaYP_1");
+        output->tag("ResponseType", "thetaYP_2");
+        output->tag("ResponseType", "thetaXP");
+      }
+
       theResponse = new ElementResponse(this, 4, Vector(6));
-      
+
       // point of inflection
-    } else if (strcmp(argv[0],"inflectionPoint") == 0) {
+    }
+    else if (strcmp(argv[0], "inflectionPoint") == 0) {
       theResponse = new ElementResponse(this, 5, Vector(2));
-      
+
       // tangent drift
-    } else if (strcmp(argv[0],"tangentDrift") == 0) {
+    }
+    else if (strcmp(argv[0], "tangentDrift") == 0) {
       theResponse = new ElementResponse(this, 6, Vector(4));
-      
-    } else if (strcmp(argv[0],"getRemCriteria1") == 0) {
+
+    }
+    else if (strcmp(argv[0], "getRemCriteria1") == 0) {
       theResponse = new ElementResponse(this, 77, Vector(2));
 
-    } else if (strcmp(argv[0],"getRemCriteria2") == 0) {
+    }
+    else if (strcmp(argv[0], "getRemCriteria2") == 0) {
       theResponse = new ElementResponse(this, 8, Vector(2), ID(6));
 
-    } else if (strcmp(argv[0],"RayleighForces") == 0 || 
-	       strcmp(argv[0],"rayleighForces") == 0) {
+    }
+    else if (strcmp(argv[0], "RayleighForces") == 0 ||
+      strcmp(argv[0], "rayleighForces") == 0) {
 
       theResponse = new ElementResponse(this, 12, theVector);
 
-    } else if (strcmp(argv[0],"sections") ==0) { 
-      CompositeResponse *theCResponse = new CompositeResponse();
+    }
+    else if (strcmp(argv[0], "sections") == 0) {
+      CompositeResponse* theCResponse = new CompositeResponse();
       int numResponse = 0;
       double xi[maxNumSections];
       double L = crdTransf->getInitialLength();
       beamIntegr->getSectionLocations(numSections, L, xi);
-      
-      for (int i=0; i<numSections; i++) {
-	
-	output.tag("GaussPointOutput");
-	output.attr("number",i+1);
-	output.attr("eta",xi[i]*L);
-	
-	Response *theSectionResponse = sections[i]->setResponse(&argv[1], argc-1, output);
-	
-	if (theSectionResponse != 0) {
-	  numResponse = theCResponse->addResponse(theSectionResponse);
-	}
+
+      for (int i = 0; i < numSections; i++) {
+
+        if (output != 0)
+        {
+          output->tag("GaussPointOutput");
+          output->attr("number", i + 1);
+          output->attr("eta", xi[i] * L);
+        }
+
+        Response* theSectionResponse = sections[i]->setResponse(&argv[1], argc - 1, output);
+
+        if (theSectionResponse != 0) {
+          numResponse = theCResponse->addResponse(theSectionResponse);
+        }
       }
-      
+
       if (numResponse == 0) // no valid responses found
-	delete theCResponse;
-	  else
-	    theResponse = theCResponse;
+        delete theCResponse;
+      else
+        theResponse = theCResponse;
     }
 
-    else if (strcmp(argv[0],"integrationPoints") == 0)
+    else if (strcmp(argv[0], "integrationPoints") == 0)
       theResponse = new ElementResponse(this, 10, Vector(numSections));
 
-    else if (strcmp(argv[0],"integrationWeights") == 0)
+    else if (strcmp(argv[0], "integrationWeights") == 0)
       theResponse = new ElementResponse(this, 11, Vector(numSections));
 
-    else if (strcmp(argv[0],"sectionTags") == 0)
-      theResponse = new ElementResponse(this, 110, ID(numSections));  
-    
-    else if (strcmp(argv[0],"sectionDisplacements") == 0) {
-      if (argc > 1 && strcmp(argv[1],"local") == 0)
-	theResponse = new ElementResponse(this, 1111, Matrix(numSections,3));
+    else if (strcmp(argv[0], "sectionTags") == 0)
+      theResponse = new ElementResponse(this, 110, ID(numSections));
+
+    else if (strcmp(argv[0], "sectionDisplacements") == 0) {
+      if (argc > 1 && strcmp(argv[1], "local") == 0)
+        theResponse = new ElementResponse(this, 1111, Matrix(numSections, 3));
       else
-	theResponse = new ElementResponse(this, 111, Matrix(numSections,3));
+        theResponse = new ElementResponse(this, 111, Matrix(numSections, 3));
     }
-    
-    else if (strcmp(argv[0],"cbdiDisplacements") == 0)
-      theResponse = new ElementResponse(this, 112, Matrix(1,3));
+
+    else if (strcmp(argv[0], "cbdiDisplacements") == 0)
+      theResponse = new ElementResponse(this, 112, Matrix(1, 3));
 
     // section response -
-    else if (strcmp(argv[0],"sectionX") == 0) {
+    else if (strcmp(argv[0], "sectionX") == 0) {
       if (argc > 2) {
-	float sectionLoc = atof(argv[1]);
-	
-	double xi[maxNumSections];
-	double L = crdTransf->getInitialLength();
-	beamIntegr->getSectionLocations(numSections, L, xi);
-	
-	sectionLoc /= L;
-	
-	float minDistance = fabs(xi[0]-sectionLoc);
-	int sectionNum = 0;
-	for (int i = 1; i < numSections; i++) {
-	  if (fabs(xi[i]-sectionLoc) < minDistance) {
-	    minDistance = fabs(xi[i]-sectionLoc);
-	    sectionNum = i;
-	  }
-	}
-	
-	output.tag("GaussPointOutput");
-	output.attr("number",sectionNum+1);
-	output.attr("eta",xi[sectionNum]*L);
-	
-	theResponse = sections[sectionNum]->setResponse(&argv[2], argc-2, output);
+        float sectionLoc = atof(argv[1]);
+
+        double xi[maxNumSections];
+        double L = crdTransf->getInitialLength();
+        beamIntegr->getSectionLocations(numSections, L, xi);
+
+        sectionLoc /= L;
+
+        float minDistance = fabs(xi[0] - sectionLoc);
+        int sectionNum = 0;
+        for (int i = 1; i < numSections; i++) {
+          if (fabs(xi[i] - sectionLoc) < minDistance) {
+            minDistance = fabs(xi[i] - sectionLoc);
+            sectionNum = i;
+          }
+        }
+
+        if (output != 0)
+        {
+          output->tag("GaussPointOutput");
+          output->attr("number", sectionNum + 1);
+          output->attr("eta", xi[sectionNum] * L);
+        }
+
+        theResponse = sections[sectionNum]->setResponse(&argv[2], argc - 2, output);
       }
     }
 
-    else if (strcmp(argv[0],"section") == 0) { 
+    else if (strcmp(argv[0], "section") == 0) {
 
       if (argc > 1) {
 
-	int sectionNum = atoi(argv[1]);
-	
-	if (sectionNum > 0 && sectionNum <= numSections && argc > 2) {
-	  double xi[maxNumSections];
-	  double L = crdTransf->getInitialLength();
-	  beamIntegr->getSectionLocations(numSections, L, xi);
-	  
-	  output.tag("GaussPointOutput");
-	  output.attr("number",sectionNum);
-	  output.attr("eta",2.0*xi[sectionNum-1]-1.0);
+        int sectionNum = atoi(argv[1]);
 
-	  if (strcmp(argv[2],"dsdh") != 0) {
-	    theResponse = sections[sectionNum-1]->setResponse(&argv[2], argc-2, output);
-	  } else {
-	    int order = sections[sectionNum-1]->getOrder();
-	    theResponse = new ElementResponse(this, 76, Vector(order));
-	    Information &info = theResponse->getInformation();
-	    info.theInt = sectionNum;
-	  }
-	  
-	  output.endTag();
-	  
-	} else if (sectionNum == 0) { // argv[1] was not an int, we want all sections, 
+        if (sectionNum > 0 && sectionNum <= numSections && argc > 2) {
+          double xi[maxNumSections];
+          double L = crdTransf->getInitialLength();
+          beamIntegr->getSectionLocations(numSections, L, xi);
 
-	  CompositeResponse *theCResponse = new CompositeResponse();
-	  int numResponse = 0;
-	  double xi[maxNumSections];
-	  double L = crdTransf->getInitialLength();
-	  beamIntegr->getSectionLocations(numSections, L, xi);
-	  
-	  for (int i=0; i<numSections; i++) {
-	    
-	    output.tag("GaussPointOutput");
-	    output.attr("number",i+1);
-	    output.attr("eta",xi[i]*L);
-	    
-	    Response *theSectionResponse = sections[i]->setResponse(&argv[1], argc-1, output);
-	    
-	    if (theSectionResponse != 0) {
-	      numResponse = theCResponse->addResponse(theSectionResponse);
-	    }
-	  }
-	  
-	  if (numResponse == 0) // no valid responses found
-	    delete theCResponse;
-	  else
-	    theResponse = theCResponse;
-	}
+          if (output != 0)
+          {
+            output->tag("GaussPointOutput");
+            output->attr("number", sectionNum);
+            output->attr("eta", 2.0 * xi[sectionNum - 1] - 1.0);
+          }
+
+          if (strcmp(argv[2], "dsdh") != 0) {
+            theResponse = sections[sectionNum - 1]->setResponse(&argv[2], argc - 2, output);
+          }
+          else {
+            int order = sections[sectionNum - 1]->getOrder();
+            theResponse = new ElementResponse(this, 76, Vector(order));
+            Information& info = theResponse->getInformation();
+            info.theInt = sectionNum;
+          }
+
+          if (output != 0)
+            output->endTag();
+
+        }
+        else if (sectionNum == 0) { // argv[1] was not an int, we want all sections, 
+
+          CompositeResponse* theCResponse = new CompositeResponse();
+          int numResponse = 0;
+          double xi[maxNumSections];
+          double L = crdTransf->getInitialLength();
+          beamIntegr->getSectionLocations(numSections, L, xi);
+
+          for (int i = 0; i < numSections; i++) {
+
+            {
+              output->tag("GaussPointOutput");
+              output->attr("number", i + 1);
+              output->attr("eta", xi[i] * L);
+            }
+
+            Response* theSectionResponse = sections[i]->setResponse(&argv[1], argc - 1, output);
+
+            if (theSectionResponse != 0) {
+              numResponse = theCResponse->addResponse(theSectionResponse);
+            }
+          }
+
+          if (numResponse == 0) // no valid responses found
+            delete theCResponse;
+          else
+            theResponse = theCResponse;
+        }
       }
     }
-	//by SAJalali
-	else if (strcmp(argv[0], "energy") == 0)
-	{
-		theResponse = new ElementResponse(this, 2000, 0.0);
-	}
+    //by SAJalali
+    else if (strcmp(argv[0], "energy") == 0)
+    {
+      theResponse = new ElementResponse(this, 2000, 0.0);
+    }
 
     if (theResponse == 0) {
       theResponse = crdTransf->setResponse(argv, argc, output);
     }
-    
-    output.endTag();
+
+    if (output != 0)
+      output->endTag();
 
     return theResponse;
-}
+  }
 
 int 
-ForceBeamColumn3d::getResponse(int responseID, Information &eleInfo)
+ForceBeamColumn3d::getResponse(int responseID, Information& eleInfo)
 {
   static Vector vp(6);
-  static Matrix fe(6,6);
+  static Matrix fe(6, 6);
 
   if (responseID == 1)
     return eleInfo.setVector(this->getResistingForce());
-  
+
   else if (responseID == 2) {
     double p0[5]; p0[0] = p0[1] = p0[2] = p0[3] = p0[4] = 0.0;
     if (numEleLoads > 0)
       this->computeReactions(p0);
     // Axial
     double N = Se(0);
-    theVector(6) =  N;
-    theVector(0) = -N+p0[0];
-    
+    theVector(6) = N;
+    theVector(0) = -N + p0[0];
+
     // Torsion
     double T = Se(5);
-    theVector(9) =  T;
+    theVector(9) = T;
     theVector(3) = -T;
-    
+
     // Moments about z and shears along y
     double M1 = Se(1);
     double M2 = Se(2);
-    theVector(5)  = M1;
+    theVector(5) = M1;
     theVector(11) = M2;
     double L = crdTransf->getInitialLength();
-    double V = (M1+M2)/L;
-    theVector(1) =  V+p0[1];
-    theVector(7) = -V+p0[2];
-    
+    double V = (M1 + M2) / L;
+    theVector(1) = V + p0[1];
+    theVector(7) = -V + p0[2];
+
     // Moments about y and shears along z
     M1 = Se(3);
     M2 = Se(4);
-    theVector(4)  = M1;
+    theVector(4) = M1;
     theVector(10) = M2;
-    V = (M1+M2)/L;
-    theVector(2) = -V+p0[3];
-    theVector(8) =  V+p0[4];
-      
+    V = (M1 + M2) / L;
+    theVector(2) = -V + p0[3];
+    theVector(8) = V + p0[4];
+
     return eleInfo.setVector(theVector);
 
   }
-      
+
   else if (responseID == 21)
     return eleInfo.setVector(this->getDampingForce());
 
@@ -3272,39 +3331,39 @@ ForceBeamColumn3d::getResponse(int responseID, Information &eleInfo)
     Sd = theDamping->getDampingForce();
     // Axial
     double N = Sd(0);
-    theVector(6) =  N;
+    theVector(6) = N;
     theVector(0) = -N;
-    
+
     // Torsion
     double T = Sd(5);
-    theVector(9) =  T;
+    theVector(9) = T;
     theVector(3) = -T;
-    
+
     // Moments about z and shears along y
     double M1 = Sd(1);
     double M2 = Sd(2);
-    theVector(5)  = M1;
+    theVector(5) = M1;
     theVector(11) = M2;
     double L = crdTransf->getInitialLength();
-    double V = (M1+M2)/L;
-    theVector(1) =  V;
+    double V = (M1 + M2) / L;
+    theVector(1) = V;
     theVector(7) = -V;
-    
+
     // Moments about y and shears along z
     M1 = Sd(3);
     M2 = Sd(4);
-    theVector(4)  = M1;
+    theVector(4) = M1;
     theVector(10) = M2;
-    V = (M1+M2)/L;
+    V = (M1 + M2) / L;
     theVector(2) = -V;
-    theVector(8) =  V;
-      
+    theVector(8) = V;
+
     return eleInfo.setVector(theVector);
   }
 
   else if (responseID == 23)
     return eleInfo.setVector(theDamping->getDampingForce());
-      
+
   // Chord rotation
   else if (responseID == 3) {
     vp = crdTransf->getBasicTrialDisp();
@@ -3316,7 +3375,7 @@ ForceBeamColumn3d::getResponse(int responseID, Information &eleInfo)
 
   else if (responseID == 19)
     return eleInfo.setMatrix(kv);
-  
+
   // Plastic rotation
   else if (responseID == 4) {
     this->getInitialFlexibility(fe);
@@ -3334,7 +3393,7 @@ ForceBeamColumn3d::getResponse(int responseID, Information &eleInfo)
     beamIntegr->getSectionLocations(numSections, L, pts);
     Vector locs(numSections);
     for (int i = 0; i < numSections; i++)
-      locs(i) = pts[i]*L;
+      locs(i) = pts[i] * L;
     return eleInfo.setVector(locs);
   }
 
@@ -3344,7 +3403,7 @@ ForceBeamColumn3d::getResponse(int responseID, Information &eleInfo)
     beamIntegr->getSectionWeights(numSections, L, wts);
     Vector weights(numSections);
     for (int i = 0; i < numSections; i++)
-      weights(i) = wts[i]*L;
+      weights(i) = wts[i] * L;
     return eleInfo.setVector(weights);
   }
 
@@ -3354,7 +3413,7 @@ ForceBeamColumn3d::getResponse(int responseID, Information &eleInfo)
       tags(i) = sections[i]->getTag();
     return eleInfo.setID(tags);
   }
-  
+
   else if (responseID == 111 || responseID == 1111) {
     double L = crdTransf->getInitialLength();
     double pts[maxNumSections];
@@ -3366,37 +3425,37 @@ ForceBeamColumn3d::getResponse(int responseID, Information &eleInfo)
     Vector kappaz(numSections); // about section z
     Vector kappay(numSections); // about section y
     for (int i = 0; i < numSections; i++) {
-      const ID &code = sections[i]->getType();
-      const Vector &e = sections[i]->getSectionDeformation();
+      const ID& code = sections[i]->getType();
+      const Vector& e = sections[i]->getSectionDeformation();
       int order = sections[i]->getOrder();
       for (int j = 0; j < order; j++) {
-	if (code(j) == SECTION_RESPONSE_MZ)
-	  kappaz(i) += e(j);
-	if (code(j) == SECTION_RESPONSE_MY)
-	  kappay(i) += e(j);
+        if (code(j) == SECTION_RESPONSE_MZ)
+          kappaz(i) += e(j);
+        if (code(j) == SECTION_RESPONSE_MY)
+          kappay(i) += e(j);
       }
     }
     // Displacement vector
     Vector dispsy(numSections); // along local y
     Vector dispsz(numSections); // along local z    
-    dispsy.addMatrixVector(0.0, ls, kappaz,  1.0);
-    dispsz.addMatrixVector(0.0, ls, kappay, -1.0);    
+    dispsy.addMatrixVector(0.0, ls, kappaz, 1.0);
+    dispsz.addMatrixVector(0.0, ls, kappay, -1.0);
     beamIntegr->getSectionLocations(numSections, L, pts);
     static Vector uxb(3);
     static Vector uxg(3);
-    Matrix disps(numSections,3);
+    Matrix disps(numSections, 3);
     vp = crdTransf->getBasicTrialDisp();
     for (int i = 0; i < numSections; i++) {
-      uxb(0) = pts[i]*vp(0); // linear shape function
+      uxb(0) = pts[i] * vp(0); // linear shape function
       uxb(1) = dispsy(i);
       uxb(2) = dispsz(i);
       if (responseID == 111)
-	uxg = crdTransf->getPointGlobalDisplFromBasic(pts[i],uxb);
+        uxg = crdTransf->getPointGlobalDisplFromBasic(pts[i], uxb);
       else
-	uxg = crdTransf->getPointLocalDisplFromBasic(pts[i],uxb);
-      disps(i,0) = uxg(0);
-      disps(i,1) = uxg(1);
-      disps(i,2) = uxg(2);            
+        uxg = crdTransf->getPointLocalDisplFromBasic(pts[i], uxb);
+      disps(i, 0) = uxg(0);
+      disps(i, 1) = uxg(1);
+      disps(i, 2) = uxg(2);
     }
     return eleInfo.setMatrix(disps);
   }
@@ -3414,32 +3473,32 @@ ForceBeamColumn3d::getResponse(int responseID, Information &eleInfo)
     Vector kappaz(numSections); // about section z
     Vector kappay(numSections); // about section y    
     for (int i = 0; i < numSections; i++) {
-      const ID &code = sections[i]->getType();
-      const Vector &e = sections[i]->getSectionDeformation();
+      const ID& code = sections[i]->getType();
+      const Vector& e = sections[i]->getSectionDeformation();
       int order = sections[i]->getOrder();
       for (int j = 0; j < order; j++) {
-	if (code(j) == SECTION_RESPONSE_MZ)
-	  kappaz(i) += e(j);
-	if (code(j) == SECTION_RESPONSE_MY)
-	  kappay(i) += e(j);
+        if (code(j) == SECTION_RESPONSE_MZ)
+          kappaz(i) += e(j);
+        if (code(j) == SECTION_RESPONSE_MY)
+          kappay(i) += e(j);
       }
     }
     // Displacement vector
     Vector dispsy(1); // along local y
     Vector dispsz(1); // along local z    
-    dispsy.addMatrixVector(0.0, ls, kappaz,  1.0);
+    dispsy.addMatrixVector(0.0, ls, kappaz, 1.0);
     dispsz.addMatrixVector(0.0, ls, kappay, -1.0);
     static Vector uxb(3);
     static Vector uxg(3);
-    Matrix disps(1,3);
+    Matrix disps(1, 3);
     vp = crdTransf->getBasicTrialDisp();
-    uxb(0) = pts[0]*vp(0); // linear shape function
+    uxb(0) = pts[0] * vp(0); // linear shape function
     uxb(1) = dispsy(0);
-    uxb(2) = dispsz(0);      
-    uxg = crdTransf->getPointGlobalDisplFromBasic(pts[0],uxb);
-    disps(0,0) = uxg(0);
-    disps(0,1) = uxg(1);
-    disps(0,2) = uxg(2);            
+    uxb(2) = dispsz(0);
+    uxg = crdTransf->getPointGlobalDisplFromBasic(pts[0], uxb);
+    disps(0, 0) = uxg(0);
+    disps(0, 1) = uxg(1);
+    disps(0, 2) = uxg(2);
 
     return eleInfo.setMatrix(disps);
   }
@@ -3455,11 +3514,11 @@ ForceBeamColumn3d::getResponse(int responseID, Information &eleInfo)
 
     double L = crdTransf->getInitialLength();
 
-    if (fabs(Se(1)+Se(2)) > DBL_EPSILON)
-      LI(0) = Se(1)/(Se(1)+Se(2))*L;
+    if (fabs(Se(1) + Se(2)) > DBL_EPSILON)
+      LI(0) = Se(1) / (Se(1) + Se(2)) * L;
 
-    if (fabs(Se(3)+Se(4)) > DBL_EPSILON)
-      LI(1) = Se(3)/(Se(3)+Se(4))*L;
+    if (fabs(Se(3) + Se(4)) > DBL_EPSILON)
+      LI(1) = Se(3) / (Se(3) + Se(4)) * L;
 
     return eleInfo.setVector(LI);
   }
@@ -3481,55 +3540,55 @@ ForceBeamColumn3d::getResponse(int responseID, Information &eleInfo)
 
     // Location of inflection point from node I
     double LIz = 0.0;
-    if (fabs(Se(1)+Se(2)) > DBL_EPSILON)
-      LIz = Se(1)/(Se(1)+Se(2))*L;
+    if (fabs(Se(1) + Se(2)) > DBL_EPSILON)
+      LIz = Se(1) / (Se(1) + Se(2)) * L;
 
     double LIy = 0.0;
-    if (fabs(Se(3)+Se(4)) > DBL_EPSILON)
-      LIy = Se(3)/(Se(3)+Se(4))*L;
+    if (fabs(Se(3) + Se(4)) > DBL_EPSILON)
+      LIy = Se(3) / (Se(3) + Se(4)) * L;
 
     int i;
     for (i = 0; i < numSections; i++) {
-      double x = pts[i]*L;
-      const ID &type = sections[i]->getType();
+      double x = pts[i] * L;
+      const ID& type = sections[i]->getType();
       int order = sections[i]->getOrder();
       double kappa = 0.0;
       if (x < LIz) {
-	for (int j = 0; j < order; j++)
-	  if (type(j) == SECTION_RESPONSE_MZ)
-	    kappa += vs[i](j);
-	double b = -LIz+x;
-	d2z += (wts[i]*L)*kappa*b;
+        for (int j = 0; j < order; j++)
+          if (type(j) == SECTION_RESPONSE_MZ)
+            kappa += vs[i](j);
+        double b = -LIz + x;
+        d2z += (wts[i] * L) * kappa * b;
       }
       kappa = 0.0;
       if (x < LIy) {
-	for (int j = 0; j < order; j++)
-	  if (type(j) == SECTION_RESPONSE_MY)
-	    kappa += vs[i](j);
-	double b = -LIy+x;
-	d2y += (wts[i]*L)*kappa*b;
+        for (int j = 0; j < order; j++)
+          if (type(j) == SECTION_RESPONSE_MY)
+            kappa += vs[i](j);
+        double b = -LIy + x;
+        d2y += (wts[i] * L) * kappa * b;
       }
     }
 
-    for (i = numSections-1; i >= 0; i--) {
-      double x = pts[i]*L;
-      const ID &type = sections[i]->getType();
+    for (i = numSections - 1; i >= 0; i--) {
+      double x = pts[i] * L;
+      const ID& type = sections[i]->getType();
       int order = sections[i]->getOrder();
       double kappa = 0.0;
       if (x > LIz) {
-	for (int j = 0; j < order; j++)
-	  if (type(j) == SECTION_RESPONSE_MZ)
-	    kappa += vs[i](j);
-	double b = x-LIz;
-	d3z += (wts[i]*L)*kappa*b;
+        for (int j = 0; j < order; j++)
+          if (type(j) == SECTION_RESPONSE_MZ)
+            kappa += vs[i](j);
+        double b = x - LIz;
+        d3z += (wts[i] * L) * kappa * b;
       }
       kappa = 0.0;
       if (x > LIy) {
-	for (int j = 0; j < order; j++)
-	  if (type(j) == SECTION_RESPONSE_MY)
-	    kappa += vs[i](j);
-	double b = x-LIy;
-	d3y += (wts[i]*L)*kappa*b;
+        for (int j = 0; j < order; j++)
+          if (type(j) == SECTION_RESPONSE_MY)
+            kappa += vs[i](j);
+        double b = x - LIy;
+        d3y += (wts[i] * L) * kappa * b;
       }
     }
 
@@ -3541,11 +3600,13 @@ ForceBeamColumn3d::getResponse(int responseID, Information &eleInfo)
 
     return eleInfo.setVector(d);
 
-  } else if (responseID == 77) { // Why is this here?
+  }
+  else if (responseID == 77) { // Why is this here?
     return -1;
-  } else if (responseID == 8) {
+  }
+  else if (responseID == 8) {
 
-    ID *eleInfoID = eleInfo.theID;
+    ID* eleInfoID = eleInfo.theID;
 
     int compID = (*eleInfoID)(0);
     int critID = (*eleInfoID)(1);
@@ -3561,57 +3622,57 @@ ForceBeamColumn3d::getResponse(int responseID, Information &eleInfo)
     double checkvalue1 = 0.0;
 
     if (critID == 7) {
-      Domain *theDomain = this->getDomain();
+      Domain* theDomain = this->getDomain();
 
       double oofwallresp;
       // determine the in plane horizontal deformation axis
       // and the out of plane horizontal deformation axis
-      Node *theNode1a = theDomain->getNode(nTagbotn11);
-      Node *theNode3a = theDomain->getNode(nTagtopn11); 
-      const Vector &crdIa1 = theNode1a->getCrds();
-      const Vector &crdJa1 = theNode3a->getCrds();
+      Node* theNode1a = theDomain->getNode(nTagbotn11);
+      Node* theNode3a = theDomain->getNode(nTagtopn11);
+      const Vector& crdIa1 = theNode1a->getCrds();
+      const Vector& crdJa1 = theNode3a->getCrds();
       int indwdir1;
       int indwdir2;
-      if (globgrav11==1) {
-	indwdir1=1;
-	indwdir2=2;
+      if (globgrav11 == 1) {
+        indwdir1 = 1;
+        indwdir2 = 2;
       }
-      else if (globgrav11==2) {
-	indwdir1=0;
-	indwdir2=2;		  
+      else if (globgrav11 == 2) {
+        indwdir1 = 0;
+        indwdir2 = 2;
       }
-      else if (globgrav11==3) {
-	indwdir1=0;
-	indwdir2=1;		  
+      else if (globgrav11 == 3) {
+        indwdir1 = 0;
+        indwdir2 = 1;
       }
 
-      double dir1a1=crdJa1(indwdir1)-crdIa1(indwdir1);
-      double dir2a1=crdJa1(indwdir2)-crdIa1(indwdir2);
-      double dirsumdum=sqrt(dir1a1*dir1a1+dir2a1*dir2a1);
-      double dir1inp=dir1a1/dirsumdum;		
-      double dir2inp=dir2a1/dirsumdum;
-      
-      double dir1oop=-dir2inp;
-      double dir2oop=dir1inp;
-      
-      Node *theNode1 = theDomain->getNode(nTagbotn11);
-      const Vector &theResponsewall = theNode1->getTrialDisp();
-      double valbotinfn=theResponsewall(indwdir1)*dir1inp+theResponsewall(indwdir2)*dir2inp;
-      double valbotoutfn=theResponsewall(indwdir1)*dir1oop+theResponsewall(indwdir2)*dir2oop;
-      
-      Node *theNode2 = theDomain->getNode(nTagmidn11);
-      const Vector &theResponsewall2 = theNode2->getTrialDisp();
-      double valmidinfn=theResponsewall2(indwdir1)*dir1inp+theResponsewall2(indwdir2)*dir2inp;
-      double valmidoutfn=theResponsewall2(indwdir1)*dir1oop+theResponsewall2(indwdir2)*dir2oop;
-      
-      Node *theNode3 = theDomain->getNode(nTagtopn11);
-      const Vector &theResponsewall3 = theNode3->getTrialDisp();
-      double valtopinfn=theResponsewall3(indwdir1)*dir1inp+theResponsewall3(indwdir2)*dir2inp;
-      double valtopoutfn=theResponsewall3(indwdir1)*dir1oop+theResponsewall3(indwdir2)*dir2oop;
-      
-      value = sqrt(pow((valtopinfn-valbotinfn),2.0));
-      double valoutchck=valmidoutfn-(valtopoutfn+valbotoutfn)/2.0;
-      oofwallresp = sqrt(pow(valoutchck,2.0));
+      double dir1a1 = crdJa1(indwdir1) - crdIa1(indwdir1);
+      double dir2a1 = crdJa1(indwdir2) - crdIa1(indwdir2);
+      double dirsumdum = sqrt(dir1a1 * dir1a1 + dir2a1 * dir2a1);
+      double dir1inp = dir1a1 / dirsumdum;
+      double dir2inp = dir2a1 / dirsumdum;
+
+      double dir1oop = -dir2inp;
+      double dir2oop = dir1inp;
+
+      Node* theNode1 = theDomain->getNode(nTagbotn11);
+      const Vector& theResponsewall = theNode1->getTrialDisp();
+      double valbotinfn = theResponsewall(indwdir1) * dir1inp + theResponsewall(indwdir2) * dir2inp;
+      double valbotoutfn = theResponsewall(indwdir1) * dir1oop + theResponsewall(indwdir2) * dir2oop;
+
+      Node* theNode2 = theDomain->getNode(nTagmidn11);
+      const Vector& theResponsewall2 = theNode2->getTrialDisp();
+      double valmidinfn = theResponsewall2(indwdir1) * dir1inp + theResponsewall2(indwdir2) * dir2inp;
+      double valmidoutfn = theResponsewall2(indwdir1) * dir1oop + theResponsewall2(indwdir2) * dir2oop;
+
+      Node* theNode3 = theDomain->getNode(nTagtopn11);
+      const Vector& theResponsewall3 = theNode3->getTrialDisp();
+      double valtopinfn = theResponsewall3(indwdir1) * dir1inp + theResponsewall3(indwdir2) * dir2inp;
+      double valtopoutfn = theResponsewall3(indwdir1) * dir1oop + theResponsewall3(indwdir2) * dir2oop;
+
+      value = sqrt(pow((valtopinfn - valbotinfn), 2.0));
+      double valoutchck = valmidoutfn - (valtopoutfn + valbotoutfn) / 2.0;
+      oofwallresp = sqrt(pow(valoutchck, 2.0));
       //        
       double outplanevaldat; // variable for input value
       double inplanevaldat; // variable for input value
@@ -3619,38 +3680,38 @@ ForceBeamColumn3d::getResponse(int responseID, Information &eleInfo)
       double inplanevaldat1; // variable for input value
       ifstream indata;
 
-      if (filenamewall!=NULL) {
-	//		
-	indata.open(filenamewall); // opens the file
-	if(!indata) { // file couldn't be opened
-		opserr << "ForceBeamColumn3d::getResponse()"
-			<< " file for infill wall (" << filenamewall << " could not be opened" << endln;
-	  return -1;
-	}
-	checkvalue1=0.0;
-	int counterdum=0;
-	while ( !indata.eof() ) { // keep reading until end-of-file
-	  counterdum=counterdum+1;
-	  indata >> outplanevaldat >> inplanevaldat ; // sets EOF flag if no value found
-	  if (counterdum!=1)  {
-	    if (oofwallresp >= outplanevaldat1 && oofwallresp <= outplanevaldat)  {
-	      checkvalue1= inplanevaldat1+(oofwallresp-outplanevaldat1)/(outplanevaldat-outplanevaldat1)*(inplanevaldat-inplanevaldat1);
-	      break; 
-	    }
-	  }
-	  indata >> outplanevaldat1 >> inplanevaldat1;
-	  if (oofwallresp >= outplanevaldat && oofwallresp <= outplanevaldat1)  {
-	    checkvalue1= inplanevaldat+(oofwallresp-outplanevaldat)/(outplanevaldat1-outplanevaldat)*(inplanevaldat1-inplanevaldat);
-	    break;
-	  }
-	}
-	indata.close();
+      if (filenamewall != NULL) {
+        //		
+        indata.open(filenamewall); // opens the file
+        if (!indata) { // file couldn't be opened
+          opserr << "ForceBeamColumn3d::getResponse()"
+            << " file for infill wall (" << filenamewall << " could not be opened" << endln;
+          return -1;
+        }
+        checkvalue1 = 0.0;
+        int counterdum = 0;
+        while (!indata.eof()) { // keep reading until end-of-file
+          counterdum = counterdum + 1;
+          indata >> outplanevaldat >> inplanevaldat; // sets EOF flag if no value found
+          if (counterdum != 1) {
+            if (oofwallresp >= outplanevaldat1 && oofwallresp <= outplanevaldat) {
+              checkvalue1 = inplanevaldat1 + (oofwallresp - outplanevaldat1) / (outplanevaldat - outplanevaldat1) * (inplanevaldat - inplanevaldat1);
+              break;
+            }
+          }
+          indata >> outplanevaldat1 >> inplanevaldat1;
+          if (oofwallresp >= outplanevaldat && oofwallresp <= outplanevaldat1) {
+            checkvalue1 = inplanevaldat + (oofwallresp - outplanevaldat) / (outplanevaldat1 - outplanevaldat) * (inplanevaldat1 - inplanevaldat);
+            break;
+          }
+        }
+        indata.close();
       }
 
       static Vector result8(2);
       result8(0) = value;
-      result8(1) = checkvalue1;      
-      
+      result8(1) = checkvalue1;
+
       return eleInfo.setVector(result8);
     }
 
@@ -3658,14 +3719,14 @@ ForceBeamColumn3d::getResponse(int responseID, Information &eleInfo)
   }
   //by SAJalali
   else if (responseID == 2000) {
-	  double xi[maxNumSections];
-	  double L = crdTransf->getInitialLength();
-	  beamIntegr->getSectionWeights(numSections, L, xi);
-	  double energy = 0;
-	  for (int i = 0; i < numSections; i++) {
-		  energy += sections[i]->getEnergy()*xi[i] * L;
-	  }
-	  return eleInfo.setDouble(energy);
+    double xi[maxNumSections];
+    double L = crdTransf->getInitialLength();
+    beamIntegr->getSectionWeights(numSections, L, xi);
+    double energy = 0;
+    for (int i = 0; i < numSections; i++) {
+      energy += sections[i]->getEnergy() * xi[i] * L;
+    }
+    return eleInfo.setDouble(energy);
   }
 
   else

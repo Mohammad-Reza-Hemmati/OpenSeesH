@@ -1364,160 +1364,185 @@ void FPBearingPTV::Print(OPS_Stream &s, int flag)
 }
 
 
-Response* FPBearingPTV::setResponse(const char **argv, int argc,
-    OPS_Stream &output)
+Response* FPBearingPTV::setResponse(const char** argv, int argc,
+  OPS_Stream* output)
 {
-    Response *theResponse = 0;    
-    output.tag("ElementOutput");
-    output.attr("eleType","FPBearingPTV");
-    output.attr("eleTag",this->getTag());
-    output.attr("node1",connectedExternalNodes[0]);
-    output.attr("node2",connectedExternalNodes[1]);
-    
-    // global forces
-    if (strcmp(argv[0],"force") == 0 ||
-        strcmp(argv[0],"forces") == 0 ||
-        strcmp(argv[0],"globalForce") == 0 ||
-        strcmp(argv[0],"globalForces") == 0)
+  Response* theResponse = 0;
+  if (output != 0)
+  {
+    output->tag("ElementOutput");
+    output->attr("eleType", "FPBearingPTV");
+    output->attr("eleTag", this->getTag());
+    output->attr("node1", connectedExternalNodes[0]);
+    output->attr("node2", connectedExternalNodes[1]);
+  }
+
+  // global forces
+  if (strcmp(argv[0], "force") == 0 ||
+    strcmp(argv[0], "forces") == 0 ||
+    strcmp(argv[0], "globalForce") == 0 ||
+    strcmp(argv[0], "globalForces") == 0)
+  {
+    if (output != 0)
     {
-        output.tag("ResponseType","Px_1");
-        output.tag("ResponseType","Py_1");
-        output.tag("ResponseType","Pz_1");
-        output.tag("ResponseType","Mx_1");
-        output.tag("ResponseType","My_1");
-        output.tag("ResponseType","Mz_1");
-        output.tag("ResponseType","Px_2");
-        output.tag("ResponseType","Py_2");
-        output.tag("ResponseType","Pz_2");
-        output.tag("ResponseType","Mx_2");
-        output.tag("ResponseType","My_2");
-        output.tag("ResponseType","Mz_2");
-        
-        theResponse = new ElementResponse(this, 1, theVector);
-    }
-    // local forces
-    else if (strcmp(argv[0],"localForce") == 0 ||
-        strcmp(argv[0],"localForces") == 0)
-    {
-        output.tag("ResponseType","N_ 1");
-        output.tag("ResponseType","Vy_1");
-        output.tag("ResponseType","Vz_1");
-        output.tag("ResponseType","T_1");
-        output.tag("ResponseType","My_1");
-        output.tag("ResponseType","Tz_1");
-        output.tag("ResponseType","N_2");
-        output.tag("ResponseType","Py_2");
-        output.tag("ResponseType","Pz_2");
-        output.tag("ResponseType","T_2");
-        output.tag("ResponseType","My_2");
-        output.tag("ResponseType","Mz_2");
-        
-        theResponse = new ElementResponse(this, 2, theVector);
-    }
-    // basic forces
-    else if (strcmp(argv[0],"basicForce") == 0 ||
-        strcmp(argv[0],"basicForces") == 0)
-    {
-        output.tag("ResponseType","qb1");
-        output.tag("ResponseType","qb2");
-        output.tag("ResponseType","qb3");
-        output.tag("ResponseType","qb4");
-        output.tag("ResponseType","qb5");
-        output.tag("ResponseType","qb6");
-        
-        theResponse = new ElementResponse(this, 3, Vector(6));
-    }
-    // local displacements
-    else if (strcmp(argv[0],"localDisplacement") == 0 ||
-        strcmp(argv[0],"localDisplacements") == 0)
-    {
-        output.tag("ResponseType","ux_1");
-        output.tag("ResponseType","uy_1");
-        output.tag("ResponseType","uz_1");
-        output.tag("ResponseType","rx_1");
-        output.tag("ResponseType","ry_1");
-        output.tag("ResponseType","rz_1");
-        output.tag("ResponseType","ux_2");
-        output.tag("ResponseType","uy_2");
-        output.tag("ResponseType","uz_2");
-        output.tag("ResponseType","rx_2");
-        output.tag("ResponseType","ry_2");
-        output.tag("ResponseType","rz_2");
-        
-        theResponse = new ElementResponse(this, 4, theVector);
-    }
-    // basic displacements
-    else if (strcmp(argv[0],"deformation") == 0 ||
-        strcmp(argv[0],"deformations") == 0 || 
-        strcmp(argv[0],"basicDeformation") == 0 ||
-        strcmp(argv[0],"basicDeformations") == 0 ||
-        strcmp(argv[0],"basicDisplacement") == 0 ||
-        strcmp(argv[0],"basicDisplacements") == 0)
-    {
-        output.tag("ResponseType","ub1");
-        output.tag("ResponseType","ub2");
-        output.tag("ResponseType","ub3");
-        output.tag("ResponseType","ub4");
-        output.tag("ResponseType","ub5");
-        output.tag("ResponseType","ub6");
-        
-        theResponse = new ElementResponse(this, 5, Vector(6));
-    }
-	// Temperature at the center
-    else if (strcmp(argv[0],"temperature") == 0 ||
-        strcmp(argv[0],"Temperature") == 0 || 
-        strcmp(argv[0],"temp") == 0 ||
-        strcmp(argv[0],"Temp") == 0 )
-    {
-        output.tag("ResponseType","TemperatureCenter");        
-        
-        theResponse = new ElementResponse(this, 6, Vector(1));
-    }
-	// Pressure, temperature, velocity factors
-    else if (strcmp(argv[0],"MuFactors") == 0 ||
-        strcmp(argv[0],"mufactors") == 0 || 
-        strcmp(argv[0],"mufactor") == 0 ||
-        strcmp(argv[0],"FrictionFactors") == 0 )
-    {
-        output.tag("ResponseType","kPressure");  
-		output.tag("ResponseType","kTemperature");
-		output.tag("ResponseType","kVelocity");
-        
-        theResponse = new ElementResponse(this, 7, Vector(3));
-    }
-	// Adjusted coefficient of friction
-    else if (strcmp(argv[0],"MuAdj") == 0 ||
-        strcmp(argv[0],"muadj") == 0 || 
-        strcmp(argv[0],"MuAdjusted") == 0 ||
-        strcmp(argv[0],"muadjusted") == 0 )
-    {
-        output.tag("ResponseType","MuAdjusted");		
-        
-        theResponse = new ElementResponse(this, 8, Vector(1));
-    }
-	// Heat flux at center of sliding surface
-    else if (strcmp(argv[0],"HeatFlux") == 0 ||
-        strcmp(argv[0],"heatflux") == 0 || 
-        strcmp(argv[0],"heatFlux") == 0 ||
-        strcmp(argv[0],"Heatflux") == 0 )
-    {
-        output.tag("ResponseType","HeatFluxCenter");		
-        
-        theResponse = new ElementResponse(this, 9, Vector(1));
+      output->tag("ResponseType", "Px_1");
+      output->tag("ResponseType", "Py_1");
+      output->tag("ResponseType", "Pz_1");
+      output->tag("ResponseType", "Mx_1");
+      output->tag("ResponseType", "My_1");
+      output->tag("ResponseType", "Mz_1");
+      output->tag("ResponseType", "Px_2");
+      output->tag("ResponseType", "Py_2");
+      output->tag("ResponseType", "Pz_2");
+      output->tag("ResponseType", "Mx_2");
+      output->tag("ResponseType", "My_2");
+      output->tag("ResponseType", "Mz_2");
     }
 
+    theResponse = new ElementResponse(this, 1, theVector);
+  }
+  // local forces
+  else if (strcmp(argv[0], "localForce") == 0 ||
+    strcmp(argv[0], "localForces") == 0)
+  {
+    if (output != 0)
+    {
+      output->tag("ResponseType", "N_ 1");
+      output->tag("ResponseType", "Vy_1");
+      output->tag("ResponseType", "Vz_1");
+      output->tag("ResponseType", "T_1");
+      output->tag("ResponseType", "My_1");
+      output->tag("ResponseType", "Tz_1");
+      output->tag("ResponseType", "N_2");
+      output->tag("ResponseType", "Py_2");
+      output->tag("ResponseType", "Pz_2");
+      output->tag("ResponseType", "T_2");
+      output->tag("ResponseType", "My_2");
+      output->tag("ResponseType", "Mz_2");
+    }
 
-    // material output
-    else if (strcmp(argv[0],"material") == 0)  {
-        if (argc > 2)  {
-            int matNum = atoi(argv[1]);
-            if (matNum >= 1 && matNum <= 4)
-                theResponse = theMaterials[matNum-1]->setResponse(&argv[2], argc-2, output);
-        }
-    }    
-    output.endTag(); // ElementOutput
-    
-    return theResponse;
+    theResponse = new ElementResponse(this, 2, theVector);
+  }
+  // basic forces
+  else if (strcmp(argv[0], "basicForce") == 0 ||
+    strcmp(argv[0], "basicForces") == 0)
+  {
+    if (output != 0)
+    {
+      output->tag("ResponseType", "qb1");
+      output->tag("ResponseType", "qb2");
+      output->tag("ResponseType", "qb3");
+      output->tag("ResponseType", "qb4");
+      output->tag("ResponseType", "qb5");
+      output->tag("ResponseType", "qb6");
+    }
+
+    theResponse = new ElementResponse(this, 3, Vector(6));
+  }
+  // local displacements
+  else if (strcmp(argv[0], "localDisplacement") == 0 ||
+    strcmp(argv[0], "localDisplacements") == 0)
+  {
+    if (output != 0)
+    {
+      output->tag("ResponseType", "ux_1");
+      output->tag("ResponseType", "uy_1");
+      output->tag("ResponseType", "uz_1");
+      output->tag("ResponseType", "rx_1");
+      output->tag("ResponseType", "ry_1");
+      output->tag("ResponseType", "rz_1");
+      output->tag("ResponseType", "ux_2");
+      output->tag("ResponseType", "uy_2");
+      output->tag("ResponseType", "uz_2");
+      output->tag("ResponseType", "rx_2");
+      output->tag("ResponseType", "ry_2");
+      output->tag("ResponseType", "rz_2");
+    }
+
+    theResponse = new ElementResponse(this, 4, theVector);
+  }
+  // basic displacements
+  else if (strcmp(argv[0], "deformation") == 0 ||
+    strcmp(argv[0], "deformations") == 0 ||
+    strcmp(argv[0], "basicDeformation") == 0 ||
+    strcmp(argv[0], "basicDeformations") == 0 ||
+    strcmp(argv[0], "basicDisplacement") == 0 ||
+    strcmp(argv[0], "basicDisplacements") == 0)
+  {
+    if (output != 0)
+    {
+      output->tag("ResponseType", "ub1");
+      output->tag("ResponseType", "ub2");
+      output->tag("ResponseType", "ub3");
+      output->tag("ResponseType", "ub4");
+      output->tag("ResponseType", "ub5");
+      output->tag("ResponseType", "ub6");
+    }
+
+    theResponse = new ElementResponse(this, 5, Vector(6));
+  }
+  // Temperature at the center
+  else if (strcmp(argv[0], "temperature") == 0 ||
+    strcmp(argv[0], "Temperature") == 0 ||
+    strcmp(argv[0], "temp") == 0 ||
+    strcmp(argv[0], "Temp") == 0)
+  {
+    if (output != 0)
+      output->tag("ResponseType", "TemperatureCenter");
+
+    theResponse = new ElementResponse(this, 6, Vector(1));
+  }
+  // Pressure, temperature, velocity factors
+  else if (strcmp(argv[0], "MuFactors") == 0 ||
+    strcmp(argv[0], "mufactors") == 0 ||
+    strcmp(argv[0], "mufactor") == 0 ||
+    strcmp(argv[0], "FrictionFactors") == 0)
+  {
+    if (output != 0)
+    {
+      output->tag("ResponseType", "kPressure");
+      output->tag("ResponseType", "kTemperature");
+      output->tag("ResponseType", "kVelocity");
+    }
+
+    theResponse = new ElementResponse(this, 7, Vector(3));
+  }
+  // Adjusted coefficient of friction
+  else if (strcmp(argv[0], "MuAdj") == 0 ||
+    strcmp(argv[0], "muadj") == 0 ||
+    strcmp(argv[0], "MuAdjusted") == 0 ||
+    strcmp(argv[0], "muadjusted") == 0)
+  {
+    if (output != 0)
+      output->tag("ResponseType", "MuAdjusted");
+
+    theResponse = new ElementResponse(this, 8, Vector(1));
+  }
+  // Heat flux at center of sliding surface
+  else if (strcmp(argv[0], "HeatFlux") == 0 ||
+    strcmp(argv[0], "heatflux") == 0 ||
+    strcmp(argv[0], "heatFlux") == 0 ||
+    strcmp(argv[0], "Heatflux") == 0)
+  {
+    if (output != 0)
+      output->tag("ResponseType", "HeatFluxCenter");
+
+    theResponse = new ElementResponse(this, 9, Vector(1));
+  }
+
+
+  // material output
+  else if (strcmp(argv[0], "material") == 0) {
+    if (argc > 2) {
+      int matNum = atoi(argv[1]);
+      if (matNum >= 1 && matNum <= 4)
+        theResponse = theMaterials[matNum - 1]->setResponse(&argv[2], argc - 2, output);
+    }
+  }
+  if (output != 0)
+    output->endTag(); // ElementOutput
+
+  return theResponse;
 }
 
 

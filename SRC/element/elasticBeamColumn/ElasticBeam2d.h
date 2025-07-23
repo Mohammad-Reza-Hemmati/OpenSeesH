@@ -95,7 +95,7 @@ class ElasticBeam2d : public Element
     void Print(OPS_Stream &s, int flag = 0);    
     int displaySelf(Renderer &theViewer, int displayMode, float fact, const char **modes = 0, int numModes = 0);
 
-    Response *setResponse (const char **argv, int argc, OPS_Stream &s);
+    Response *setResponse (const char **argv, int argc, OPS_Stream *s);
     int getResponse (int responseID, Information &info);
  
     int setParameter (const char **argv, int argc, Parameter &param);

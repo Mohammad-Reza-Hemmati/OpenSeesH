@@ -1304,7 +1304,7 @@ int TendonL01::recvSelf (int commitTag, Channel& theChannel,
 
 Response* 
 TendonL01::setResponse(const char **argv, int argc,
-			 OPS_Stream &theOutput)
+			 OPS_Stream *theOutput)
 {
   Response *theResponse = 0;
 

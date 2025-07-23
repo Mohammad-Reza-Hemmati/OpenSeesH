@@ -91,7 +91,7 @@ class Element : public DomainComponent
 
     // method for obtaining information specific to an element
     virtual Response *setResponse(const char **argv, int argc, 
-				  OPS_Stream &theHandler);
+				  OPS_Stream *theHandler);
     virtual int getResponse(int responseID, Information &eleInformation);
     virtual int getResponseSensitivity(int responseID, int gradIndex,
 				       Information &eleInformation);

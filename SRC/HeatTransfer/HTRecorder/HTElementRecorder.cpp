@@ -197,7 +197,7 @@ HTElementRecorder::HTElementRecorder()
 }
 
 HTElementRecorder::HTElementRecorder(int tag, const ID *ele,
-				 char **argv, 
+				 const char **argv, 
 				 int argc,
 				 bool echoTime, 
 				 HeatTransferDomain &theDom, 

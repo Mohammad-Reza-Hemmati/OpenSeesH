@@ -405,13 +405,12 @@ FSAM::FSAM (int tag,
 	}
 
 	//OPS_Stream *theDummyStream = new DummyStream();
-	DummyStream theDummyStream;
 	//const char **argv = new const char *[1];
 	//argv[0] = "getCommittedCyclicCrackingConcreteStrain"; // to get committed concrete cyclic cracking strain from strut A2
 	char aa[80] = "getCommittedCyclicCrackingConcreteStrain";
 	const char *argv[1];
 	argv[0] = aa;
-	theResponses[0] = theMaterial[5]->setResponse(argv, 1, theDummyStream);
+	theResponses[0] = theMaterial[5]->setResponse(argv, 1, 0);
 
 	if (theResponses[0] == 0) {
 			opserr << " FSAM::FSAM - failed to get cracking strain for material with tag: " << tag << "\n";
@@ -422,7 +421,7 @@ FSAM::FSAM (int tag,
 	char bb[80] = "getInputParameters";
 	argv[0] = bb;
 	
-	theResponses[1] = theMaterial[4]->setResponse(argv, 1, theDummyStream);
+	theResponses[1] = theMaterial[4]->setResponse(argv, 1, 0);
 
 	if (theResponses[1] == 0) {
 			opserr << " FSAM::FSAM - failed to get input parameters for material with tag: " << tag << "\n";
@@ -2447,19 +2446,22 @@ void FSAM::betaf4(double &eo, double &epc, double &fc, double &epsmax)
 }
 
 // Set Response
-Response* FSAM::setResponse(const char **argv, int argc, OPS_Stream &theOutput) 
+Response* FSAM::setResponse(const char **argv, int argc, OPS_Stream *theOutput) 
 {
 	Response *theResponse = 0;
 
 	if (strcmp(argv[0],"panel_strain") == 0 || strcmp(argv[0],"Panel_strain") == 0) {
 
-		theOutput.tag("NdMaterialOutput");
-		theOutput.attr("matType", this->getClassType());
-		theOutput.attr("matTag", this->getTag());
-		theOutput.tag("ResponseType", "eps11");
-		theOutput.tag("ResponseType", "eps22");
-		theOutput.tag("ResponseType", "eps12");
-		theOutput.endTag();
+		if (theOutput != 0)
+		{
+			theOutput->tag("NdMaterialOutput");
+			theOutput->attr("matType", this->getClassType());
+			theOutput->attr("matTag", this->getTag());
+			theOutput->tag("ResponseType", "eps11");
+			theOutput->tag("ResponseType", "eps22");
+			theOutput->tag("ResponseType", "eps12");
+			theOutput->endTag();
+		}
 
 		Vector data1(3);
 		data1.Zero();
@@ -2468,13 +2470,16 @@ Response* FSAM::setResponse(const char **argv, int argc, OPS_Stream &theOutput)
 	
 	} else if (strcmp(argv[0],"panel_stress") == 0 || strcmp(argv[0],"Panel_Stress") == 0) {
 
-		theOutput.tag("NdMaterialOutput");
-		theOutput.attr("matType", this->getClassType());
-		theOutput.attr("matTag", this->getTag());
-		theOutput.tag("ResponseType", "sigma11");
-		theOutput.tag("ResponseType", "sigma22");
-		theOutput.tag("ResponseType", "sigma12");
-		theOutput.endTag();
+		if (theOutput != 0)
+		{
+			theOutput->tag("NdMaterialOutput");
+			theOutput->attr("matType", this->getClassType());
+			theOutput->attr("matTag", this->getTag());
+			theOutput->tag("ResponseType", "sigma11");
+			theOutput->tag("ResponseType", "sigma22");
+			theOutput->tag("ResponseType", "sigma12");
+			theOutput->endTag();
+		}
 
 		Vector data2(3);
 		data2.Zero();
@@ -2483,13 +2488,16 @@ Response* FSAM::setResponse(const char **argv, int argc, OPS_Stream &theOutput)
 	
 	} else if (strcmp(argv[0],"panel_stress_concrete") == 0 || strcmp(argv[0],"Panel_Stress_Concrete") == 0) {
 
-		theOutput.tag("NdMaterialOutput");
-		theOutput.attr("matType", this->getClassType());
-		theOutput.attr("matTag", this->getTag());
-		theOutput.tag("ResponseType", "sigma11");
-		theOutput.tag("ResponseType", "sigma22");
-		theOutput.tag("ResponseType", "sigma12");
-		theOutput.endTag();
+		if (theOutput != 0)
+		{
+			theOutput->tag("NdMaterialOutput");
+			theOutput->attr("matType", this->getClassType());
+			theOutput->attr("matTag", this->getTag());
+			theOutput->tag("ResponseType", "sigma11");
+			theOutput->tag("ResponseType", "sigma22");
+			theOutput->tag("ResponseType", "sigma12");
+			theOutput->endTag();
+		}
 
 		Vector data3(3);
 		data3.Zero();
@@ -2498,13 +2506,16 @@ Response* FSAM::setResponse(const char **argv, int argc, OPS_Stream &theOutput)
 	
 	} else if (strcmp(argv[0],"panel_stress_steel") == 0 || strcmp(argv[0],"Panel_Stress_Steel") == 0) {
 
-		theOutput.tag("NdMaterialOutput");
-		theOutput.attr("matType", this->getClassType());
-		theOutput.attr("matTag", this->getTag());
-		theOutput.tag("ResponseType", "sigma11");
-		theOutput.tag("ResponseType", "sigma22");
-		theOutput.tag("ResponseType", "sigma12");
-		theOutput.endTag();
+		if (theOutput != 0)
+		{
+			theOutput->tag("NdMaterialOutput");
+			theOutput->attr("matType", this->getClassType());
+			theOutput->attr("matTag", this->getTag());
+			theOutput->tag("ResponseType", "sigma11");
+			theOutput->tag("ResponseType", "sigma22");
+			theOutput->tag("ResponseType", "sigma12");
+			theOutput->endTag();
+		}
 
 		Vector data4(3);
 		data4.Zero();
@@ -2513,12 +2524,15 @@ Response* FSAM::setResponse(const char **argv, int argc, OPS_Stream &theOutput)
 	
 	} else if (strcmp(argv[0],"strain_stress_steelX") == 0 || strcmp(argv[0],"Strain_Stress_SteelX") == 0) {
 
-		theOutput.tag("NdMaterialOutput");
-		theOutput.attr("matType", this->getClassType());
-		theOutput.attr("matTag", this->getTag());
-		theOutput.tag("ResponseType", "eps11");
-		theOutput.tag("ResponseType", "sig11");
-		theOutput.endTag();
+		if (theOutput != 0)
+		{
+			theOutput->tag("NdMaterialOutput");
+			theOutput->attr("matType", this->getClassType());
+			theOutput->attr("matTag", this->getTag());
+			theOutput->tag("ResponseType", "eps11");
+			theOutput->tag("ResponseType", "sig11");
+			theOutput->endTag();
+		}
 
 		Vector data5(2);
 		data5.Zero();
@@ -2527,12 +2541,15 @@ Response* FSAM::setResponse(const char **argv, int argc, OPS_Stream &theOutput)
 	
 	} else if (strcmp(argv[0],"strain_stress_steelY") == 0 || strcmp(argv[0],"Strain_Stress_SteelY") == 0) {
 
-		theOutput.tag("NdMaterialOutput");
-		theOutput.attr("matType", this->getClassType());
-		theOutput.attr("matTag", this->getTag());
-		theOutput.tag("ResponseType", "eps11");
-		theOutput.tag("ResponseType", "sig11");
-		theOutput.endTag();
+		if (theOutput != 0)
+		{
+			theOutput->tag("NdMaterialOutput");
+			theOutput->attr("matType", this->getClassType());
+			theOutput->attr("matTag", this->getTag());
+			theOutput->tag("ResponseType", "eps11");
+			theOutput->tag("ResponseType", "sig11");
+			theOutput->endTag();
+		}
 
 		Vector data6(2);
 		data6.Zero();
@@ -2541,12 +2558,15 @@ Response* FSAM::setResponse(const char **argv, int argc, OPS_Stream &theOutput)
 	
 	} else if (strcmp(argv[0],"strain_stress_concrete1") == 0 || strcmp(argv[0],"Strain_Stress_Concrete1") == 0) {
 
-		theOutput.tag("NdMaterialOutput");
-		theOutput.attr("matType", this->getClassType());
-		theOutput.attr("matTag", this->getTag());
-		theOutput.tag("ResponseType", "eps11");
-		theOutput.tag("ResponseType", "sig11");
-		theOutput.endTag();
+		if (theOutput != 0)
+		{
+			theOutput->tag("NdMaterialOutput");
+			theOutput->attr("matType", this->getClassType());
+			theOutput->attr("matTag", this->getTag());
+			theOutput->tag("ResponseType", "eps11");
+			theOutput->tag("ResponseType", "sig11");
+			theOutput->endTag();
+		}
 
 		Vector data7(2);
 		data7.Zero();
@@ -2555,12 +2575,15 @@ Response* FSAM::setResponse(const char **argv, int argc, OPS_Stream &theOutput)
 	
 	} else if (strcmp(argv[0],"strain_stress_concrete2") == 0 || strcmp(argv[0],"Strain_Stress_Concrete2") == 0) {
 
-		theOutput.tag("NdMaterialOutput");
-		theOutput.attr("matType", this->getClassType());
-		theOutput.attr("matTag", this->getTag());
-		theOutput.tag("ResponseType", "eps11");
-		theOutput.tag("ResponseType", "sig11");
-		theOutput.endTag();
+		if (theOutput != 0)
+		{
+			theOutput->tag("NdMaterialOutput");
+			theOutput->attr("matType", this->getClassType());
+			theOutput->attr("matTag", this->getTag());
+			theOutput->tag("ResponseType", "eps11");
+			theOutput->tag("ResponseType", "sig11");
+			theOutput->endTag();
+		}
 
 		Vector data8(2);
 		data8.Zero();
@@ -2569,12 +2592,15 @@ Response* FSAM::setResponse(const char **argv, int argc, OPS_Stream &theOutput)
 
 	} else if (strcmp(argv[0],"strain_stress_interlock1") == 0 || strcmp(argv[0],"Strain_Stress_Interlock1") == 0) {
 
-		theOutput.tag("NdMaterialOutput");
-		theOutput.attr("matType", this->getClassType());
-		theOutput.attr("matTag", this->getTag());
-		theOutput.tag("ResponseType", "eps11");
-		theOutput.tag("ResponseType", "sig11");
-		theOutput.endTag();
+		if (theOutput != 0)
+		{
+			theOutput->tag("NdMaterialOutput");
+			theOutput->attr("matType", this->getClassType());
+			theOutput->attr("matTag", this->getTag());
+			theOutput->tag("ResponseType", "eps11");
+			theOutput->tag("ResponseType", "sig11");
+			theOutput->endTag();
+		}
 
 		Vector data9(2);
 		data9.Zero();
@@ -2583,12 +2609,15 @@ Response* FSAM::setResponse(const char **argv, int argc, OPS_Stream &theOutput)
 
 	} else if (strcmp(argv[0],"strain_stress_interlock2") == 0 || strcmp(argv[0],"Strain_Stress_Interlock2") == 0) {
 
-		theOutput.tag("NdMaterialOutput");
-		theOutput.attr("matType", this->getClassType());
-		theOutput.attr("matTag", this->getTag());
-		theOutput.tag("ResponseType", "eps11");
-		theOutput.tag("ResponseType", "sig11");
-		theOutput.endTag();
+		if (theOutput != 0)
+		{
+			theOutput->tag("NdMaterialOutput");
+			theOutput->attr("matType", this->getClassType());
+			theOutput->attr("matTag", this->getTag());
+			theOutput->tag("ResponseType", "eps11");
+			theOutput->tag("ResponseType", "sig11");
+			theOutput->endTag();
+		}
 
 		Vector data10(2);
 		data10.Zero();
@@ -2597,12 +2626,15 @@ Response* FSAM::setResponse(const char **argv, int argc, OPS_Stream &theOutput)
 
 	} else if (strcmp(argv[0],"cracking_angles") == 0 || strcmp(argv[0],"Cracking_Angles") == 0) {
 
-		theOutput.tag("NdMaterialOutput");
-		theOutput.attr("matType", this->getClassType());
-		theOutput.attr("matTag", this->getTag());
-		theOutput.tag("ResponseType", "alpha");
-		theOutput.tag("ResponseType", "beta");
-		theOutput.endTag();
+		if (theOutput != 0)
+		{
+			theOutput->tag("NdMaterialOutput");
+			theOutput->attr("matType", this->getClassType());
+			theOutput->attr("matTag", this->getTag());
+			theOutput->tag("ResponseType", "alpha");
+			theOutput->tag("ResponseType", "beta");
+			theOutput->endTag();
+		}
 
 		Vector data11(2);
 		data11.Zero();
@@ -2611,22 +2643,25 @@ Response* FSAM::setResponse(const char **argv, int argc, OPS_Stream &theOutput)
 	
 	} else if (strcmp(argv[0], "getInputParameters") == 0) {
 
-		theOutput.tag("NdMaterialOutput");
-		theOutput.attr("matType", this->getClassType());
-		theOutput.attr("matTag", this->getTag());
-		theOutput.tag("ResponseType", "IP_1");
-		theOutput.tag("ResponseType", "IP_2");
-		theOutput.tag("ResponseType", "IP_3");
-		theOutput.tag("ResponseType", "IP_4");
-		theOutput.tag("ResponseType", "IP_5");
-		theOutput.tag("ResponseType", "IP_6");
-		theOutput.tag("ResponseType", "IP_7");
-		theOutput.tag("ResponseType", "IP_8");
-		theOutput.tag("ResponseType", "IP_9");
-		theOutput.tag("ResponseType", "IP_10");
-		theOutput.tag("ResponseType", "IP_11");
-		theOutput.tag("ResponseType", "IP_12");
-		theOutput.endTag();
+		if (theOutput != 0)
+		{
+			theOutput->tag("NdMaterialOutput");
+			theOutput->attr("matType", this->getClassType());
+			theOutput->attr("matTag", this->getTag());
+			theOutput->tag("ResponseType", "IP_1");
+			theOutput->tag("ResponseType", "IP_2");
+			theOutput->tag("ResponseType", "IP_3");
+			theOutput->tag("ResponseType", "IP_4");
+			theOutput->tag("ResponseType", "IP_5");
+			theOutput->tag("ResponseType", "IP_6");
+			theOutput->tag("ResponseType", "IP_7");
+			theOutput->tag("ResponseType", "IP_8");
+			theOutput->tag("ResponseType", "IP_9");
+			theOutput->tag("ResponseType", "IP_10");
+			theOutput->tag("ResponseType", "IP_11");
+			theOutput->tag("ResponseType", "IP_12");
+			theOutput->endTag();
+		}
 
 		Vector data12(12);
 		data12.Zero();
@@ -2635,13 +2670,16 @@ Response* FSAM::setResponse(const char **argv, int argc, OPS_Stream &theOutput)
 	}
 	else if (strcmp(argv[0], "panel_crack") == 0) {
 
-		theOutput.tag("NdMaterialOutput");
-		theOutput.attr("matType", this->getClassType());
-		theOutput.attr("matTag", this->getTag());
-		theOutput.tag("ResponseType", "C11");
-		theOutput.tag("ResponseType", "C22");
-		theOutput.tag("ResponseType", "C12");
-		theOutput.endTag();
+		if (theOutput != 0)
+		{
+			theOutput->tag("NdMaterialOutput");
+			theOutput->attr("matType", this->getClassType());
+			theOutput->attr("matTag", this->getTag());
+			theOutput->tag("ResponseType", "C11");
+			theOutput->tag("ResponseType", "C22");
+			theOutput->tag("ResponseType", "C12");
+			theOutput->endTag();
+		}
 
 		Vector data13(3);
 		data13.Zero();

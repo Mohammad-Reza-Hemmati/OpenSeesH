@@ -771,7 +771,6 @@ void SFI_MVLEM_3D::setDomain(Domain *theDomain)
 	//}
 
 	//OPS_Stream *theDummyStream = new DummyStream();
-	DummyStream theDummyStream;
 	//const char **argv = new const char *[1];
 	//argv[0] = "getInputParameters"; // to get input parameters from concrete material
 	char aa[80] = "getInputParameters";
@@ -782,7 +781,7 @@ void SFI_MVLEM_3D::setDomain(Domain *theDomain)
 	for (int i = 0; Eave <= 0.0 && i < m; i++)
 	{
 	  //theResponses[0] = theMaterial[i]->setResponse(argv, 1, *theDummyStream);
-	  Response *theResponse = theMaterial[i]->setResponse(argv, 1, theDummyStream);
+	  Response *theResponse = theMaterial[i]->setResponse(argv, 1, 0);
 
 	  //if (theResponses[0] == 0) {
 		if (theResponse == 0) {		  
@@ -2885,47 +2884,53 @@ void SFI_MVLEM_3D::Print(OPS_Stream &s, int flag)
 }
 
 // Set element responses
-Response *SFI_MVLEM_3D::setResponse(const char **argv, int argc, OPS_Stream &s)
+Response* SFI_MVLEM_3D::setResponse(const char** argv, int argc, OPS_Stream* output)
 {
 
-	Response *theResponse = 0;
+	Response* theResponse = 0;
 
-	s.tag("ElementOutput");
-	s.attr("eleType", "SFI_MVLEM_3D");
-	s.attr("eleTag", this->getTag());
-	s.attr("node1", externalNodes[0]);
-	s.attr("node2", externalNodes[1]);
-	s.attr("node3", externalNodes[3]);
-	s.attr("node4", externalNodes[2]);
+	if (output != 0)
+	{
+		output->tag("ElementOutput");
+		output->attr("eleType", "SFI_MVLEM_3D");
+		output->attr("eleTag", this->getTag());
+		output->attr("node1", externalNodes[0]);
+		output->attr("node2", externalNodes[1]);
+		output->attr("node3", externalNodes[3]);
+		output->attr("node4", externalNodes[2]);
+	}
 
 	// Nodal forces in global cs
 	if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0 ||
 		strcmp(argv[0], "globalForce") == 0 || strcmp(argv[0], "globalForces") == 0) {
 
-		s.tag("ResponseType", "Fx_i");
-		s.tag("ResponseType", "Fy_i");
-		s.tag("ResponseType", "Fz_i");
-		s.tag("ResponseType", "Mx_i");
-		s.tag("ResponseType", "My_i");
-		s.tag("ResponseType", "Mz_i");
-		s.tag("ResponseType", "Fx_j");
-		s.tag("ResponseType", "Fy_j");
-		s.tag("ResponseType", "Fz_j");
-		s.tag("ResponseType", "Mx_j");
-		s.tag("ResponseType", "My_j");
-		s.tag("ResponseType", "Mz_j");
-		s.tag("ResponseType", "Fx_k");
-		s.tag("ResponseType", "Fy_k");
-		s.tag("ResponseType", "Fz_k");
-		s.tag("ResponseType", "Mx_k");
-		s.tag("ResponseType", "My_k");
-		s.tag("ResponseType", "Mz_k");
-		s.tag("ResponseType", "Fx_l");
-		s.tag("ResponseType", "Fy_l");
-		s.tag("ResponseType", "Fz_l");
-		s.tag("ResponseType", "Mx_l");
-		s.tag("ResponseType", "My_l");
-		s.tag("ResponseType", "Mz_l");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "Fx_i");
+			output->tag("ResponseType", "Fy_i");
+			output->tag("ResponseType", "Fz_i");
+			output->tag("ResponseType", "Mx_i");
+			output->tag("ResponseType", "My_i");
+			output->tag("ResponseType", "Mz_i");
+			output->tag("ResponseType", "Fx_j");
+			output->tag("ResponseType", "Fy_j");
+			output->tag("ResponseType", "Fz_j");
+			output->tag("ResponseType", "Mx_j");
+			output->tag("ResponseType", "My_j");
+			output->tag("ResponseType", "Mz_j");
+			output->tag("ResponseType", "Fx_k");
+			output->tag("ResponseType", "Fy_k");
+			output->tag("ResponseType", "Fz_k");
+			output->tag("ResponseType", "Mx_k");
+			output->tag("ResponseType", "My_k");
+			output->tag("ResponseType", "Mz_k");
+			output->tag("ResponseType", "Fx_l");
+			output->tag("ResponseType", "Fy_l");
+			output->tag("ResponseType", "Fz_l");
+			output->tag("ResponseType", "Mx_l");
+			output->tag("ResponseType", "My_l");
+			output->tag("ResponseType", "Mz_l");
+		}
 
 		theResponse = new ElementResponse(this, 1, Vector(24));
 
@@ -2934,30 +2939,33 @@ Response *SFI_MVLEM_3D::setResponse(const char **argv, int argc, OPS_Stream &s)
 	else if (strcmp(argv[0], "forceL") == 0 || strcmp(argv[0], "forcesL") == 0 ||
 		strcmp(argv[0], "localForce") == 0 || strcmp(argv[0], "localForces") == 0) {
 
-		s.tag("ResponseType", "Fx_i");
-		s.tag("ResponseType", "Fy_i");
-		s.tag("ResponseType", "Fz_i");
-		s.tag("ResponseType", "Mx_i");
-		s.tag("ResponseType", "My_i");
-		s.tag("ResponseType", "Mz_i");
-		s.tag("ResponseType", "Fx_j");
-		s.tag("ResponseType", "Fy_j");
-		s.tag("ResponseType", "Fz_j");
-		s.tag("ResponseType", "Mx_j");
-		s.tag("ResponseType", "My_j");
-		s.tag("ResponseType", "Mz_j");
-		s.tag("ResponseType", "Fx_k");
-		s.tag("ResponseType", "Fy_k");
-		s.tag("ResponseType", "Fz_k");
-		s.tag("ResponseType", "Mx_k");
-		s.tag("ResponseType", "My_k");
-		s.tag("ResponseType", "Mz_k");
-		s.tag("ResponseType", "Fx_l");
-		s.tag("ResponseType", "Fy_l");
-		s.tag("ResponseType", "Fz_l");
-		s.tag("ResponseType", "Mx_l");
-		s.tag("ResponseType", "My_l");
-		s.tag("ResponseType", "Mz_l");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "Fx_i");
+			output->tag("ResponseType", "Fy_i");
+			output->tag("ResponseType", "Fz_i");
+			output->tag("ResponseType", "Mx_i");
+			output->tag("ResponseType", "My_i");
+			output->tag("ResponseType", "Mz_i");
+			output->tag("ResponseType", "Fx_j");
+			output->tag("ResponseType", "Fy_j");
+			output->tag("ResponseType", "Fz_j");
+			output->tag("ResponseType", "Mx_j");
+			output->tag("ResponseType", "My_j");
+			output->tag("ResponseType", "Mz_j");
+			output->tag("ResponseType", "Fx_k");
+			output->tag("ResponseType", "Fy_k");
+			output->tag("ResponseType", "Fz_k");
+			output->tag("ResponseType", "Mx_k");
+			output->tag("ResponseType", "My_k");
+			output->tag("ResponseType", "Mz_k");
+			output->tag("ResponseType", "Fx_l");
+			output->tag("ResponseType", "Fy_l");
+			output->tag("ResponseType", "Fz_l");
+			output->tag("ResponseType", "Mx_l");
+			output->tag("ResponseType", "My_l");
+			output->tag("ResponseType", "Mz_l");
+		}
 
 		theResponse = new ElementResponse(this, 2, Vector(24));
 
@@ -2966,7 +2974,8 @@ Response *SFI_MVLEM_3D::setResponse(const char **argv, int argc, OPS_Stream &s)
 	// Shear deformation
 	else if (strcmp(argv[0], "ShearDef") == 0 || strcmp(argv[0], "sheardef") == 0) {
 
-		s.tag("ResponseType", "Dsh");
+		if (output != 0)
+			output->tag("ResponseType", "Dsh");
 
 		theResponse = new ElementResponse(this, 3, 0.0);
 
@@ -2975,7 +2984,8 @@ Response *SFI_MVLEM_3D::setResponse(const char **argv, int argc, OPS_Stream &s)
 	// Element curvature
 	else if (strcmp(argv[0], "Curvature") == 0 || strcmp(argv[0], "curvature") == 0) {
 
-		s.tag("ResponseType", "fi");
+		if (output != 0)
+			output->tag("ResponseType", "fi");
 
 		theResponse = new ElementResponse(this, 4, 0.0);
 	}
@@ -2995,17 +3005,21 @@ Response *SFI_MVLEM_3D::setResponse(const char **argv, int argc, OPS_Stream &s)
 		int matNum = atoi(argv[1]);
 		if (matNum > 0 && matNum <= m) {
 
-			s.tag("GaussPointOutput");
-			s.attr("number", matNum);
-			s.attr("eta", x[matNum - 1] / Lw * 2.0);
-			s.attr("weight", b[matNum - 1] / Lw * 2.0);
+			if (output != 0)
+			{
+				output->tag("GaussPointOutput");
+				output->attr("number", matNum);
+				output->attr("eta", x[matNum - 1] / Lw * 2.0);
+				output->attr("weight", b[matNum - 1] / Lw * 2.0);
+			}
 
-			theResponse = theMaterial[matNum - 1]->setResponse(&argv[argc - 1], argc - 2, s);
+			theResponse = theMaterial[matNum - 1]->setResponse(&argv[argc - 1], argc - 2, output);
 		}
 
 	}
 
-	s.endTag();
+	if (output != 0)
+		output->endTag();
 
 	return theResponse;
 }

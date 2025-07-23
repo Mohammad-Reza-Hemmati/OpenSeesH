@@ -1592,7 +1592,7 @@ DispBeamColumn2d::displaySelf(Renderer& theViewer, int displayMode, float fact, 
 
 Response*
 DispBeamColumn2d::setResponse(const char** argv, int argc,
-	OPS_Stream& output)
+	OPS_Stream* output)
 {
 #ifdef _CSS
 	Response* theResponse = Element::setResponse(argv, argc, output);
@@ -1602,22 +1602,28 @@ DispBeamColumn2d::setResponse(const char** argv, int argc,
 	Response* theResponse = 0;
 #endif // _CSS
 
-	output.tag("ElementOutput");
-	output.attr("eleType", "DispBeamColumn2d");
-	output.attr("eleTag", this->getTag());
-	output.attr("node1", connectedExternalNodes[0]);
-	output.attr("node2", connectedExternalNodes[1]);
+	if (output != 0)
+	{
+		output->tag("ElementOutput");
+		output->attr("eleType", "DispBeamColumn2d");
+		output->attr("eleTag", this->getTag());
+		output->attr("node1", connectedExternalNodes[0]);
+		output->attr("node2", connectedExternalNodes[1]);
+	}
 
 	// global force - 
 	if (strcmp(argv[0], "forces") == 0 || strcmp(argv[0], "force") == 0
 		|| strcmp(argv[0], "globalForce") == 0 || strcmp(argv[0], "globalForces") == 0) {
 
-		output.tag("ResponseType", "Px_1");
-		output.tag("ResponseType", "Py_1");
-		output.tag("ResponseType", "Mz_1");
-		output.tag("ResponseType", "Px_2");
-		output.tag("ResponseType", "Py_2");
-		output.tag("ResponseType", "Mz_2");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "Px_1");
+			output->tag("ResponseType", "Py_1");
+			output->tag("ResponseType", "Mz_1");
+			output->tag("ResponseType", "Px_2");
+			output->tag("ResponseType", "Py_2");
+			output->tag("ResponseType", "Mz_2");
+		}
 
 		theResponse = new ElementResponse(this, 1, P);
 
@@ -1626,12 +1632,15 @@ DispBeamColumn2d::setResponse(const char** argv, int argc,
 	}
 	else if (strcmp(argv[0], "localForce") == 0 || strcmp(argv[0], "localForces") == 0) {
 
-		output.tag("ResponseType", "N1");
-		output.tag("ResponseType", "V1");
-		output.tag("ResponseType", "M1");
-		output.tag("ResponseType", "N2");
-		output.tag("ResponseType", "V2");
-		output.tag("ResponseType", "M2");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "N1");
+			output->tag("ResponseType", "V1");
+			output->tag("ResponseType", "M1");
+			output->tag("ResponseType", "N2");
+			output->tag("ResponseType", "V2");
+			output->tag("ResponseType", "M2");
+		}
 
 		theResponse = new ElementResponse(this, 2, P);
 
@@ -1640,53 +1649,72 @@ DispBeamColumn2d::setResponse(const char** argv, int argc,
 	}
 	else if (strcmp(argv[0], "basicForce") == 0 || strcmp(argv[0], "basicForces") == 0) {
 
-		output.tag("ResponseType", "N");
-		output.tag("ResponseType", "M1");
-		output.tag("ResponseType", "M2");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "N");
+			output->tag("ResponseType", "M1");
+			output->tag("ResponseType", "M2");
+		}
 
 		theResponse = new ElementResponse(this, 9, Vector(3));
 
-  // global damping force - 
-  } else if (theDamping && (strcmp(argv[0],"globalDampingForce") == 0 || strcmp(argv[0],"globalDampingForces") == 0)) {
+		// global damping force - 
+	}
+	else if (theDamping && (strcmp(argv[0], "globalDampingForce") == 0 || strcmp(argv[0], "globalDampingForces") == 0)) {
 
-    output.tag("ResponseType","Px_1");
-    output.tag("ResponseType","Py_1");
-    output.tag("ResponseType","Mz_1");
-    output.tag("ResponseType","Px_2");
-    output.tag("ResponseType","Py_2");
-    output.tag("ResponseType","Mz_2");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "Px_1");
+			output->tag("ResponseType", "Py_1");
+			output->tag("ResponseType", "Mz_1");
+			output->tag("ResponseType", "Px_2");
+			output->tag("ResponseType", "Py_2");
+			output->tag("ResponseType", "Mz_2");
+		}
 
-    theResponse =  new ElementResponse(this, 21, P);
-  
-  
-  // local damping force -
-  } else if (theDamping && (strcmp(argv[0],"localDampingForce") == 0 || strcmp(argv[0],"localDampingForces") == 0)) {
+		theResponse = new ElementResponse(this, 21, P);
 
-    output.tag("ResponseType","N1");
-    output.tag("ResponseType","V1");
-    output.tag("ResponseType","M1");
-    output.tag("ResponseType","N2");
-    output.tag("ResponseType","V2");
-    output.tag("ResponseType","M2");
 
-    theResponse =  new ElementResponse(this, 22, P);
-  
+		// local damping force -
+	}
+	else if (theDamping && (strcmp(argv[0], "localDampingForce") == 0 || strcmp(argv[0], "localDampingForces") == 0)) {
 
-  // basic damping force -
-  } else if (theDamping && (strcmp(argv[0],"basicDampingForce") == 0 || strcmp(argv[0],"basicDampingForces") == 0)) {
+		if (output != 0)
+		{
+			output->tag("ResponseType", "N1");
+			output->tag("ResponseType", "V1");
+			output->tag("ResponseType", "M1");
+			output->tag("ResponseType", "N2");
+			output->tag("ResponseType", "V2");
+			output->tag("ResponseType", "M2");
+		}
 
-    output.tag("ResponseType","N");
-    output.tag("ResponseType","M1");
-    output.tag("ResponseType","M2");
+		theResponse = new ElementResponse(this, 22, P);
 
-    theResponse =  new ElementResponse(this, 23, Vector(3));
 
-  // basic stiffness -
-  } else if (strcmp(argv[0],"basicStiffness") == 0) {
+		// basic damping force -
+	}
+	else if (theDamping && (strcmp(argv[0], "basicDampingForce") == 0 || strcmp(argv[0], "basicDampingForces") == 0)) {
 
-		output.tag("ResponseType", "N");
-		output.tag("ResponseType", "M1");
-		output.tag("ResponseType", "M2");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "N");
+			output->tag("ResponseType", "M1");
+			output->tag("ResponseType", "M2");
+		}
+
+		theResponse = new ElementResponse(this, 23, Vector(3));
+
+		// basic stiffness -
+	}
+	else if (strcmp(argv[0], "basicStiffness") == 0) {
+
+		if (output != 0)
+		{
+			output->tag("ResponseType", "N");
+			output->tag("ResponseType", "M1");
+			output->tag("ResponseType", "M2");
+		}
 
 		theResponse = new ElementResponse(this, 19, Matrix(3, 3));
 
@@ -1695,9 +1723,12 @@ DispBeamColumn2d::setResponse(const char** argv, int argc,
 	else if (strcmp(argv[0], "chordRotation") == 0 || strcmp(argv[0], "chordDeformation") == 0
 		|| strcmp(argv[0], "basicDeformation") == 0) {
 
-		output.tag("ResponseType", "eps");
-		output.tag("ResponseType", "theta1");
-		output.tag("ResponseType", "theta2");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "eps");
+			output->tag("ResponseType", "theta1");
+			output->tag("ResponseType", "theta2");
+		}
 
 		theResponse = new ElementResponse(this, 3, Vector(3));
 
@@ -1705,9 +1736,12 @@ DispBeamColumn2d::setResponse(const char** argv, int argc,
 	}
 	else if (strcmp(argv[0], "plasticRotation") == 0 || strcmp(argv[0], "plasticDeformation") == 0) {
 
-		output.tag("ResponseType", "epsP");
-		output.tag("ResponseType", "theta1P");
-		output.tag("ResponseType", "theta2P");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "epsP");
+			output->tag("ResponseType", "theta1P");
+			output->tag("ResponseType", "theta2P");
+		}
 
 		theResponse = new ElementResponse(this, 4, Vector(3));
 
@@ -1719,10 +1753,10 @@ DispBeamColumn2d::setResponse(const char** argv, int argc,
 		theResponse = new ElementResponse(this, 12, P);
 	}
 
-  // section response -
-  else if (strcmp(argv[0],"sectionX") == 0) {
-    if (argc > 2) {
-      float sectionLoc = atof(argv[1]);
+	// section response -
+	else if (strcmp(argv[0], "sectionX") == 0) {
+		if (argc > 2) {
+			float sectionLoc = atof(argv[1]);
 
 			double xi[maxNumSections];
 			double L = crdTransf->getInitialLength();
@@ -1739,14 +1773,17 @@ DispBeamColumn2d::setResponse(const char** argv, int argc,
 				}
 			}
 
-      output.tag("GaussPointOutput");
-      output.attr("number",sectionNum+1);
-      output.attr("eta",xi[sectionNum]*L);
-      
-      theResponse = theSections[sectionNum]->setResponse(&argv[2], argc-2, output);
-    }
-  }
-  else if (strcmp(argv[0],"section") == 0) {
+			if (output != 0)
+			{
+				output->tag("GaussPointOutput");
+				output->attr("number", sectionNum + 1);
+				output->attr("eta", xi[sectionNum] * L);
+			}
+
+			theResponse = theSections[sectionNum]->setResponse(&argv[2], argc - 2, output);
+		}
+	}
+	else if (strcmp(argv[0], "section") == 0) {
 
 		if (argc > 1) {
 
@@ -1754,12 +1791,15 @@ DispBeamColumn2d::setResponse(const char** argv, int argc,
 
 			if (sectionNum > 0 && sectionNum <= numSections && argc > 2) {
 
-				output.tag("GaussPointOutput");
-				output.attr("number", sectionNum);
-				double xi[maxNumSections];
-				double L = crdTransf->getInitialLength();
-				beamInt->getSectionLocations(numSections, L, xi);
-				output.attr("eta", xi[sectionNum - 1] * L);
+				if (output != 0)
+				{
+					output->tag("GaussPointOutput");
+					output->attr("number", sectionNum);
+					double xi[maxNumSections];
+					double L = crdTransf->getInitialLength();
+					beamInt->getSectionLocations(numSections, L, xi);
+					output->attr("eta", xi[sectionNum - 1] * L);
+				}
 
 				if (strcmp(argv[2], "dsdh") != 0) {
 					theResponse = theSections[sectionNum - 1]->setResponse(&argv[2], argc - 2, output);
@@ -1771,7 +1811,8 @@ DispBeamColumn2d::setResponse(const char** argv, int argc,
 					info.theInt = sectionNum;
 				}
 
-				output.endTag();
+				if (output != 0)
+					output->endTag();
 
 			}
 			else if (sectionNum == 0) { // argv[1] was not an int, we want all sections, 
@@ -1784,13 +1825,17 @@ DispBeamColumn2d::setResponse(const char** argv, int argc,
 
 				for (int i = 0; i < numSections; i++) {
 
-					output.tag("GaussPointOutput");
-					output.attr("number", i + 1);
-					output.attr("eta", xi[i] * L);
+					if (output != 0)
+					{
+						output->tag("GaussPointOutput");
+						output->attr("number", i + 1);
+						output->attr("eta", xi[i] * L);
+					}
 
 					Response* theSectionResponse = theSections[i]->setResponse(&argv[1], argc - 1, output);
 
-					output.endTag();
+					if (output != 0)
+						output->endTag();
 
 					if (theSectionResponse != 0) {
 						numResponse = theCResponse->addResponse(theSectionResponse);
@@ -1841,13 +1886,17 @@ DispBeamColumn2d::setResponse(const char** argv, int argc,
 
 			double xi = atof(argv[1]);
 			if (xi >= 0 && xi <= 1) {
-				output.tag("InternalForce");
-				output.attr("xi", xi);
+				if (output)
+				{
+					output->tag("InternalForce");
+					output->attr("xi", xi);
+				}
 				int t = this->getTag();
 				theResponse = new ElementResponse(this, 15, Vector(3));
 				Information& info = theResponse->getInformation();
 				info.theDouble = xi;
-				output.endTag();
+				if (output)
+					output->endTag();
 
 			}
 			else {
@@ -1861,7 +1910,8 @@ DispBeamColumn2d::setResponse(const char** argv, int argc,
 	if (theResponse == 0)
 		theResponse = crdTransf->setResponse(argv, argc, output);
 
-	output.endTag();
+	if (output != 0)
+		output->endTag();
 
 	if (theResponse == 0)
 		return Element::setResponse(argv, argc, output);

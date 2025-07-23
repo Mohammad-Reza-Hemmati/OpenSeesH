@@ -1072,72 +1072,84 @@ void SFI_MVLEM::Print(OPS_Stream &s, int flag)
 }
 
 // Set element responses
-Response *SFI_MVLEM::setResponse(const char **argv, int argc, OPS_Stream &s) 
-    
+Response* SFI_MVLEM::setResponse(const char** argv, int argc, OPS_Stream* output)
+
 {
-	Response *theResponse = 0;
+  Response* theResponse = 0;
 
-	s.tag("ElementOutput");
-    s.attr("eleType","SFI_MVLEM");
-    s.attr("eleTag",this->getTag());
-    s.attr("node1",externalNodes[0]);
-    s.attr("node2",externalNodes[1]);
+  if (output != 0)
+  {
+    output->tag("ElementOutput");
+    output->attr("eleType", "SFI_MVLEM");
+    output->attr("eleTag", this->getTag());
+    output->attr("node1", externalNodes[0]);
+    output->attr("node2", externalNodes[1]);
+  }
 
-	// Global forces
-	if (strcmp(argv[0],"force") == 0 || strcmp(argv[0],"forces") == 0 ||
-        strcmp(argv[0],"globalForce") == 0 || strcmp(argv[0],"globalForces") == 0) {
-			
-			s.tag("ResponseType","Fx_i");
-			s.tag("ResponseType","Fy_i");
-			s.tag("ResponseType","Mz_i");
-			s.tag("ResponseType","Fx_j");
-			s.tag("ResponseType","Fy_j");
-			s.tag("ResponseType","Mz_j");
-			
-			theResponse = new ElementResponse(this, 1, Vector(6));
+  // Global forces
+  if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0 ||
+    strcmp(argv[0], "globalForce") == 0 || strcmp(argv[0], "globalForces") == 0) {
 
-	}  
-
-	// Shear deformation
-	else if (strcmp(argv[0],"ShearDef") == 0 || strcmp(argv[0],"sheardef") == 0) {
-		
-			s.tag("ResponseType","Dsh");
-		
-		theResponse = new ElementResponse(this, 2, 0.0);
-
-	} 
-	
-	// Element curvature
-	else if (strcmp(argv[0],"Curvature") == 0 || strcmp(argv[0],"curvature") == 0) {
-		
-			s.tag("ResponseType","fi");
-		
-		theResponse = new ElementResponse(this, 3, 0.0);
-	}
-
-	// Material output
-    else if (strcmp(argv[0],"RCpanel") == 0 || strcmp(argv[0],"RCPanel") == 0
-		      || strcmp(argv[0],"RC_panel") == 0 || strcmp(argv[0],"RC_Panel") == 0) 
-	{
-		
-		// Check if correct # of arguments passed
-		if (argc != 3) {
-			opserr << "WARNING: Number of recorder input for RC Panel is: " << argc-1 << "; should be 2: panTag (one panel only: 1 to m) and $Response_Type.\n";
-			return 0;
-		}
-
-		int matNum = atoi(argv[1]);
-	  
-		s.tag("Material");
-		s.attr("number",matNum);
-		
-		theResponse = theMaterial[matNum-1]->setResponse(&argv[argc-1], argc-2, s);
-
+    if (output != 0)
+    {
+      output->tag("ResponseType", "Fx_i");
+      output->tag("ResponseType", "Fy_i");
+      output->tag("ResponseType", "Mz_i");
+      output->tag("ResponseType", "Fx_j");
+      output->tag("ResponseType", "Fy_j");
+      output->tag("ResponseType", "Mz_j");
     }
 
-	s.endTag();
-	
-	return theResponse;
+    theResponse = new ElementResponse(this, 1, Vector(6));
+
+  }
+
+  // Shear deformation
+  else if (strcmp(argv[0], "ShearDef") == 0 || strcmp(argv[0], "sheardef") == 0) {
+
+    if (output != 0)
+      output->tag("ResponseType", "Dsh");
+
+    theResponse = new ElementResponse(this, 2, 0.0);
+
+  }
+
+  // Element curvature
+  else if (strcmp(argv[0], "Curvature") == 0 || strcmp(argv[0], "curvature") == 0) {
+
+    if (output != 0)
+      output->tag("ResponseType", "fi");
+
+    theResponse = new ElementResponse(this, 3, 0.0);
+  }
+
+  // Material output
+  else if (strcmp(argv[0], "RCpanel") == 0 || strcmp(argv[0], "RCPanel") == 0
+    || strcmp(argv[0], "RC_panel") == 0 || strcmp(argv[0], "RC_Panel") == 0)
+  {
+
+    // Check if correct # of arguments passed
+    if (argc != 3) {
+      opserr << "WARNING: Number of recorder input for RC Panel is: " << argc - 1 << "; should be 2: panTag (one panel only: 1 to m) and $Response_Type.\n";
+      return 0;
+    }
+
+    int matNum = atoi(argv[1]);
+
+    if (output != 0)
+    {
+      output->tag("Material");
+      output->attr("number", matNum);
+    }
+
+    theResponse = theMaterial[matNum - 1]->setResponse(&argv[argc - 1], argc - 2, output);
+
+  }
+
+  if (output != 0)
+    output->endTag();
+
+  return theResponse;
 }
 
 // Obtain element responses

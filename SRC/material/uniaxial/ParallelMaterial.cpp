@@ -535,18 +535,20 @@ ParallelMaterial::Print(OPS_Stream &s, int flag)
 }
 
 Response*
-ParallelMaterial::setResponse(const char **argv, int argc, OPS_Stream &theOutput)
+ParallelMaterial::setResponse(const char **argv, int argc, OPS_Stream *output)
 {
   Response *theResponse = 0;
-#ifdef _CSS
   if (strcmp(argv[0], "stresses") == 0) {
+    if (output != 0)
+    {
       for (int i = 0; i < numMaterials; i++) {
-          theOutput.tag("UniaxialMaterialOutput");
-          theOutput.attr("matType", this->getClassType());
-          theOutput.attr("matTag", this->getTag());
-          theOutput.tag("ResponseType", "sigma11");
-          theOutput.endTag();
+        output->tag("UniaxialMaterialOutput");
+        output->attr("matType", this->getClassType());
+        output->attr("matTag", this->getTag());
+        output->tag("ResponseType", "sigma11");
+        output->endTag();
       }
+    }
       theResponse = new MaterialResponse(this, 100, Vector(numMaterials));
   }
   else if (strcmp(argv[0], "material") == 0 ||
@@ -554,64 +556,14 @@ ParallelMaterial::setResponse(const char **argv, int argc, OPS_Stream &theOutput
 	  if (argc > 1) {
 		  int matNum = atoi(argv[1]) - 1;
 		  if (matNum >= 0 && matNum < numMaterials)
-			  theResponse = theModels[matNum]->setResponse(&argv[2], argc - 2, theOutput);
+			  theResponse = theModels[matNum]->setResponse(&argv[2], argc - 2, output);
 	  }
   }
   else {
-      theResponse = UniaxialMaterial::setResponse(argv, argc, theOutput);
+      theResponse = UniaxialMaterial::setResponse(argv, argc, output);
   }
-#else
-  theOutput.tag("UniaxialMaterialOutput");
-  theOutput.attr("matType", this->getClassType());
-  theOutput.attr("matTag", this->getTag());
-
-  // stress
-  if (strcmp(argv[0],"stress") == 0) {
-    theOutput.tag("ResponseType", "sigma11");
-    theResponse =  new MaterialResponse(this, 1, this->getStress());
-  }  
-  // tangent
-  else if (strcmp(argv[0],"tangent") == 0) {
-    theOutput.tag("ResponseType", "C11");
-    theResponse =  new MaterialResponse(this, 2, this->getTangent());
-  }
-
-  // strain
-  else if (strcmp(argv[0],"strain") == 0) {
-    theOutput.tag("ResponseType", "eps11");
-    theResponse =  new MaterialResponse(this, 3, this->getStrain());
-  }
-
-  // strain
-  else if ((strcmp(argv[0],"stressStrain") == 0) || 
-	   (strcmp(argv[0],"stressANDstrain") == 0)) {
-    theOutput.tag("ResponseType", "sig11");
-    theOutput.tag("ResponseType", "eps11");
-    theResponse =  new MaterialResponse(this, 4, Vector(2));
-  }
-
-  else if (strcmp(argv[0],"stresses") == 0) {
-    for (int i=0; i<numMaterials; i++) {
-      theOutput.tag("UniaxialMaterialOutput");
-      theOutput.attr("matType", this->getClassType());
-      theOutput.attr("matTag", this->getTag());
-      theOutput.tag("ResponseType", "sigma11");
-      theOutput.endTag();
-    }
-    theResponse = new MaterialResponse(this, 100, Vector(numMaterials));
-  }
-
-  else if (strcmp(argv[0],"material") == 0 ||
-	   strcmp(argv[0],"component") == 0) {
-    if (argc > 1) {
-      int matNum = atoi(argv[1]) - 1;
-      if (matNum >= 0 && matNum < numMaterials)
-	theResponse = theModels[matNum]->setResponse(&argv[2], argc-2, theOutput);
-    }
-  }
-#endif // _CSS
-
-  theOutput.endTag();
+  if (output != 0)
+    output->endTag();
   return theResponse;
 }
 

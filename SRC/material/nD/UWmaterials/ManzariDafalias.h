@@ -85,7 +85,7 @@ class ManzariDafalias : public NDMaterial
 	const Vector getFabric();
 	const Vector getAlpha_in();
 
-    Response *setResponse (const char **argv, int argc, OPS_Stream &output);
+    Response *setResponse (const char **argv, int argc, OPS_Stream *output);
     int getResponse (int responseID, Information &matInformation);
 
     int sendSelf(int commitTag, Channel &theChannel);  

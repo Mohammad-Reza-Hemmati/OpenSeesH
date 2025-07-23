@@ -611,6 +611,8 @@ ResidNodeRecorder::sendSelf(int commitTag, Channel& theChannel)
 	 if (theHandler != 0) {
 		  idData(2) = theHandler->getClassTag();
 	 }
+	 else
+		 idData(2) = 0;
 
 	 idData(3) = dataFlag;
 
@@ -753,16 +755,18 @@ ResidNodeRecorder::recvSelf(int commitTag, Channel& theChannel,
 
 	 if (theHandler != 0)
 		  delete theHandler;
+	 if (idData(2)= 0)
+	 {
+		 theHandler = theBroker.getPtrNewStream(idData(2));
+		 if (theHandler == 0) {
+			 opserr << "ResidNodeRecorder::sendSelf() - failed to get a data output handler\n";
+			 return -1;
+		 }
 
-	 theHandler = theBroker.getPtrNewStream(idData(2));
-	 if (theHandler == 0) {
-		  opserr << "ResidNodeRecorder::sendSelf() - failed to get a data output handler\n";
-		  return -1;
-	 }
-
-	 if (theHandler->recvSelf(commitTag, theChannel, theBroker) < 0) {
-		  delete theHandler;
-		  theHandler = 0;
+		 if (theHandler->recvSelf(commitTag, theChannel, theBroker) < 0) {
+			 delete theHandler;
+			 theHandler = 0;
+		 }
 	 }
 
 

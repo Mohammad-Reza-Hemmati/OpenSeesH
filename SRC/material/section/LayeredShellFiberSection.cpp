@@ -314,7 +314,7 @@ LayeredShellFiberSection::getRho( )
 
 Response*
 LayeredShellFiberSection::setResponse(const char **argv, int argc,
-                                      OPS_Stream &output)
+                                      OPS_Stream *output)
 {
   Response *theResponse =0;
 
@@ -325,15 +325,18 @@ LayeredShellFiberSection::setResponse(const char **argv, int argc,
     }
     int pointNum = atoi(argv[1]);
     if (pointNum > 0 && pointNum <= nLayers) {
-      
-      output.tag("FiberOutput");
-      output.attr("number",pointNum);
-      output.attr("zLoc",0.5*h*sg[pointNum-1]);
-      output.attr("thickness",0.5*h*wg[pointNum-1]);
+      if (output != 0)
+      {
+        output->tag("FiberOutput");
+        output->attr("number", pointNum);
+        output->attr("zLoc", 0.5 * h * sg[pointNum - 1]);
+        output->attr("thickness", 0.5 * h * wg[pointNum - 1]);
+      }
       
       theResponse = theFibers[pointNum-1]->setResponse(&argv[2], argc-2, output);
       
-      output.endTag();
+      if (output != 0)
+        output->endTag();
     }
   }
   else if ((strcmp(argv[0],"sectionFailed") == 0) || 

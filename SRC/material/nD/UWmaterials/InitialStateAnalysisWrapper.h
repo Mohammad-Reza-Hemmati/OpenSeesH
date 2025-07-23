@@ -71,7 +71,7 @@ class InitialStateAnalysisWrapper : public NDMaterial
 		const char *getType(void) const;
 		int getOrder(void) const;
 
-		Response *setResponse (const char **argv, int argc, OPS_Stream &output);
+		Response *setResponse (const char **argv, int argc, OPS_Stream *output);
     	int getResponse (int responseID, Information &matInformation);
 
     	int sendSelf(int commitTag, Channel &theChannel);  

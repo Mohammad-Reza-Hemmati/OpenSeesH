@@ -109,7 +109,7 @@ public:
      int sendSelf(int commitTag, Channel &theChannel);
      int recvSelf(int commitTag, Channel &theChannel,
 		  FEM_ObjectBroker &theBroker);
-     Response *setResponse (const char **argv, int argc, OPS_Stream &s);
+     Response *setResponse (const char **argv, int argc, OPS_Stream *s);
      int getResponse (int responseID, Information &matInformation);
      void Print(OPS_Stream &s, int flag =0);
      //void setCurrentStress(const Vector stress) { currentStress=T2Vector(stress); }

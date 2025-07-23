@@ -105,7 +105,7 @@ public:
 	const Vector &getStrain();
 	const Vector &getElasticStrain();
 
-	Response *setResponse(const char **argv, int argc, OPS_Stream &output);
+	Response *setResponse(const char **argv, int argc, OPS_Stream *output);
 	int getResponse(int responseID, Information &matInformation);
 
 	int sendSelf(int commitTag, Channel &theChannel);

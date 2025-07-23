@@ -1695,66 +1695,78 @@ Twenty_Node_Brick::displaySelf(Renderer &theViewer, int displayMode, float fact,
 
 
 Response*
-Twenty_Node_Brick::setResponse(const char **argv, int argc, OPS_Stream &output)
+Twenty_Node_Brick::setResponse(const char** argv, int argc, OPS_Stream* output)
 {
 
-  Response *theResponse = 0;
+	Response* theResponse = 0;
 
-  char outputData[32];
+	char outputData[32];
 
-  output.tag("ElementOutput");
-  output.attr("eleType","Twenty_Node_Brick");
-  output.attr("eleTag",this->getTag());
-  for (int i=1; i<=20; i++) {
-    sprintf(outputData,"node%d",i);
-    output.attr(outputData, connectedExternalNodes[i-1]);
-  }
+	if (output != 0)
+	{
+		output->tag("ElementOutput");
+		output->attr("eleType", "Twenty_Node_Brick");
+		output->attr("eleTag", this->getTag());
+		for (int i = 1; i <= 20; i++) {
+			sprintf(outputData, "node%d", i);
+			output->attr(outputData, connectedExternalNodes[i - 1]);
+		}
+	}
 
-  if (strcmp(argv[0],"force") == 0 || strcmp(argv[0],"forces") == 0) {
+	if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0) {
 
-    for (int i=1; i<=20; i++)
-      for (int j=1; j<=3; j++) {
-	sprintf(outputData,"P%d_%d",j,i);
-	output.tag("ResponseType",outputData);
-      }
+		if (output != 0)
+			for (int i = 1; i <= 20; i++)
+				for (int j = 1; j <= 3; j++) {
+					sprintf(outputData, "P%d_%d", j, i);
+					output->tag("ResponseType", outputData);
+				}
 
-    theResponse = new ElementResponse(this, 1, resid);
-  
-  }  else if (strcmp(argv[0],"material") == 0 || strcmp(argv[0],"integrPoint") == 0) {
-    int pointNum = atoi(argv[1]);
-    if (pointNum > 0 && pointNum <= nintu) {
+		theResponse = new ElementResponse(this, 1, resid);
 
-      output.tag("GaussPoint");
-      output.attr("number",pointNum);
+	}
+	else if (strcmp(argv[0], "material") == 0 || strcmp(argv[0], "integrPoint") == 0) {
+		int pointNum = atoi(argv[1]);
+		if (pointNum > 0 && pointNum <= nintu) {
 
-      theResponse =  materialPointers[pointNum-1]->setResponse(&argv[2], argc-2, output);
-      
-      output.endTag(); // GaussPoint
-    }
-  } else if (strcmp(argv[0],"stresses") ==0) {
+			if (output != 0)
+			{
+				output->tag("GaussPoint");
+				output->attr("number", pointNum);
+			}
 
-    for (int i=0; i<27; i++) {
-      output.tag("GaussPoint");
-      output.attr("number",i+1);
-      output.tag("NdMaterialOutput");
-      output.attr("classType", materialPointers[i]->getClassTag());
-      output.attr("tag", materialPointers[i]->getTag());
+			theResponse = materialPointers[pointNum - 1]->setResponse(&argv[2], argc - 2, output);
 
-      output.tag("ResponseType","sigma11");
-      output.tag("ResponseType","sigma22");
-      output.tag("ResponseType","sigma33");
-      output.tag("ResponseType","sigma12");
-      output.tag("ResponseType","sigma23");
-      output.tag("ResponseType","sigma13");      
+			if (output != 0)
+				output->endTag(); // GaussPoint
+		}
+	}
+	else if (strcmp(argv[0], "stresses") == 0) {
 
-      output.endTag(); // NdMaterialOutput
-      output.endTag(); // GaussPoint
-    }
-    theResponse = new ElementResponse(this, 5, Vector(162));
-  }
-  
-  output.endTag(); // ElementOutput
-  return theResponse;
+		if (output != 0)
+			for (int i = 0; i < 27; i++) {
+				output->tag("GaussPoint");
+				output->attr("number", i + 1);
+				output->tag("NdMaterialOutput");
+				output->attr("classType", materialPointers[i]->getClassTag());
+				output->attr("tag", materialPointers[i]->getTag());
+
+				output->tag("ResponseType", "sigma11");
+				output->tag("ResponseType", "sigma22");
+				output->tag("ResponseType", "sigma33");
+				output->tag("ResponseType", "sigma12");
+				output->tag("ResponseType", "sigma23");
+				output->tag("ResponseType", "sigma13");
+
+				output->endTag(); // NdMaterialOutput
+				output->endTag(); // GaussPoint
+			}
+		theResponse = new ElementResponse(this, 5, Vector(162));
+	}
+
+	if (output != 0)
+		output->endTag(); // ElementOutput
+	return theResponse;
 
 }
 

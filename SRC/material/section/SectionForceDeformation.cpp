@@ -127,162 +127,160 @@ void OPS_printSectionForceDeformation(OPS_Stream &s, int flag) {
 
 int OPS_sectionLocation()
 {
-    // make sure at least one other argument to contain type of system
-    if (OPS_GetNumRemainingInputArgs() < 1) {
-	opserr << "WARNING want - sectionLocation eleTag? <secNum?> \n";
-	return -1;
+  // make sure at least one other argument to contain type of system
+  if (OPS_GetNumRemainingInputArgs() < 1) {
+    opserr << "WARNING want - sectionLocation eleTag? <secNum?> \n";
+    return -1;
+  }
+
+  //opserr << "sectionLocation: ";
+  //for (int i = 0; i < argc; i++)
+  //  opserr << argv[i] << ' ' ;
+  //opserr << endln;
+
+  int numData = 1;
+  int tag;
+  if (OPS_GetIntInput(&numData, &tag) < 0) {
+    opserr << "WARNING sectionLocation eleTag? <secNum?> - could not read int input? \n";
+    return -1;
+  }
+
+  int secNum = 0;
+  if (OPS_GetNumRemainingInputArgs() > 0) {
+    if (OPS_GetIntInput(&numData, &secNum) < 0) {
+      opserr << "WARNING sectionLocation eleTag? <secNum?> - could not read int input? \n";
+      return -1;
     }
+  }
 
-    //opserr << "sectionLocation: ";
-    //for (int i = 0; i < argc; i++)
-    //  opserr << argv[i] << ' ' ;
-    //opserr << endln;
+  Domain* theDomain = OPS_GetDomain();
+  if (theDomain == 0) return -1;
 
-    int numData = 1;
-    int tag;
-    if (OPS_GetIntInput(&numData, &tag) < 0) {
-	opserr << "WARNING sectionLocation eleTag? <secNum?> - could not read int input? \n";
-	return -1;
-    }
+  Element* theElement = theDomain->getElement(tag);
+  if (theElement == 0) {
+    opserr << "WARNING sectionLocation element with tag " << tag << " not found in domain \n";
+    return -1;
+  }
 
-    int secNum = 0;
-    if (OPS_GetNumRemainingInputArgs() > 0) {
-      if (OPS_GetIntInput(&numData, &secNum) < 0) {
-	opserr << "WARNING sectionLocation eleTag? <secNum?> - could not read int input? \n";
-	return -1;
-      }
-    }
-    
-    Domain* theDomain = OPS_GetDomain();
-    if (theDomain == 0) return -1;
+  int argcc = 1;
+  char a[80] = "integrationPoints";
+  const char* argvv[1];
+  argvv[0] = a;
 
-    Element *theElement = theDomain->getElement(tag);
-    if (theElement == 0) {
-	opserr << "WARNING sectionLocation element with tag " << tag << " not found in domain \n";
-	return -1;
-    }
-
-    int argcc = 1;
-    char a[80] = "integrationPoints";
-    const char *argvv[1];
-    argvv[0] = a;
-
-    DummyStream dummy;
-
-    Response *theResponse = theElement->setResponse(argvv, argcc, dummy);
-    if (theResponse == 0) {
-	return 0;
-    }
-
-    theResponse->getResponse();
-    Information &info = theResponse->getInformation();
-
-    const Vector &theVec = *(info.theVector);
-    int Np = theVec.Size();
-
-    if (secNum > 0 && secNum <= Np) { // One IP
-      double value = theVec(secNum-1);
-      numData = 1;
-      if (OPS_SetDoubleOutput(&numData, &value, true) < 0) {
-	opserr << "WARNING failed to set output\n";
-	delete theResponse;
-	return -1;
-      }
-    } else { // All IPs in a list
-      std::vector<double> data(Np);
-      for (int i = 0; i < Np; i++)
-	data[i] = theVec(i);
-      numData = Np;
-      if (OPS_SetDoubleOutput(&numData, &data[0], false) < 0) {
-	opserr << "WARNING failed to set output\n";
-	delete theResponse;
-	return -1;
-      }      
-    }        
-
-    delete theResponse;
-
+  Response* theResponse = theElement->setResponse(argvv, argcc, 0);
+  if (theResponse == 0) {
     return 0;
+  }
+
+  theResponse->getResponse();
+  Information& info = theResponse->getInformation();
+
+  const Vector& theVec = *(info.theVector);
+  int Np = theVec.Size();
+
+  if (secNum > 0 && secNum <= Np) { // One IP
+    double value = theVec(secNum - 1);
+    numData = 1;
+    if (OPS_SetDoubleOutput(&numData, &value, true) < 0) {
+      opserr << "WARNING failed to set output\n";
+      delete theResponse;
+      return -1;
+    }
+  }
+  else { // All IPs in a list
+    std::vector<double> data(Np);
+    for (int i = 0; i < Np; i++)
+      data[i] = theVec(i);
+    numData = Np;
+    if (OPS_SetDoubleOutput(&numData, &data[0], false) < 0) {
+      opserr << "WARNING failed to set output\n";
+      delete theResponse;
+      return -1;
+    }
+  }
+
+  delete theResponse;
+
+  return 0;
 }
 
 int OPS_sectionWeight()
 {
-    // make sure at least one other argument to contain type of system
-    if (OPS_GetNumRemainingInputArgs() < 1) {
-	opserr << "WARNING want - sectionWeight eleTag? <secNum?> \n";
-	return -1;
+  // make sure at least one other argument to contain type of system
+  if (OPS_GetNumRemainingInputArgs() < 1) {
+    opserr << "WARNING want - sectionWeight eleTag? <secNum?> \n";
+    return -1;
+  }
+
+  //opserr << "sectionWeight: ";
+  //for (int i = 0; i < argc; i++)
+  //  opserr << argv[i] << ' ' ;
+  //opserr << endln;
+
+  int numData = 1;
+  int tag;
+  if (OPS_GetIntInput(&numData, &tag) < 0) {
+    opserr << "WARNING sectionWeight eleTag? <secNum?> - could not read int input? \n";
+    return -1;
+  }
+
+  int secNum = 0;
+  if (OPS_GetNumRemainingInputArgs() > 0) {
+    if (OPS_GetIntInput(&numData, &secNum) < 0) {
+      opserr << "WARNING sectionWeight eleTag? <secNum?> - could not read int input? \n";
+      return -1;
     }
+  }
 
-    //opserr << "sectionWeight: ";
-    //for (int i = 0; i < argc; i++)
-    //  opserr << argv[i] << ' ' ;
-    //opserr << endln;
+  Domain* theDomain = OPS_GetDomain();
+  if (theDomain == 0) return -1;
 
-    int numData = 1;
-    int tag;
-    if (OPS_GetIntInput(&numData, &tag) < 0) {
-	opserr << "WARNING sectionWeight eleTag? <secNum?> - could not read int input? \n";
-	return -1;
-    }
+  Element* theElement = theDomain->getElement(tag);
+  if (theElement == 0) {
+    opserr << "WARNING sectionWeight element with tag " << tag << " not found in domain \n";
+    return -1;
+  }
 
-    int secNum = 0;
-    if (OPS_GetNumRemainingInputArgs() > 0) {
-      if (OPS_GetIntInput(&numData, &secNum) < 0) {
-	opserr << "WARNING sectionWeight eleTag? <secNum?> - could not read int input? \n";
-	return -1;
-      }
-    }
-    
-    Domain* theDomain = OPS_GetDomain();
-    if (theDomain == 0) return -1;
+  int argcc = 1;
+  char a[80] = "integrationWeights";
+  const char* argvv[1];
+  argvv[0] = a;
 
-    Element *theElement = theDomain->getElement(tag);
-    if (theElement == 0) {
-	opserr << "WARNING sectionWeight element with tag " << tag << " not found in domain \n";
-	return -1;
-    }
-
-    int argcc = 1;
-    char a[80] = "integrationWeights";
-    const char *argvv[1];
-    argvv[0] = a;
-
-    DummyStream dummy;
-
-    Response *theResponse = theElement->setResponse(argvv, argcc, dummy);
-    if (theResponse == 0) {
-	return 0;
-    }
-
-    theResponse->getResponse();
-    Information &info = theResponse->getInformation();
-
-    const Vector &theVec = *(info.theVector);
-    int Np = theVec.Size();
-
-    if (secNum > 0 && secNum <= Np) { // One IP
-      double value = theVec(secNum-1);
-      numData = 1;
-      if (OPS_SetDoubleOutput(&numData, &value, true) < 0) {
-	opserr << "WARNING failed to set output\n";
-	delete theResponse;
-	return -1;
-      }
-    } else { // All IPs in a list
-      std::vector<double> data(Np);
-      for (int i = 0; i < Np; i++)
-	data[i] = theVec(i);
-      numData = Np;
-      if (OPS_SetDoubleOutput(&numData, &data[0], false) < 0) {
-	opserr << "WARNING failed to set output\n";
-	delete theResponse;
-	return -1;
-      }      
-    }    
-
-    delete theResponse;
-
+  Response* theResponse = theElement->setResponse(argvv, argcc, 0);
+  if (theResponse == 0) {
     return 0;
+  }
+
+  theResponse->getResponse();
+  Information& info = theResponse->getInformation();
+
+  const Vector& theVec = *(info.theVector);
+  int Np = theVec.Size();
+
+  if (secNum > 0 && secNum <= Np) { // One IP
+    double value = theVec(secNum - 1);
+    numData = 1;
+    if (OPS_SetDoubleOutput(&numData, &value, true) < 0) {
+      opserr << "WARNING failed to set output\n";
+      delete theResponse;
+      return -1;
+    }
+  }
+  else { // All IPs in a list
+    std::vector<double> data(Np);
+    for (int i = 0; i < Np; i++)
+      data[i] = theVec(i);
+    numData = Np;
+    if (OPS_SetDoubleOutput(&numData, &data[0], false) < 0) {
+      opserr << "WARNING failed to set output\n";
+      delete theResponse;
+      return -1;
+    }
+  }
+
+  delete theResponse;
+
+  return 0;
 }
 
 int OPS_sectionTag()
@@ -327,9 +325,7 @@ int OPS_sectionTag()
     const char *argvv[1];
     argvv[0] = a;
 
-    DummyStream dummy;
-
-    Response *theResponse = theElement->setResponse(argvv, argcc, dummy);
+    Response *theResponse = theElement->setResponse(argvv, argcc, 0);
     if (theResponse == 0) {
 	return 0;
     }
@@ -414,9 +410,7 @@ int OPS_sectionDisplacement()
     else
       argvv[1] = "global";
 
-    DummyStream dummy;
-
-    Response *theResponse = theElement->setResponse(argvv, argcc, dummy);
+    Response *theResponse = theElement->setResponse(argvv, argcc, 0);
     if (theResponse == 0) {
 	return 0;
     }
@@ -532,224 +526,230 @@ SectionForceDeformation::getRho(void)
 
 Response*
 SectionForceDeformation::setResponse(const char **argv, int argc,
-				     OPS_Stream &output)
+				     OPS_Stream *output)
 {
   const ID &type = this->getType();
   int typeSize = this->getOrder();
   
   Response *theResponse =0;
-
-  output.tag("SectionOutput");
-  output.attr("secType", this->getClassType());
-  output.attr("secTag", this->getTag());
+  if (output != 0)
+  {
+    output->tag("SectionOutput");
+    output->attr("secType", this->getClassType());
+    output->attr("secTag", this->getTag());
+  }
 
   // deformations
   if (strcmp(argv[0],"deformations") == 0 || strcmp(argv[0],"deformation") == 0) {
-    for (int i=0; i<typeSize; i++) {
-      int code = type(i);
-      switch (code){
-      case SECTION_RESPONSE_MZ:
-	output.tag("ResponseType","kappaZ");
-	break;
-      case SECTION_RESPONSE_P:
-	output.tag("ResponseType","eps");
-	break;
-      case SECTION_RESPONSE_VY:
-	output.tag("ResponseType","gammaY");
-	break;
-      case SECTION_RESPONSE_MY:
-	output.tag("ResponseType","kappaY");
-	break;
-      case SECTION_RESPONSE_VZ:
-	output.tag("ResponseType","gammaZ");
-	break;
-      case SECTION_RESPONSE_T:
-	output.tag("ResponseType","theta");
-	break;
-      case SECTION_RESPONSE_FXX:
-          output.tag("ResponseType", "epsXX");
+    if (output != 0)
+      for (int i = 0; i < typeSize; i++) {
+        int code = type(i);
+        switch (code) {
+        case SECTION_RESPONSE_MZ:
+          output->tag("ResponseType", "kappaZ");
           break;
-      case SECTION_RESPONSE_FYY:
-          output.tag("ResponseType", "epsYY");
+        case SECTION_RESPONSE_P:
+          output->tag("ResponseType", "eps");
           break;
-      case SECTION_RESPONSE_FXY:
-          output.tag("ResponseType", "epsXY");
+        case SECTION_RESPONSE_VY:
+          output->tag("ResponseType", "gammaY");
           break;
-      case SECTION_RESPONSE_MXX:
-          output.tag("ResponseType", "kappaXX");
+        case SECTION_RESPONSE_MY:
+          output->tag("ResponseType", "kappaY");
           break;
-      case SECTION_RESPONSE_MYY:
-          output.tag("ResponseType", "kappaYY");
+        case SECTION_RESPONSE_VZ:
+          output->tag("ResponseType", "gammaZ");
           break;
-      case SECTION_RESPONSE_MXY:
-          output.tag("ResponseType", "kappaXY");
+        case SECTION_RESPONSE_T:
+          output->tag("ResponseType", "theta");
           break;
-      case SECTION_RESPONSE_VXZ:
-          output.tag("ResponseType", "gammaXZ");
+        case SECTION_RESPONSE_FXX:
+          output->tag("ResponseType", "epsXX");
           break;
-      case SECTION_RESPONSE_VYZ:
-          output.tag("ResponseType", "gammaYZ");
+        case SECTION_RESPONSE_FYY:
+          output->tag("ResponseType", "epsYY");
           break;
-      default:
-	output.tag("ResponseType","Unknown");
+        case SECTION_RESPONSE_FXY:
+          output->tag("ResponseType", "epsXY");
+          break;
+        case SECTION_RESPONSE_MXX:
+          output->tag("ResponseType", "kappaXX");
+          break;
+        case SECTION_RESPONSE_MYY:
+          output->tag("ResponseType", "kappaYY");
+          break;
+        case SECTION_RESPONSE_MXY:
+          output->tag("ResponseType", "kappaXY");
+          break;
+        case SECTION_RESPONSE_VXZ:
+          output->tag("ResponseType", "gammaXZ");
+          break;
+        case SECTION_RESPONSE_VYZ:
+          output->tag("ResponseType", "gammaYZ");
+          break;
+        default:
+          output->tag("ResponseType", "Unknown");
+        }
       }
-    }
     theResponse =  new MaterialResponse(this, 1, this->getSectionDeformation());
   
   // forces
   } else if (strcmp(argv[0],"forces") == 0 || strcmp(argv[0],"force") == 0) {
-    for (int i=0; i<typeSize; i++) {
-      int code = type(i);
-      switch (code){
-      case SECTION_RESPONSE_MZ:
-	output.tag("ResponseType","Mz");
-	break;
-      case SECTION_RESPONSE_P:
-	output.tag("ResponseType","P");
-	break;
-      case SECTION_RESPONSE_VY:
-	output.tag("ResponseType","Vy");
-	break;
-      case SECTION_RESPONSE_MY:
-	output.tag("ResponseType","My");
-	break;
-      case SECTION_RESPONSE_VZ:
-	output.tag("ResponseType","Vz");
-	break;
-      case SECTION_RESPONSE_T:
-	output.tag("ResponseType","T");
-	break;
-      case SECTION_RESPONSE_FXX:
-          output.tag("ResponseType", "Fxx");
+    if (output != 0)
+      for (int i = 0; i < typeSize; i++) {
+        int code = type(i);
+        switch (code) {
+        case SECTION_RESPONSE_MZ:
+          output->tag("ResponseType", "Mz");
           break;
-      case SECTION_RESPONSE_FYY:
-          output.tag("ResponseType", "Fyy");
+        case SECTION_RESPONSE_P:
+          output->tag("ResponseType", "P");
           break;
-      case SECTION_RESPONSE_FXY:
-          output.tag("ResponseType", "Fxy");
+        case SECTION_RESPONSE_VY:
+          output->tag("ResponseType", "Vy");
           break;
-      case SECTION_RESPONSE_MXX:
-          output.tag("ResponseType", "Mxx");
+        case SECTION_RESPONSE_MY:
+          output->tag("ResponseType", "My");
           break;
-      case SECTION_RESPONSE_MYY:
-          output.tag("ResponseType", "Myy");
+        case SECTION_RESPONSE_VZ:
+          output->tag("ResponseType", "Vz");
           break;
-      case SECTION_RESPONSE_MXY:
-          output.tag("ResponseType", "Mxy");
+        case SECTION_RESPONSE_T:
+          output->tag("ResponseType", "T");
           break;
-      case SECTION_RESPONSE_VXZ:
-          output.tag("ResponseType", "Vxz");
+        case SECTION_RESPONSE_FXX:
+          output->tag("ResponseType", "Fxx");
           break;
-      case SECTION_RESPONSE_VYZ:
-          output.tag("ResponseType", "Vyz");
+        case SECTION_RESPONSE_FYY:
+          output->tag("ResponseType", "Fyy");
           break;
-      default:
-	output.tag("ResponseType","Unknown");
+        case SECTION_RESPONSE_FXY:
+          output->tag("ResponseType", "Fxy");
+          break;
+        case SECTION_RESPONSE_MXX:
+          output->tag("ResponseType", "Mxx");
+          break;
+        case SECTION_RESPONSE_MYY:
+          output->tag("ResponseType", "Myy");
+          break;
+        case SECTION_RESPONSE_MXY:
+          output->tag("ResponseType", "Mxy");
+          break;
+        case SECTION_RESPONSE_VXZ:
+          output->tag("ResponseType", "Vxz");
+          break;
+        case SECTION_RESPONSE_VYZ:
+          output->tag("ResponseType", "Vyz");
+          break;
+        default:
+          output->tag("ResponseType", "Unknown");
+        }
       }
-    }
     theResponse =  new MaterialResponse(this, 2, this->getStressResultant());
   
   // force and deformation
   } else if (strcmp(argv[0],"forceAndDeformation") == 0) { 
-    for (int i=0; i<typeSize; i++) {
-      int code = type(i);
-      switch (code){
-      case SECTION_RESPONSE_MZ:
-	output.tag("ResponseType","kappaZ");
-	break;
-      case SECTION_RESPONSE_P:
-	output.tag("ResponseType","eps");
-	break;
-      case SECTION_RESPONSE_VY:
-	output.tag("ResponseType","gammaY");
-	break;
-      case SECTION_RESPONSE_MY:
-	output.tag("ResponseType","kappaY");
-	break;
-      case SECTION_RESPONSE_VZ:
-	output.tag("ResponseType","gammaZ");
-	break;
-      case SECTION_RESPONSE_T:
-	output.tag("ResponseType","theta");
-	break;
-      case SECTION_RESPONSE_FXX:
-          output.tag("ResponseType", "epsXX");
+    if (output != 0)
+    {
+      for (int i = 0; i < typeSize; i++) {
+        int code = type(i);
+        switch (code) {
+        case SECTION_RESPONSE_MZ:
+          output->tag("ResponseType", "kappaZ");
           break;
-      case SECTION_RESPONSE_FYY:
-          output.tag("ResponseType", "epsYY");
+        case SECTION_RESPONSE_P:
+          output->tag("ResponseType", "eps");
           break;
-      case SECTION_RESPONSE_FXY:
-          output.tag("ResponseType", "epsXY");
+        case SECTION_RESPONSE_VY:
+          output->tag("ResponseType", "gammaY");
           break;
-      case SECTION_RESPONSE_MXX:
-          output.tag("ResponseType", "kappaXX");
+        case SECTION_RESPONSE_MY:
+          output->tag("ResponseType", "kappaY");
           break;
-      case SECTION_RESPONSE_MYY:
-          output.tag("ResponseType", "kappaYY");
+        case SECTION_RESPONSE_VZ:
+          output->tag("ResponseType", "gammaZ");
           break;
-      case SECTION_RESPONSE_MXY:
-          output.tag("ResponseType", "kappaXY");
+        case SECTION_RESPONSE_T:
+          output->tag("ResponseType", "theta");
           break;
-      case SECTION_RESPONSE_VXZ:
-          output.tag("ResponseType", "gammaXZ");
+        case SECTION_RESPONSE_FXX:
+          output->tag("ResponseType", "epsXX");
           break;
-      case SECTION_RESPONSE_VYZ:
-          output.tag("ResponseType", "gammaYZ");
+        case SECTION_RESPONSE_FYY:
+          output->tag("ResponseType", "epsYY");
           break;
-      default:
-	output.tag("ResponseType","Unknown");
+        case SECTION_RESPONSE_FXY:
+          output->tag("ResponseType", "epsXY");
+          break;
+        case SECTION_RESPONSE_MXX:
+          output->tag("ResponseType", "kappaXX");
+          break;
+        case SECTION_RESPONSE_MYY:
+          output->tag("ResponseType", "kappaYY");
+          break;
+        case SECTION_RESPONSE_MXY:
+          output->tag("ResponseType", "kappaXY");
+          break;
+        case SECTION_RESPONSE_VXZ:
+          output->tag("ResponseType", "gammaXZ");
+          break;
+        case SECTION_RESPONSE_VYZ:
+          output->tag("ResponseType", "gammaYZ");
+          break;
+        default:
+          output->tag("ResponseType", "Unknown");
+        }
+      }
+      for (int j = 0; j < typeSize; j++) {
+        int code = type(j);
+        switch (code) {
+        case SECTION_RESPONSE_MZ:
+          output->tag("ResponseType", "Mz");
+          break;
+        case SECTION_RESPONSE_P:
+          output->tag("ResponseType", "P");
+          break;
+        case SECTION_RESPONSE_VY:
+          output->tag("ResponseType", "Vy");
+          break;
+        case SECTION_RESPONSE_MY:
+          output->tag("ResponseType", "My");
+          break;
+        case SECTION_RESPONSE_VZ:
+          output->tag("ResponseType", "Vz");
+          break;
+        case SECTION_RESPONSE_T:
+          output->tag("ResponseType", "T");
+          break;
+        case SECTION_RESPONSE_FXX:
+          output->tag("ResponseType", "Fxx");
+          break;
+        case SECTION_RESPONSE_FYY:
+          output->tag("ResponseType", "Fyy");
+          break;
+        case SECTION_RESPONSE_FXY:
+          output->tag("ResponseType", "Fxy");
+          break;
+        case SECTION_RESPONSE_MXX:
+          output->tag("ResponseType", "Mxx");
+          break;
+        case SECTION_RESPONSE_MYY:
+          output->tag("ResponseType", "Myy");
+          break;
+        case SECTION_RESPONSE_MXY:
+          output->tag("ResponseType", "Mxy");
+          break;
+        case SECTION_RESPONSE_VXZ:
+          output->tag("ResponseType", "Vxz");
+          break;
+        case SECTION_RESPONSE_VYZ:
+          output->tag("ResponseType", "Vyz");
+          break;
+        default:
+          output->tag("ResponseType", "Unknown");
+        }
       }
     }
-    for (int j=0; j<typeSize; j++) {
-      int code = type(j);
-      switch (code){
-      case SECTION_RESPONSE_MZ:
-	output.tag("ResponseType","Mz");
-	break;
-      case SECTION_RESPONSE_P:
-	output.tag("ResponseType","P");
-	break;
-      case SECTION_RESPONSE_VY:
-	output.tag("ResponseType","Vy");
-	break;
-      case SECTION_RESPONSE_MY:
-	output.tag("ResponseType","My");
-	break;
-      case SECTION_RESPONSE_VZ:
-	output.tag("ResponseType","Vz");
-	break;
-      case SECTION_RESPONSE_T:
-	output.tag("ResponseType","T");
-	break;
-      case SECTION_RESPONSE_FXX:
-          output.tag("ResponseType", "Fxx");
-          break;
-      case SECTION_RESPONSE_FYY:
-          output.tag("ResponseType", "Fyy");
-          break;
-      case SECTION_RESPONSE_FXY:
-          output.tag("ResponseType", "Fxy");
-          break;
-      case SECTION_RESPONSE_MXX:
-          output.tag("ResponseType", "Mxx");
-          break;
-      case SECTION_RESPONSE_MYY:
-          output.tag("ResponseType", "Myy");
-          break;
-      case SECTION_RESPONSE_MXY:
-          output.tag("ResponseType", "Mxy");
-          break;
-      case SECTION_RESPONSE_VXZ:
-          output.tag("ResponseType", "Vxz");
-          break;
-      case SECTION_RESPONSE_VYZ:
-          output.tag("ResponseType", "Vyz");
-          break;
-      default:
-	output.tag("ResponseType","Unknown");
-      }
-    }
-    
     theResponse =  new MaterialResponse(this, 4, Vector(2*this->getOrder()));
   }
   
@@ -762,7 +762,8 @@ SectionForceDeformation::setResponse(const char **argv, int argc,
   }
   
 
-  output.endTag(); // SectionOutput
+  if (output != 0)
+    output->endTag(); // SectionOutput
   return theResponse;
 }
 

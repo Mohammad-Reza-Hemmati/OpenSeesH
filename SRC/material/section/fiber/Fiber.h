@@ -69,7 +69,7 @@ class Fiber : public TaggedObject, public MovableObject
     virtual int getOrder(void) = 0;
     virtual const ID &getType(void) = 0;
 
-    virtual Response *setResponse(const char **argv, int argc, OPS_Stream &s);
+    virtual Response *setResponse(const char **argv, int argc, OPS_Stream *s);
     virtual int getResponse(int responseID, Information &info);
 
     virtual void getFiberLocation(double &y, double &z) =0;

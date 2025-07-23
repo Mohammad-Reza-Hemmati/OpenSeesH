@@ -897,48 +897,60 @@ TFP_Bearing::Print(OPS_Stream &s, int flag)
 
 
 Response *
-TFP_Bearing::setResponse(const char **argv, int argc, OPS_Stream &output)
+TFP_Bearing::setResponse(const char** argv, int argc, OPS_Stream* output)
 {
-  Response *theResponse = 0;
+  Response* theResponse = 0;
 
-  output.tag("ElementOutput");
-  output.attr("eleType",this->getClassType());
-  output.attr("eleTag",this->getTag());
+  if (output != 0)
+  {
+    output->tag("ElementOutput");
+    output->attr("eleType", this->getClassType());
+    output->attr("eleTag", this->getTag());
+  }
   int numNodes = this->getNumExternalNodes();
-  const ID &nodes = this->getExternalNodes();
+  const ID& nodes = this->getExternalNodes();
   static char nodeData[32];
 
-  for (int i=0; i<numNodes; i++) {
-    sprintf(nodeData,"node%d",i+1);
-    output.attr(nodeData,nodes(i));
-  }
+  if (output != 0)
+    for (int i = 0; i < numNodes; i++) {
+      sprintf(nodeData, "node%d", i + 1);
+      output->attr(nodeData, nodes(i));
+    }
 
-  if (strcmp(argv[0],"force") == 0 || strcmp(argv[0],"forces") == 0 ||
-      strcmp(argv[0],"globalForce") == 0 || strcmp(argv[0],"globalForces") == 0) {
-    const Vector &force = this->getResistingForce();
-    int size = force.Size();
-    for (int i=0; i<size; i++) {
-      sprintf(nodeData,"P%d",i+1);
-      output.tag("ResponseType",nodeData);
+  if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0 ||
+    strcmp(argv[0], "globalForce") == 0 || strcmp(argv[0], "globalForces") == 0) {
+    if (output != 0)
+    {
+      const Vector& force = this->getResistingForce();
+      int size = force.Size();
+      for (int i = 0; i < size; i++) {
+        sprintf(nodeData, "P%d", i + 1);
+        output->tag("ResponseType", nodeData);
+      }
     }
     theResponse = new ElementResponse(this, 1, this->getResistingForce());
-  } else if (strcmp(argv[0],"v") == 0 || strcmp(argv[0],"relativeDisp") == 0) {
-    
-    for (int i=0; i<8; i++) {
-      sprintf(nodeData,"V%d",i+1);
-      output.tag("ResponseType",nodeData);
-    }
-    theResponse = new ElementResponse(this, 2, vectorSize8);
-  } else if (strcmp(argv[0],"vp") == 0 || strcmp(argv[0],"plasticDisp") == 0) {
+  }
+  else if (strcmp(argv[0], "v") == 0 || strcmp(argv[0], "relativeDisp") == 0) {
 
-    for (int i=0; i<8; i++) {
-      sprintf(nodeData,"Vp%d",i+1);
-      output.tag("ResponseType",nodeData);
-    }
+    if (output != 0)
+      for (int i = 0; i < 8; i++) {
+        sprintf(nodeData, "V%d", i + 1);
+        output->tag("ResponseType", nodeData);
+      }
+    theResponse = new ElementResponse(this, 2, vectorSize8);
+  }
+  else if (strcmp(argv[0], "vp") == 0 || strcmp(argv[0], "plasticDisp") == 0) {
+
+    if (output != 0)
+      for (int i = 0; i < 8; i++) {
+        sprintf(nodeData, "Vp%d", i + 1);
+        output->tag("ResponseType", nodeData);
+      }
     theResponse = new ElementResponse(this, 3, vectorSize8);
   }
 
-  output.endTag();
+  if (output != 0)
+    output->endTag();
   return theResponse;
 }
 

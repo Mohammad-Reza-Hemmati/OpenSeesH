@@ -1638,7 +1638,7 @@ ElasticBeam3d::displaySelf(Renderer& theViewer, int displayMode, float fact, con
 }
 
 Response*
-ElasticBeam3d::setResponse(const char** argv, int argc, OPS_Stream& output)
+ElasticBeam3d::setResponse(const char** argv, int argc, OPS_Stream* output)
 {
 
 #ifdef _CSS
@@ -1649,29 +1649,35 @@ ElasticBeam3d::setResponse(const char** argv, int argc, OPS_Stream& output)
 	Response* theResponse = 0;
 #endif // _CSS
 
-	output.tag("ElementOutput");
-	output.attr("eleType", "ElasticBeam3d");
-	output.attr("eleTag", this->getTag());
-	output.attr("node1", connectedExternalNodes[0]);
-	output.attr("node2", connectedExternalNodes[1]);
+	if (output != 0)
+	{
+		output->tag("ElementOutput");
+		output->attr("eleType", "ElasticBeam3d");
+		output->attr("eleTag", this->getTag());
+		output->attr("node1", connectedExternalNodes[0]);
+		output->attr("node2", connectedExternalNodes[1]);
+	}
 
 	// global forces
 	if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0 ||
 		strcmp(argv[0], "globalForce") == 0 || strcmp(argv[0], "globalForces") == 0) {
 
 
-		output.tag("ResponseType", "Px_1");
-		output.tag("ResponseType", "Py_1");
-		output.tag("ResponseType", "Pz_1");
-		output.tag("ResponseType", "Mx_1");
-		output.tag("ResponseType", "My_1");
-		output.tag("ResponseType", "Mz_1");
-		output.tag("ResponseType", "Px_2");
-		output.tag("ResponseType", "Py_2");
-		output.tag("ResponseType", "Pz_2");
-		output.tag("ResponseType", "Mx_2");
-		output.tag("ResponseType", "My_2");
-		output.tag("ResponseType", "Mz_2");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "Px_1");
+			output->tag("ResponseType", "Py_1");
+			output->tag("ResponseType", "Pz_1");
+			output->tag("ResponseType", "Mx_1");
+			output->tag("ResponseType", "My_1");
+			output->tag("ResponseType", "Mz_1");
+			output->tag("ResponseType", "Px_2");
+			output->tag("ResponseType", "Py_2");
+			output->tag("ResponseType", "Pz_2");
+			output->tag("ResponseType", "Mx_2");
+			output->tag("ResponseType", "My_2");
+			output->tag("ResponseType", "Mz_2");
+		}
 
 		theResponse = new ElementResponse(this, 2, P);
 
@@ -1679,18 +1685,21 @@ ElasticBeam3d::setResponse(const char** argv, int argc, OPS_Stream& output)
 	}
 	else if (strcmp(argv[0], "localForce") == 0 || strcmp(argv[0], "localForces") == 0) {
 
-		output.tag("ResponseType", "N_1");
-		output.tag("ResponseType", "Vy_1");
-		output.tag("ResponseType", "Vz_1");
-		output.tag("ResponseType", "T_1");
-		output.tag("ResponseType", "My_1");
-		output.tag("ResponseType", "Mz_1");
-		output.tag("ResponseType", "N_2");
-		output.tag("ResponseType", "Vy_2");
-		output.tag("ResponseType", "Vz_2");
-		output.tag("ResponseType", "T_2");
-		output.tag("ResponseType", "My_2");
-		output.tag("ResponseType", "Mz_2");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "N_1");
+			output->tag("ResponseType", "Vy_1");
+			output->tag("ResponseType", "Vz_1");
+			output->tag("ResponseType", "T_1");
+			output->tag("ResponseType", "My_1");
+			output->tag("ResponseType", "Mz_1");
+			output->tag("ResponseType", "N_2");
+			output->tag("ResponseType", "Vy_2");
+			output->tag("ResponseType", "Vz_2");
+			output->tag("ResponseType", "T_2");
+			output->tag("ResponseType", "My_2");
+			output->tag("ResponseType", "Mz_2");
+		}
 
 		theResponse = new ElementResponse(this, 3, P);
 
@@ -1698,24 +1707,30 @@ ElasticBeam3d::setResponse(const char** argv, int argc, OPS_Stream& output)
 	}
 	else if (strcmp(argv[0], "basicForce") == 0 || strcmp(argv[0], "basicForces") == 0) {
 
-		output.tag("ResponseType", "N");
-		output.tag("ResponseType", "Mz_1");
-		output.tag("ResponseType", "Mz_2");
-		output.tag("ResponseType", "My_1");
-		output.tag("ResponseType", "My_2");
-		output.tag("ResponseType", "T");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "N");
+			output->tag("ResponseType", "Mz_1");
+			output->tag("ResponseType", "Mz_2");
+			output->tag("ResponseType", "My_1");
+			output->tag("ResponseType", "My_2");
+			output->tag("ResponseType", "T");
+		}
 
 		theResponse = new ElementResponse(this, 4, Vector(6));
 	}
 	// basic stiffness -
 	else if (strcmp(argv[0], "basicStiffness") == 0) {
 
-		output.tag("ResponseType", "N");
-		output.tag("ResponseType", "Mz_1");
-		output.tag("ResponseType", "Mz_2");
-		output.tag("ResponseType", "My_1");
-		output.tag("ResponseType", "My_2");
-		output.tag("ResponseType", "T");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "N");
+			output->tag("ResponseType", "Mz_1");
+			output->tag("ResponseType", "Mz_2");
+			output->tag("ResponseType", "My_1");
+			output->tag("ResponseType", "My_2");
+			output->tag("ResponseType", "T");
+		}
 
 		theResponse = new ElementResponse(this, 19, Matrix(6, 6));
 
@@ -1723,18 +1738,21 @@ ElasticBeam3d::setResponse(const char** argv, int argc, OPS_Stream& output)
 	}
 	else if (theDamping && (strcmp(argv[0], "globalDampingForce") == 0 || strcmp(argv[0], "globalDampingForces") == 0)) {
 
-		output.tag("ResponseType", "Px_1");
-		output.tag("ResponseType", "Py_1");
-		output.tag("ResponseType", "Pz_1");
-		output.tag("ResponseType", "Mx_1");
-		output.tag("ResponseType", "My_1");
-		output.tag("ResponseType", "Mz_1");
-		output.tag("ResponseType", "Px_2");
-		output.tag("ResponseType", "Py_2");
-		output.tag("ResponseType", "Pz_2");
-		output.tag("ResponseType", "Mx_2");
-		output.tag("ResponseType", "My_2");
-		output.tag("ResponseType", "Mz_2");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "Px_1");
+			output->tag("ResponseType", "Py_1");
+			output->tag("ResponseType", "Pz_1");
+			output->tag("ResponseType", "Mx_1");
+			output->tag("ResponseType", "My_1");
+			output->tag("ResponseType", "Mz_1");
+			output->tag("ResponseType", "Px_2");
+			output->tag("ResponseType", "Py_2");
+			output->tag("ResponseType", "Pz_2");
+			output->tag("ResponseType", "Mx_2");
+			output->tag("ResponseType", "My_2");
+			output->tag("ResponseType", "Mz_2");
+		}
 
 		theResponse = new ElementResponse(this, 21, P);
 
@@ -1742,18 +1760,21 @@ ElasticBeam3d::setResponse(const char** argv, int argc, OPS_Stream& output)
 	}
 	else if (theDamping && (strcmp(argv[0], "localDampingForce") == 0 || strcmp(argv[0], "localDampingForces") == 0)) {
 
-		output.tag("ResponseType", "N_1");
-		output.tag("ResponseType", "Vy_1");
-		output.tag("ResponseType", "Vz_1");
-		output.tag("ResponseType", "T_1");
-		output.tag("ResponseType", "My_1");
-		output.tag("ResponseType", "Mz_1");
-		output.tag("ResponseType", "N_2");
-		output.tag("ResponseType", "Vy_2");
-		output.tag("ResponseType", "Vz_2");
-		output.tag("ResponseType", "T_2");
-		output.tag("ResponseType", "My_2");
-		output.tag("ResponseType", "Mz_2");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "N_1");
+			output->tag("ResponseType", "Vy_1");
+			output->tag("ResponseType", "Vz_1");
+			output->tag("ResponseType", "T_1");
+			output->tag("ResponseType", "My_1");
+			output->tag("ResponseType", "Mz_1");
+			output->tag("ResponseType", "N_2");
+			output->tag("ResponseType", "Vy_2");
+			output->tag("ResponseType", "Vz_2");
+			output->tag("ResponseType", "T_2");
+			output->tag("ResponseType", "My_2");
+			output->tag("ResponseType", "Mz_2");
+		}
 
 		theResponse = new ElementResponse(this, 22, P);
 
@@ -1761,12 +1782,15 @@ ElasticBeam3d::setResponse(const char** argv, int argc, OPS_Stream& output)
 	}
 	else if (theDamping && (strcmp(argv[0], "basicDampingForce") == 0 || strcmp(argv[0], "basicDampingForces") == 0)) {
 
-		output.tag("ResponseType", "N");
-		output.tag("ResponseType", "Mz_1");
-		output.tag("ResponseType", "Mz_2");
-		output.tag("ResponseType", "My_1");
-		output.tag("ResponseType", "My_2");
-		output.tag("ResponseType", "T");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "N");
+			output->tag("ResponseType", "Mz_1");
+			output->tag("ResponseType", "Mz_2");
+			output->tag("ResponseType", "My_1");
+			output->tag("ResponseType", "My_2");
+			output->tag("ResponseType", "T");
+		}
 
 		theResponse = new ElementResponse(this, 23, Vector(6));
 
@@ -1774,12 +1798,15 @@ ElasticBeam3d::setResponse(const char** argv, int argc, OPS_Stream& output)
 	else if (strcmp(argv[0], "deformations") == 0 ||
 		strcmp(argv[0], "basicDeformations") == 0) {
 
-		output.tag("ResponseType", "eps");
-		output.tag("ResponseType", "theta11");
-		output.tag("ResponseType", "theta12");
-		output.tag("ResponseType", "theta21");
-		output.tag("ResponseType", "theta22");
-		output.tag("ResponseType", "phi");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "eps");
+			output->tag("ResponseType", "theta11");
+			output->tag("ResponseType", "theta12");
+			output->tag("ResponseType", "theta21");
+			output->tag("ResponseType", "theta22");
+			output->tag("ResponseType", "phi");
+		}
 		theResponse = new ElementResponse(this, 5, Vector(6));
 	}
 
@@ -1798,7 +1825,8 @@ ElasticBeam3d::setResponse(const char** argv, int argc, OPS_Stream& output)
 		}
 	}
 
-	output.endTag(); // ElementOutput
+	if (output != 0)
+		output->endTag(); // ElementOutput
 
 	if (theResponse == 0)
 		theResponse = theCoordTransf->setResponse(argv, argc, output);

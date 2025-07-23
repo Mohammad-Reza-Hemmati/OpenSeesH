@@ -62,7 +62,7 @@ class HystereticEnergy : public DamageModel
     
     DamageModel *getCopy (void);
     
-    Response *setResponse(const char **argv, int argc, OPS_Stream &info);
+    Response *setResponse(const char **argv, int argc, OPS_Stream *info);
     int getResponse(int responseID, Information &info);
     
     int sendSelf(int commitTag, Channel &theChannel);  

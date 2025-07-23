@@ -684,7 +684,7 @@ MembranePlateFiberSection::recvSelf(int commitTag, Channel &theChannel, FEM_Obje
 
 Response*
 MembranePlateFiberSection::setResponse(const char **argv, int argc,
-				       OPS_Stream &output)
+				       OPS_Stream *output)
 {
   Response *theResponse =0;
 
@@ -694,14 +694,18 @@ MembranePlateFiberSection::setResponse(const char **argv, int argc,
     int key = atoi(argv[1]);    
     
     if (key > 0 && key <= numFibers) {
-      output.tag("FiberOutput");
-      output.attr("number", key);
-      const double *sg = (integrationType == 0) ? sgLobatto : sgGauss;
-      const double *wg = (integrationType == 0) ? wgLobatto : wgGauss;      
-      output.attr("zLoc", 0.5 * h * sg[key - 1]);
-      output.attr("thickness", 0.5 * h * wg[key - 1]);
+      if (output != 0)
+      {
+        output->tag("FiberOutput");
+        output->attr("number", key);
+        const double* sg = (integrationType == 0) ? sgLobatto : sgGauss;
+        const double* wg = (integrationType == 0) ? wgLobatto : wgGauss;
+        output->attr("zLoc", 0.5 * h * sg[key - 1]);
+        output->attr("thickness", 0.5 * h * wg[key - 1]);
+      }
       theResponse = theFibers[key-1]->setResponse(&argv[passarg], argc-passarg, output);
-      output.endTag();
+      if (output != 0)
+        output->endTag();
     }
 
   }

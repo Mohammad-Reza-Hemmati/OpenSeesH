@@ -423,7 +423,7 @@ InitialStateAnalysisWrapper::updateParameter(int responseID, Information &info)
 }
 
 Response*
-InitialStateAnalysisWrapper::setResponse(const char **argv, int argc, OPS_Stream &output)
+InitialStateAnalysisWrapper::setResponse(const char **argv, int argc, OPS_Stream *output)
 {
 	return theMainMaterial->setResponse(argv, argc, output);
 }

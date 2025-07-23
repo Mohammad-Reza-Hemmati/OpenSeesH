@@ -999,14 +999,16 @@ Vector DruckerPragerThermal::getState()
 
 
 Response*
-DruckerPragerThermal::setResponse(const char **argv, int argc, OPS_Stream &output)
+DruckerPragerThermal::setResponse(const char **argv, int argc, OPS_Stream *output)
 {
 	Response *theResponse = 0;
 	const char *matType = this->getType();
-
-	output.tag("NdMaterialOutput");
-	output.attr("matType", this->getClassType());
-	output.attr("matTag", this->getTag());
+	if (output != 0)
+	{
+		output->tag("NdMaterialOutput");
+		output->attr("matType", this->getClassType());
+		output->attr("matTag", this->getTag());
+	}
 
 	if (strcmp(argv[0], "stress") == 0 || strcmp(argv[0], "stresses") == 0)
 		return new MaterialResponse(this, 1, this->getStress());

@@ -747,7 +747,7 @@ int Joint3D::displaySelf(Renderer& theViewer, int displayMode, float fact, const
 
 
 //most-probably requires to be overridden
-Response* Joint3D::setResponse(const char** argv, int argc, OPS_Stream& output)
+Response* Joint3D::setResponse(const char** argv, int argc, OPS_Stream* output)
 {
 	//
 	// we compare argv[0] for known response types for the Truss

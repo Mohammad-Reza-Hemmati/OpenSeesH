@@ -271,7 +271,7 @@ Kratzig::getCopy (void)
 }
 
 Response*
-Kratzig::setResponse(const char **argv, int argc, OPS_Stream &info)
+Kratzig::setResponse(const char **argv, int argc, OPS_Stream *info)
 {
 //
 // we compare argv[0] for known response types for the Truss

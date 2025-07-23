@@ -976,7 +976,7 @@ SSPquadUP::Print(OPS_Stream &s, int flag)
 }
 
 Response*
-SSPquadUP::setResponse(const char **argv, int argc, OPS_Stream &eleInfo)
+SSPquadUP::setResponse(const char **argv, int argc, OPS_Stream *eleInfo)
 {
     // no special recorders for this element, call the method in the material class
     return theMaterial->setResponse(argv, argc, eleInfo);

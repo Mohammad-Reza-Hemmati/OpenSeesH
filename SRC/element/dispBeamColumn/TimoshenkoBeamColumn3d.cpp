@@ -1493,197 +1493,235 @@ TimoshenkoBeamColumn3d::displaySelf(Renderer &theViewer, int displayMode, float 
 }
 
 Response*
-TimoshenkoBeamColumn3d::setResponse(const char **argv, int argc, OPS_Stream &output)
+TimoshenkoBeamColumn3d::setResponse(const char** argv, int argc, OPS_Stream* output)
 {
 
-    Response *theResponse = 0;
+  Response* theResponse = 0;
 
-    output.tag("ElementOutput");
-    output.attr("eleType","TimoshenkoBeamColumn3d");
-    output.attr("eleTag",this->getTag());
-    output.attr("node1",connectedExternalNodes[0]);
-    output.attr("node2",connectedExternalNodes[1]);
+  if (output != 0)
+  {
+    output->tag("ElementOutput");
+    output->attr("eleType", "TimoshenkoBeamColumn3d");
+    output->attr("eleTag", this->getTag());
+    output->attr("node1", connectedExternalNodes[0]);
+    output->attr("node2", connectedExternalNodes[1]);
+  }
 
-    //
-    // we compare argv[0] for known response types 
-    //
+  //
+  // we compare argv[0] for known response types 
+  //
 
-    // global force - 
-    if (strcmp(argv[0],"forces") == 0 || strcmp(argv[0],"force") == 0
-	|| strcmp(argv[0],"globalForce") == 0 || strcmp(argv[0],"globalForces") == 0) {
+  // global force - 
+  if (strcmp(argv[0], "forces") == 0 || strcmp(argv[0], "force") == 0
+    || strcmp(argv[0], "globalForce") == 0 || strcmp(argv[0], "globalForces") == 0) {
 
-      output.tag("ResponseType","Px_1");
-      output.tag("ResponseType","Py_1");
-      output.tag("ResponseType","Pz_1");
-      output.tag("ResponseType","Mx_1");
-      output.tag("ResponseType","My_1");
-      output.tag("ResponseType","Mz_1");
-      output.tag("ResponseType","Px_2");
-      output.tag("ResponseType","Py_2");
-      output.tag("ResponseType","Pz_2");
-      output.tag("ResponseType","Mx_2");
-      output.tag("ResponseType","My_2");
-      output.tag("ResponseType","Mz_2");
+    if (output != 0)
+    {
+      output->tag("ResponseType", "Px_1");
+      output->tag("ResponseType", "Py_1");
+      output->tag("ResponseType", "Pz_1");
+      output->tag("ResponseType", "Mx_1");
+      output->tag("ResponseType", "My_1");
+      output->tag("ResponseType", "Mz_1");
+      output->tag("ResponseType", "Px_2");
+      output->tag("ResponseType", "Py_2");
+      output->tag("ResponseType", "Pz_2");
+      output->tag("ResponseType", "Mx_2");
+      output->tag("ResponseType", "My_2");
+      output->tag("ResponseType", "Mz_2");
+    }
 
 
-      theResponse = new ElementResponse(this, 1, P);
+    theResponse = new ElementResponse(this, 1, P);
 
     // local force -
-    }  else if (strcmp(argv[0],"localForce") == 0 || strcmp(argv[0],"localForces") == 0) {
+  }
+  else if (strcmp(argv[0], "localForce") == 0 || strcmp(argv[0], "localForces") == 0) {
 
-      output.tag("ResponseType","N_1");
-      output.tag("ResponseType","Vy_1");
-      output.tag("ResponseType","Vz_1");
-      output.tag("ResponseType","T_1");
-      output.tag("ResponseType","My_1");
-      output.tag("ResponseType","Mz_1");
-      output.tag("ResponseType","N_2");
-      output.tag("ResponseType","Vy_2");
-      output.tag("ResponseType","Vz_2");
-      output.tag("ResponseType","T_2");
-      output.tag("ResponseType","My_2");
-      output.tag("ResponseType","Mz_2");
-
-      theResponse = new ElementResponse(this, 2, P);
- }
-    else if (strcmp(argv[0],"basicForce") == 0 || strcmp(argv[0],"basicForces") == 0) {
-      output.tag("ResponseType","N");
-      output.tag("ResponseType","M1");
-      output.tag("ResponseType","M2");
-
-      theResponse = new ElementResponse(this, 9, Vector(6));
+    if (output != 0)
+    {
+      output->tag("ResponseType", "N_1");
+      output->tag("ResponseType", "Vy_1");
+      output->tag("ResponseType", "Vz_1");
+      output->tag("ResponseType", "T_1");
+      output->tag("ResponseType", "My_1");
+      output->tag("ResponseType", "Mz_1");
+      output->tag("ResponseType", "N_2");
+      output->tag("ResponseType", "Vy_2");
+      output->tag("ResponseType", "Vz_2");
+      output->tag("ResponseType", "T_2");
+      output->tag("ResponseType", "My_2");
+      output->tag("ResponseType", "Mz_2");
     }
-    else if (strcmp(argv[0],"basicStiffness") == 0) {
-      output.tag("ResponseType","N");
-      output.tag("ResponseType","M1");
-      output.tag("ResponseType","M2");
 
-      theResponse = new ElementResponse(this, 19, Matrix(6,6));
+    theResponse = new ElementResponse(this, 2, P);
+  }
+  else if (strcmp(argv[0], "basicForce") == 0 || strcmp(argv[0], "basicForces") == 0) {
+    if (output != 0)
+    {
+      output->tag("ResponseType", "N");
+      output->tag("ResponseType", "M1");
+      output->tag("ResponseType", "M2");
+    }
+
+    theResponse = new ElementResponse(this, 9, Vector(6));
+  }
+  else if (strcmp(argv[0], "basicStiffness") == 0) {
+    if (output != 0)
+    {
+      output->tag("ResponseType", "N");
+      output->tag("ResponseType", "M1");
+      output->tag("ResponseType", "M2");
+    }
+
+    theResponse = new ElementResponse(this, 19, Matrix(6, 6));
     // chord rotation -
-    }  else if (strcmp(argv[0],"chordRotation") == 0 || strcmp(argv[0],"chordDeformation") == 0 
-	      || strcmp(argv[0],"basicDeformation") == 0) {
+  }
+  else if (strcmp(argv[0], "chordRotation") == 0 || strcmp(argv[0], "chordDeformation") == 0
+    || strcmp(argv[0], "basicDeformation") == 0) {
 
-      output.tag("ResponseType","eps");
-      output.tag("ResponseType","thetaZ_1");
-      output.tag("ResponseType","thetaZ_2");
-      output.tag("ResponseType","thetaY_1");
-      output.tag("ResponseType","thetaY_2");
-      output.tag("ResponseType","thetaX");
+    if (output != 0)
+    {
+      output->tag("ResponseType", "eps");
+      output->tag("ResponseType", "thetaZ_1");
+      output->tag("ResponseType", "thetaZ_2");
+      output->tag("ResponseType", "thetaY_1");
+      output->tag("ResponseType", "thetaY_2");
+      output->tag("ResponseType", "thetaX");
+    }
 
-      theResponse = new ElementResponse(this, 3, Vector(6));
+    theResponse = new ElementResponse(this, 3, Vector(6));
 
     // plastic rotation -
-    } else if (strcmp(argv[0],"plasticRotation") == 0 || strcmp(argv[0],"plasticDeformation") == 0) {
+  }
+  else if (strcmp(argv[0], "plasticRotation") == 0 || strcmp(argv[0], "plasticDeformation") == 0) {
 
-    output.tag("ResponseType","epsP");
-    output.tag("ResponseType","thetaZP_1");
-    output.tag("ResponseType","thetaZP_2");
-    output.tag("ResponseType","thetaYP_1");
-    output.tag("ResponseType","thetaYP_2");
-    output.tag("ResponseType","thetaXP");
+    if (output != 0)
+    {
+      output->tag("ResponseType", "epsP");
+      output->tag("ResponseType", "thetaZP_1");
+      output->tag("ResponseType", "thetaZP_2");
+      output->tag("ResponseType", "thetaYP_1");
+      output->tag("ResponseType", "thetaYP_2");
+      output->tag("ResponseType", "thetaXP");
+    }
 
     theResponse = new ElementResponse(this, 4, Vector(6));
-  
 
-  } else if (strcmp(argv[0],"RayleighForces") == 0 || strcmp(argv[0],"rayleighForces") == 0) {
 
-    theResponse =  new ElementResponse(this, 12, P);
+  }
+  else if (strcmp(argv[0], "RayleighForces") == 0 || strcmp(argv[0], "rayleighForces") == 0) {
 
-  }   
-    else if (strcmp(argv[0],"integrationPoints") == 0)
-      theResponse = new ElementResponse(this, 10, Vector(numSections));
+    theResponse = new ElementResponse(this, 12, P);
 
-    else if (strcmp(argv[0],"integrationWeights") == 0)
-      theResponse = new ElementResponse(this, 11, Vector(numSections));
+  }
+  else if (strcmp(argv[0], "integrationPoints") == 0)
+    theResponse = new ElementResponse(this, 10, Vector(numSections));
 
-    else if (strcmp(argv[0],"sectionTags") == 0)
-      theResponse = new ElementResponse(this, 110, ID(numSections));
+  else if (strcmp(argv[0], "integrationWeights") == 0)
+    theResponse = new ElementResponse(this, 11, Vector(numSections));
+
+  else if (strcmp(argv[0], "sectionTags") == 0)
+    theResponse = new ElementResponse(this, 110, ID(numSections));
 
   // section response -
-  else if (strcmp(argv[0],"sectionX") == 0) {
-      if (argc > 2) {
-	float sectionLoc = atof(argv[1]);
-	
-	double xi[maxNumSections];
-	double L = crdTransf->getInitialLength();
-	beamInt->getSectionLocations(numSections, L, xi);
-	
-	sectionLoc /= L;
-	
-	float minDistance = fabs(xi[0]-sectionLoc);
-	int sectionNum = 0;
-	for (int i = 1; i < numSections; i++) {
-	  if (fabs(xi[i]-sectionLoc) < minDistance) {
-	    minDistance = fabs(xi[i]-sectionLoc);
-	    sectionNum = i;
-	  }
-	}
-	
-	output.tag("GaussPointOutput");
-	output.attr("number",sectionNum+1);
-	output.attr("eta",xi[sectionNum]*L);
-	
-	theResponse = theSections[sectionNum]->setResponse(&argv[2], argc-2, output);
-      }
-    }
-    
-    else if (strcmp(argv[0],"section") == 0) { 
-      if (argc > 1) {
-	
-	int sectionNum = atoi(argv[1]);
+  else if (strcmp(argv[0], "sectionX") == 0) {
+    if (argc > 2) {
+      float sectionLoc = atof(argv[1]);
 
-	if (sectionNum > 0 && sectionNum <= numSections && argc > 2) {
-	  
-	  double xi[maxNumSections];
-	  double L = crdTransf->getInitialLength();
-	  beamInt->getSectionLocations(numSections, L, xi);
-	  
-	  output.tag("GaussPointOutput");
-	  output.attr("number",sectionNum);
-	  output.attr("eta",xi[sectionNum-1]*L);
-	  
-	  theResponse =  theSections[sectionNum-1]->setResponse(&argv[2], argc-2, output);
-	  
-	  output.endTag();
-	} else if (sectionNum == 0) { // argv[1] was not an int, we want all sections, 
-	
-	  CompositeResponse *theCResponse = new CompositeResponse();
-	  int numResponse = 0;
-	  double xi[maxNumSections];
-	  double L = crdTransf->getInitialLength();
-	  beamInt->getSectionLocations(numSections, L, xi);
-	  
-	  for (int i=0; i<numSections; i++) {
-	    
-	    output.tag("GaussPointOutput");
-	    output.attr("number",i+1);
-	    output.attr("eta",xi[i]*L);
-	    
-	    Response *theSectionResponse = theSections[i]->setResponse(&argv[1], argc-1, output);
-	    
-	    output.endTag();	  
-	    
-	    if (theSectionResponse != 0) {
-	      numResponse = theCResponse->addResponse(theSectionResponse);
-	    }
-	  }
-	  
-	  if (numResponse == 0) // no valid responses found
-	    delete theCResponse;
-	  else
-	    theResponse = theCResponse;
-	}
+      double xi[maxNumSections];
+      double L = crdTransf->getInitialLength();
+      beamInt->getSectionLocations(numSections, L, xi);
+
+      sectionLoc /= L;
+
+      float minDistance = fabs(xi[0] - sectionLoc);
+      int sectionNum = 0;
+      for (int i = 1; i < numSections; i++) {
+        if (fabs(xi[i] - sectionLoc) < minDistance) {
+          minDistance = fabs(xi[i] - sectionLoc);
+          sectionNum = i;
+        }
+      }
+
+      if (output != 0)
+      {
+        output->tag("GaussPointOutput");
+        output->attr("number", sectionNum + 1);
+        output->attr("eta", xi[sectionNum] * L);
+      }
+
+      theResponse = theSections[sectionNum]->setResponse(&argv[2], argc - 2, output);
+    }
+  }
+
+  else if (strcmp(argv[0], "section") == 0) {
+    if (argc > 1) {
+
+      int sectionNum = atoi(argv[1]);
+
+      if (sectionNum > 0 && sectionNum <= numSections && argc > 2) {
+
+        double xi[maxNumSections];
+        double L = crdTransf->getInitialLength();
+        beamInt->getSectionLocations(numSections, L, xi);
+
+        if (output != 0)
+        {
+          output->tag("GaussPointOutput");
+          output->attr("number", sectionNum);
+          output->attr("eta", xi[sectionNum - 1] * L);
+        }
+
+        theResponse = theSections[sectionNum - 1]->setResponse(&argv[2], argc - 2, output);
+
+        if (output != 0)
+          output->endTag();
+      }
+      else if (sectionNum == 0) { // argv[1] was not an int, we want all sections, 
+
+        CompositeResponse* theCResponse = new CompositeResponse();
+        int numResponse = 0;
+        double xi[maxNumSections];
+        double L = crdTransf->getInitialLength();
+        beamInt->getSectionLocations(numSections, L, xi);
+
+        for (int i = 0; i < numSections; i++) {
+
+          if (output != 0)
+          {
+            output->tag("GaussPointOutput");
+            output->attr("number", i + 1);
+            output->attr("eta", xi[i] * L);
+          }
+
+          Response* theSectionResponse = theSections[i]->setResponse(&argv[1], argc - 1, output);
+
+          if (output != 0)
+            output->endTag();
+
+          if (theSectionResponse != 0) {
+            numResponse = theCResponse->addResponse(theSectionResponse);
+          }
+        }
+
+        if (numResponse == 0) // no valid responses found
+          delete theCResponse;
+        else
+          theResponse = theCResponse;
       }
     }
-    // by SAJalali
-    else if (strcmp(argv[0], "energy") == 0) {
-      theResponse = new ElementResponse(this, 13, 0.0);
-    }
-    
-    if (theResponse == 0)
-      theResponse = crdTransf->setResponse(argv, argc, output);
-    
-  output.endTag();
+  }
+  // by SAJalali
+  else if (strcmp(argv[0], "energy") == 0) {
+    theResponse = new ElementResponse(this, 13, 0.0);
+  }
+
+  if (theResponse == 0)
+    theResponse = crdTransf->setResponse(argv, argc, output);
+
+  if (output != 0)
+    output->endTag();
   return theResponse;
 }
 

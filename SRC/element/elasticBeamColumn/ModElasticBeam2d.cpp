@@ -820,65 +820,80 @@ ModElasticBeam2d::displaySelf(Renderer &theViewer, int displayMode, float fact, 
 }
 
 Response*
-ModElasticBeam2d::setResponse(const char **argv, int argc, OPS_Stream &output)
+ModElasticBeam2d::setResponse(const char** argv, int argc, OPS_Stream* output)
 {
 
 #ifdef _CSS
-    Response* theResponse = Element::setResponse(argv, argc, output);
-    if (theResponse != 0)
-        return theResponse;
+  Response* theResponse = Element::setResponse(argv, argc, output);
+  if (theResponse != 0)
+    return theResponse;
 #else
-    Response* theResponse = 0;
+  Response* theResponse = 0;
 #endif // _CSS
 
-  output.tag("ElementOutput");
-  output.attr("eleType","ModElasticBeam2d");
-  output.attr("eleTag",this->getTag());
-  output.attr("node1",connectedExternalNodes[0]);
-  output.attr("node2",connectedExternalNodes[1]);
+  if (output != 0)
+  {
+    output->tag("ElementOutput");
+    output->attr("eleType", "ModElasticBeam2d");
+    output->attr("eleTag", this->getTag());
+    output->attr("node1", connectedExternalNodes[0]);
+    output->attr("node2", connectedExternalNodes[1]);
+  }
 
-    // global forces
-  if (strcmp(argv[0],"force") == 0 || strcmp(argv[0],"forces") == 0 ||
-      strcmp(argv[0],"globalForce") == 0 || strcmp(argv[0],"globalForces") == 0) {
+  // global forces
+  if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0 ||
+    strcmp(argv[0], "globalForce") == 0 || strcmp(argv[0], "globalForces") == 0) {
 
-    output.tag("ResponseType","Px_1");
-    output.tag("ResponseType","Py_1");
-    output.tag("ResponseType","Mz_1");
-    output.tag("ResponseType","Px_2");
-    output.tag("ResponseType","Py_2");
-    output.tag("ResponseType","Mz_2");
+    if (output != 0)
+    {
+      output->tag("ResponseType", "Px_1");
+      output->tag("ResponseType", "Py_1");
+      output->tag("ResponseType", "Mz_1");
+      output->tag("ResponseType", "Px_2");
+      output->tag("ResponseType", "Py_2");
+      output->tag("ResponseType", "Mz_2");
+    }
 
-    theResponse =  new ElementResponse(this, 2, P);
-  
-  // local forces
-  }    else if (strcmp(argv[0],"localForce") == 0 || strcmp(argv[0],"localForces") == 0) {
+    theResponse = new ElementResponse(this, 2, P);
 
-    output.tag("ResponseType","N_1");
-    output.tag("ResponseType","V_1");
-    output.tag("ResponseType","M_1");
-    output.tag("ResponseType","N_2");
-    output.tag("ResponseType","V_2");
-    output.tag("ResponseType","M_2");
-    
+    // local forces
+  }
+  else if (strcmp(argv[0], "localForce") == 0 || strcmp(argv[0], "localForces") == 0) {
+
+    if (output != 0)
+    {
+      output->tag("ResponseType", "N_1");
+      output->tag("ResponseType", "V_1");
+      output->tag("ResponseType", "M_1");
+      output->tag("ResponseType", "N_2");
+      output->tag("ResponseType", "V_2");
+      output->tag("ResponseType", "M_2");
+    }
+
     theResponse = new ElementResponse(this, 3, P);
 
-  // basic forces
-  }    else if (strcmp(argv[0],"basicForce") == 0 || strcmp(argv[0],"basicForces") == 0) {
+    // basic forces
+  }
+  else if (strcmp(argv[0], "basicForce") == 0 || strcmp(argv[0], "basicForces") == 0) {
 
-    output.tag("ResponseType","N");
-    output.tag("ResponseType","M_1");
-    output.tag("ResponseType","M_2");
-    
+    if (output != 0)
+    {
+      output->tag("ResponseType", "N");
+      output->tag("ResponseType", "M_1");
+      output->tag("ResponseType", "M_2");
+    }
+
     theResponse = new ElementResponse(this, 4, Vector(3));
-  }  
+  }
 #ifdef _CSS
   else if (strcmp(argv[0], "energy") == 0)
   {
-      return new ElementResponse(this, 7, 0.0);
+    return new ElementResponse(this, 7, 0.0);
   }
 #endif // _CSS
 
-  output.endTag(); // ElementOutput
+  if (output != 0)
+    output->endTag(); // ElementOutput
 
   return theResponse;
 }

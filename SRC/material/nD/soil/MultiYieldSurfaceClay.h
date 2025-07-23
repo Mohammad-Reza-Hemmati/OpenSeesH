@@ -97,7 +97,7 @@ public:
      int recvSelf(int commitTag, Channel &theChannel, 
 		  FEM_ObjectBroker &theBroker);    
 
-     Response *setResponse (const char **argv, int argc, OPS_Stream &theOutput);
+     Response *setResponse (const char **argv, int argc, OPS_Stream *theOutput);
      int getResponse (int responseID, Information &matInformation);
      void Print(OPS_Stream &s, int flag =0);
 

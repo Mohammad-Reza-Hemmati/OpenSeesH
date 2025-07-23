@@ -73,7 +73,7 @@ DamageModel::~DamageModel()
 }
 
 Response*
-DamageModel::setResponse(const char **argv, int argc, OPS_Stream &stream)
+DamageModel::setResponse(const char **argv, int argc, OPS_Stream *stream)
 {
   if ( strcmp(argv[0],"damage") == 0 || strcmp(argv[0],"damageindex") == 0 )
     return new DamageResponse( this , 1 , 0.0 );

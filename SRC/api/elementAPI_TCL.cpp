@@ -220,6 +220,11 @@ int OPS_ResetInputNoBuilder(ClientData clientData,
 }
 
 extern "C"
+int OPS_GetInt(int* numData, int* data)
+{
+  return OPS_GetIntInput(numData, data);
+}
+extern "C"
 int OPS_GetIntInput(int* numData, int* data)
 {
     int size = *numData;
@@ -316,6 +321,11 @@ extern "C" int OPS_SetIntDictListOutput(
     return 0;
 }
 
+extern "C"
+int OPS_GetDouble(int* numData, double* data)
+{
+  return OPS_GetDoubleInput(numData, data);
+}
 extern "C"
 int OPS_GetDoubleInput(int* numData, double* data)
 {

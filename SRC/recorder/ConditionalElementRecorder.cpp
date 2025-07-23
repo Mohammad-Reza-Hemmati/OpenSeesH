@@ -118,15 +118,15 @@ ConditionalElementRecorder::~ConditionalElementRecorder()
   if (theHandler != 0 && data != 0) {
 
     theHandler->tag("Data"); // Data
-	if (initializationDone)
-	{
-	int numResponse = data->noCols();
-	Vector currentData(numResponse);
-      
-      for (int j=0; j<numResponse; j++)
-		currentData(j) = (*data)(0,j);
+    if (initializationDone)
+    {
+      int numResponse = data->noCols();
+      Vector currentData(numResponse);
+
+      for (int j = 0; j < numResponse; j++)
+        currentData(j) = (*data)(0, j);
       theHandler->write(currentData);
-	}
+    }
 
     theHandler->endTag(); // Data
   }
@@ -559,16 +559,18 @@ ConditionalElementRecorder::recvSelf(int commitTag, Channel &theChannel,
 
   if (theHandler != 0)
     delete theHandler;
+  if (idData(3) != 0)
+  {
+    theHandler = theBroker.getPtrNewStream(idData(3));
+    if (theHandler == 0) {
+      opserr << "NodeRecorder::sendSelf() - failed to get a data output handler\n";
+      return -1;
+    }
 
-  theHandler = theBroker.getPtrNewStream(idData(3));
-  if (theHandler == 0) {
-    opserr << "NodeRecorder::sendSelf() - failed to get a data output handler\n";
-    return -1;
-  }
-
-  if (theHandler->recvSelf(commitTag, theChannel, theBroker) < 0) {
+    if (theHandler->recvSelf(commitTag, theChannel, theBroker) < 0) {
       delete theHandler;
       theHandler = 0;
+    }
   }
 
   //
@@ -639,7 +641,7 @@ ConditionalElementRecorder::initialize(void)
                     theResponses[i] = 0;
                     continue;
                 }
-                theResponses[i] = theEle->setResponse((const char**)responseArgs, numArgs, *theHandler);
+                theResponses[i] = theEle->setResponse((const char**)responseArgs, numArgs, theHandler);
                 if (theResponses[i] == 0)
                     continue;
                 Information& eleInfo = theResponses[i]->getInformation();
@@ -683,7 +685,7 @@ ConditionalElementRecorder::initialize(void)
                         if (theHandler != 0)
                             theHandler->tag("ResidualElementOutput");
 
-                    theResponses[ii] = theEle->setResponse((const char**)responseArgs, numArgs, *theHandler);
+                    theResponses[ii] = theEle->setResponse((const char**)responseArgs, numArgs, theHandler);
                     if (theResponses[ii] != 0) {
                         // from the response type determine no of cols for each      
                         Information& eleInfo = theResponses[ii]->getInformation();
@@ -763,7 +765,7 @@ ConditionalElementRecorder::initialize(void)
         Element* theEle;
 
         while ((theEle = theElements()) != 0) {
-            Response* theResponse = theEle->setResponse((const char**)responseArgs, numArgs, *theHandler);
+            Response* theResponse = theEle->setResponse((const char**)responseArgs, numArgs, theHandler);
             if (theResponse != 0) {
                 if (numResponse == numEle) {
                     Response** theNextResponses = new Response * [numEle * 2];

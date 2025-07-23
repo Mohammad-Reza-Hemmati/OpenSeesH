@@ -72,7 +72,7 @@ class UniaxialFiber3d: public Fiber
     int recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
     void Print(OPS_Stream &s, int flag =0);
     
-    Response *setResponse(const char **argv, int argc, OPS_Stream &S);
+    Response *setResponse(const char **argv, int argc, OPS_Stream *S);
     int getResponse(int responseID, Information &info);
 
     void getFiberLocation(double &y, double &z);

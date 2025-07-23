@@ -382,7 +382,7 @@ if (flag == OPS_PRINT_PRINTMODEL_JSON) {
 }
 
 Response*
-UniaxialFiber3d::setResponse(const char **argv, int argc, OPS_Stream &s)
+UniaxialFiber3d::setResponse(const char **argv, int argc, OPS_Stream *s)
 {
 	if (argc == 0)
 		return 0;

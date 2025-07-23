@@ -822,43 +822,53 @@ void ElasticTimoshenkoBeam2d::Print(OPS_Stream& s, int flag)
 
 
 Response* ElasticTimoshenkoBeam2d::setResponse(const char** argv, int argc,
-	OPS_Stream& output)
+	OPS_Stream* output)
 {
 	Response* theResponse = 0;
 
-	output.tag("ElementOutput");
-	output.attr("eleType", "ElasticTimoshenkoBeam2d");
-	output.attr("eleTag", this->getTag());
-	output.attr("node1", connectedExternalNodes[0]);
-	output.attr("node2", connectedExternalNodes[1]);
+	if (output != 0)
+	{
+		output->tag("ElementOutput");
+		output->attr("eleType", "ElasticTimoshenkoBeam2d");
+		output->attr("eleTag", this->getTag());
+		output->attr("node1", connectedExternalNodes[0]);
+		output->attr("node2", connectedExternalNodes[1]);
+	}
 
 	// global forces
 	if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0 ||
 		strcmp(argv[0], "globalForce") == 0 || strcmp(argv[0], "globalForces") == 0)
 	{
-		output.tag("ResponseType", "Px_1");
-		output.tag("ResponseType", "Py_1");
-		output.tag("ResponseType", "Mz_1");
-		output.tag("ResponseType", "Px_2");
-		output.tag("ResponseType", "Py_2");
-		output.tag("ResponseType", "Mz_2");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "Px_1");
+			output->tag("ResponseType", "Py_1");
+			output->tag("ResponseType", "Mz_1");
+			output->tag("ResponseType", "Px_2");
+			output->tag("ResponseType", "Py_2");
+			output->tag("ResponseType", "Mz_2");
+		}
 
 		theResponse = new ElementResponse(this, 1, theVector);
 	}
 	// local forces
 	else if (strcmp(argv[0], "localForce") == 0 || strcmp(argv[0], "localForces") == 0)
 	{
-		output.tag("ResponseType", "N_1");
-		output.tag("ResponseType", "V_1");
-		output.tag("ResponseType", "M_1");
-		output.tag("ResponseType", "N_2");
-		output.tag("ResponseType", "V_2");
-		output.tag("ResponseType", "M_2");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "N_1");
+			output->tag("ResponseType", "V_1");
+			output->tag("ResponseType", "M_1");
+			output->tag("ResponseType", "N_2");
+			output->tag("ResponseType", "V_2");
+			output->tag("ResponseType", "M_2");
+		}
 
 		theResponse = new ElementResponse(this, 2, theVector);
 	}
 
-	output.endTag(); // ElementOutput
+	if (output != 0)
+		output->endTag(); // ElementOutput
 
 	if (theResponse == 0)
 		theResponse = theCoordTransf->setResponse(argv, argc, output);

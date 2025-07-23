@@ -728,55 +728,67 @@ const Matrix& OrthotropicRotatingAngleConcreteT2DMaterial01::getInitialTangent(v
 	return initialTangentNDM;
 }
 
-Response* OrthotropicRotatingAngleConcreteT2DMaterial01::setResponse(const char** argv, int argc, OPS_Stream& theOutput)
+Response* OrthotropicRotatingAngleConcreteT2DMaterial01::setResponse(const char** argv, int argc, OPS_Stream * theOutput)
 {
 	Response* theResponse = 0;
 	if (strcmp(argv[0], "getParameters") == 0) {
-		theOutput.tag("NdMaterialOutput");
-		theOutput.attr("matType", this->getClassType());
-		theOutput.attr("matTag", this->getTag());
-		theOutput.tag("ResponseType", "MaterialTag");
-		theOutput.tag("ResponseType", "Ec");
-		theOutput.tag("ResponseType", "ec");
-		theOutput.tag("ResponseType", "ecr");
-		theOutput.endTag();
+		if (theOutput != 0)
+		{
+			theOutput->tag("NdMaterialOutput");
+			theOutput->attr("matType", this->getClassType());
+			theOutput->attr("matTag", this->getTag());
+			theOutput->tag("ResponseType", "MaterialTag");
+			theOutput->tag("ResponseType", "Ec");
+			theOutput->tag("ResponseType", "ec");
+			theOutput->tag("ResponseType", "ecr");
+			theOutput->endTag();
+		}
 
 		Vector data1(4);
 		data1.Zero();
 		theResponse = new MaterialResponse(this, 101, data1);
 	}
 	else if (strcmp(argv[0], "strain_stress_concrete1") == 0 || strcmp(argv[0], "Strain_Stress_Concrete1") == 0) {
-		theOutput.tag("NdMaterialOutput");
-		theOutput.attr("matType", this->getClassType());
-		theOutput.attr("matTag", this->getTag());
-		theOutput.tag("ResponseType", "eps11");
-		theOutput.tag("ResponseType", "sig11");
-		theOutput.endTag();
+		if (theOutput != 0)
+		{
+			theOutput->tag("NdMaterialOutput");
+			theOutput->attr("matType", this->getClassType());
+			theOutput->attr("matTag", this->getTag());
+			theOutput->tag("ResponseType", "eps11");
+			theOutput->tag("ResponseType", "sig11");
+			theOutput->endTag();
+		}
 
 		Vector data2(2);
 		data2.Zero();
 		theResponse = new MaterialResponse(this, 102, data2);
 	}
 	else if (strcmp(argv[0], "strain_stress_concrete2") == 0 || strcmp(argv[0], "Strain_Stress_Concrete2") == 0) {
-		theOutput.tag("NdMaterialOutput");
-		theOutput.attr("matType", this->getClassType());
-		theOutput.attr("matTag", this->getTag());
-		theOutput.tag("ResponseType", "eps11");
-		theOutput.tag("ResponseType", "sig11");
-		theOutput.endTag();
+		if (theOutput != 0)
+		{
+			theOutput->tag("NdMaterialOutput");
+			theOutput->attr("matType", this->getClassType());
+			theOutput->attr("matTag", this->getTag());
+			theOutput->tag("ResponseType", "eps11");
+			theOutput->tag("ResponseType", "sig11");
+			theOutput->endTag();
+		}
 
 		Vector data3(2);
 		data3.Zero();
 		theResponse = new MaterialResponse(this, 103, data3);
 	}
 	else if (strcmp(argv[0], "concrete_layer_stress") == 0 || strcmp(argv[0], "Concrete_Layer_Stress") == 0) {
-		theOutput.tag("NdMaterialOutput");
-		theOutput.attr("matType", this->getClassType());
-		theOutput.attr("matTag", this->getTag());
-		theOutput.tag("ResponseType", "sigma11");
-		theOutput.tag("ResponseType", "sigma22");
-		theOutput.tag("ResponseType", "sigma12");
-		theOutput.endTag();
+		if (theOutput != 0)
+		{
+			theOutput->tag("NdMaterialOutput");
+			theOutput->attr("matType", this->getClassType());
+			theOutput->attr("matTag", this->getTag());
+			theOutput->tag("ResponseType", "sigma11");
+			theOutput->tag("ResponseType", "sigma22");
+			theOutput->tag("ResponseType", "sigma12");
+			theOutput->endTag();
+		}
 
 		Vector data4(3);
 		data4.Zero();

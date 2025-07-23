@@ -102,6 +102,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <RegulaFalsiLineSearch.h>
 #include <NewtonLineSearch.h>
 #include <FileDatastore.h>
+#include <Recorder.h>
 //#include <Mesh.h>
 #ifdef _MUMPS
 #include <MumpsSolver.h>
@@ -3936,3 +3937,66 @@ void* OPS_MumpsSolver() {
 //	return 0;
 //}
 // Sensitivity:END /////////////////////////////////////////////
+
+int OPS_RecorderValue()
+{
+	if (cmds == 0) return 0;
+	// make sure at least one other argument to contain type of system
+	if (OPS_GetNumRemainingInputArgs() < 2) {
+		opserr << "WARNING want - recorderValue recorderTag clmnID <rowOffset> <-reset>\n";
+		return -1;
+	}
+	int tag, rowOffset;
+	int dof = -1;
+	int numData = 1;
+	if (OPS_GetInt(&numData, &tag) != 0) {
+		opserr << "WARNING recorderValue recorderTag? clmnID <rowOffset> <-reset> could not read recorderTag \n";
+		return -1;
+	}
+
+	if (OPS_GetInt(&numData, &dof) != 0) {
+		opserr << "WARNING recorderValue recorderTag? clmnID - could not read clmnID \n";
+		return -1;
+	}
+	dof--;
+	rowOffset = 0;
+	int curArg = 3;
+	if (OPS_GetNumRemainingInputArgs() > 0)
+	{
+		if (OPS_GetInt(&numData, &rowOffset) != 0) {
+			opserr << "WARNING recorderValue recorderTag? clmnID <rowOffset> <-reset> could not read rowOffset \n";
+			return -1;
+		}
+		curArg++;
+	}
+	bool reset = false;
+	if (OPS_GetNumRemainingInputArgs() > 0)
+	{
+		const char* option = OPS_GetString();
+
+		if (strcmp(option, "-reset") == 0)
+			reset = true;
+	}
+	double res = 0.0;
+	Recorder* theRecorder = OPS_GetDomain()->getRecorder(tag);
+	if (theRecorder != 0)
+	{
+		double res = theRecorder->getRecordedValue(dof, rowOffset, reset);
+		//check result limit to prevent buffer overrun:
+		if (res > 1.e20)
+			res = 1.e20;
+		if (res < -1.e20)
+			res = -1.e20;
+		if (OPS_SetDoubleOutput(&numData, &res, true) < 0) {
+			opserr << "WARNING: OPSRecorderValue:: failed to set output\n";
+			return -1;
+		}
+		return 0;
+	}
+	opserr << "WARNING: recorderValue Could Not Find Recorder Object with tag: " << tag << " in the Domain\n";
+	if (OPS_SetDoubleOutput(&numData, &res, true) < 0) {
+		opserr << "WARNING: OPSRecorderValue:: failed to set output\n";
+		return -1;
+	}
+	return 0;
+}

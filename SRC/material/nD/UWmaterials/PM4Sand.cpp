@@ -489,7 +489,7 @@ PM4Sand::getOrder(void) const
 
 
 Response*
-PM4Sand::setResponse(const char **argv, int argc, OPS_Stream &output)
+PM4Sand::setResponse(const char **argv, int argc, OPS_Stream *output)
 {
 	if (strcmp(argv[0], "stress") == 0 || strcmp(argv[0], "stresses") == 0)
 		return new MaterialResponse(this, 1, this->getStress());

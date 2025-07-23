@@ -669,7 +669,7 @@ TimoshenkoSection3d::Print(OPS_Stream &s, int flag)
 
 Response*
 TimoshenkoSection3d::setResponse(const char **argv, int argc,
-				 OPS_Stream &output)
+				 OPS_Stream *output)
 {
   // See if the response is one of the defaults
   Response *res = SectionForceDeformation::setResponse(argv, argc, output);

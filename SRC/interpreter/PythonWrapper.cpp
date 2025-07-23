@@ -540,6 +540,18 @@ static PyObject* Py_ops_analyze(PyObject* self, PyObject* args)
 	return wrapper->getResults();
 }
 
+static PyObject* Py_ops_recorderValue(PyObject* self, PyObject* args)
+{
+	wrapper->resetCommandLine(PyTuple_Size(args), 1, args);
+
+	if (OPS_RecorderValue() < 0) {
+		opserr << (void*)0;
+		return NULL;
+	}
+
+	return wrapper->getResults();
+}
+
 static PyObject* Py_ops_test(PyObject* self, PyObject* args)
 {
 	wrapper->resetCommandLine(PyTuple_Size(args), 1, args);
@@ -3144,6 +3156,7 @@ PythonWrapper::addOpenSeesCommands()
 	addCommand("algorithm", &Py_ops_algorithm);
 	addCommand("analysis", &Py_ops_analysis);
 	addCommand("analyze", &Py_ops_analyze);
+	addCommand("recorderValue", &Py_ops_recorderValue);
 	addCommand("test", &Py_ops_test);
 	addCommand("section", &Py_ops_section);
 	addCommand("fiber", &Py_ops_fiber);

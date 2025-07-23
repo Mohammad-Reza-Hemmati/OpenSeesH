@@ -386,6 +386,8 @@ EnvelopeDriftRecorder::sendSelf(int commitTag, Channel& theChannel)
 	 if (theOutputHandler != 0) {
 		  idData(4) = theOutputHandler->getClassTag();
 	 }
+	 else
+		 idData(4) = 0;
 	 if (echoTimeFlag == true)
 		  idData(5) = 0;
 	 else
@@ -463,16 +465,18 @@ EnvelopeDriftRecorder::recvSelf(int commitTag, Channel& theChannel,
 
 	 if (theOutputHandler != 0)
 		  delete theOutputHandler;
+	 if (idData(4) != 0)
+	 {
+		 theOutputHandler = theBroker.getPtrNewStream(idData(4));
+		 if (theOutputHandler == 0) {
+			 opserr << "EnvelopeDriftRecorder::sendSelf() - failed to get a data output handler\n";
+			 return -1;
+		 }
 
-	 theOutputHandler = theBroker.getPtrNewStream(idData(4));
-	 if (theOutputHandler == 0) {
-		  opserr << "EnvelopeDriftRecorder::sendSelf() - failed to get a data output handler\n";
-		  return -1;
-	 }
-
-	 if (theOutputHandler->recvSelf(commitTag, theChannel, theBroker) < 0) {
-		  delete theOutputHandler;
-		  theOutputHandler = 0;
+		 if (theOutputHandler->recvSelf(commitTag, theChannel, theBroker) < 0) {
+			 delete theOutputHandler;
+			 theOutputHandler = 0;
+		 }
 	 }
 
 	 return 0;
@@ -663,7 +667,15 @@ double EnvelopeDriftRecorder::getRecordedValue(int clmnId, int rowOffset, bool r
 	if (!initializationDone)
 		return res;
 	if (clmnId >= data->noCols())
-		return res;
+	{
+		opserr << "EnvelopeDriftRecorder::getRecordedValue: columnId exceeds valid range" << endln;
+		return 0;
+	}
+	if (rowOffset > 2 || rowOffset < 0)
+	{
+		opserr << "EnvelopeDriftRecorder::getRecordedValue: 0 < rowOffset < 2 not met" << endln;
+		return 0;
+	}
 	res = (*data)(2 - rowOffset, clmnId);
 	if (reset)
 		first = true;

@@ -522,7 +522,7 @@ int Parallel3DMaterial::setParameter(const char** argv, int argc, Parameter& par
 	return res;
 }
 
-Response* Parallel3DMaterial::setResponse(const char** argv, int argc, OPS_Stream& output)
+Response* Parallel3DMaterial::setResponse(const char** argv, int argc, OPS_Stream * output)
 {
 	if (argc > 0) {
 		if (strcmp(argv[0], "material") == 0) {
@@ -555,7 +555,7 @@ Response* Parallel3DMaterial::setResponse(const char** argv, int argc, OPS_Strea
 					for (std::size_t i = 0; i < m_materials.size(); ++i) {
 						NDMaterial* imat = m_materials[i];
 						Parallel3DUtils::CustomStream ds;
-						Response* ires = imat->setResponse(&argv[1], argc - 1, ds);
+						Response* ires = imat->setResponse(&argv[1], argc - 1, &ds);
 						if (ires) {
 							int ires_size = ires->getInformation().getData().Size();
 							if (response_size == 0)
@@ -583,14 +583,18 @@ Response* Parallel3DMaterial::setResponse(const char** argv, int argc, OPS_Strea
 				}
 				// go on if valid
 				if (wres) {
-					output.tag("NdMaterialOutput");
-					output.attr("matType", getClassType());
-					output.attr("matTag", getTag());
-					for (const auto& item : wres->components)
-						output.tag("ResponseType", item.c_str());
+					if (output != 0)
+					{
+						output->tag("NdMaterialOutput");
+						output->attr("matType", getClassType());
+						output->attr("matTag", getTag());
+						for (const auto& item : wres->components)
+							output->tag("ResponseType", item.c_str());
+					}
 					Vector data(static_cast<int>(wres->components.size()));
 					MaterialResponse* resp = new MaterialResponse(this, wres_id, data);
-					output.endTag();
+					if (output != 0)
+						output->endTag();
 					return resp;
 				}
 			}

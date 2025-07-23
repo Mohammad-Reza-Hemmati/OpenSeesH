@@ -67,7 +67,7 @@ public:
 	int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
 
 	void Print(OPS_Stream& s, int flag);
-	Response* setResponse(const char** argv, int argc, OPS_Stream& s);
+	Response* setResponse(const char** argv, int argc, OPS_Stream * s);
 	int getResponse(int responseID, Information& info);
 
 	// Functions used for recorders

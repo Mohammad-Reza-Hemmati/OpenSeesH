@@ -105,7 +105,7 @@ class DoubleMembranePlateFiberSection : public SectionForceDeformation{
     int recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
 
     Response *setResponse(const char **argv, int argc, 
-			  OPS_Stream &s);
+			  OPS_Stream *s);
     int getResponse(int responseID, Information &info);
 
     // parameters

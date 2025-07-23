@@ -66,7 +66,7 @@ public:
     virtual FrictionModel *getCopy() = 0;
     
     virtual Response *setResponse(const char **argv, int argc,
-        OPS_Stream &theOutputStream);
+        OPS_Stream *theOutputStream);
     virtual int getResponse(int responseID, Information &info);
     
     virtual int sendSelf(int commitTag, Channel &theChannel) = 0;

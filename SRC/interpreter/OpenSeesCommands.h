@@ -600,3 +600,5 @@ int FeViewer_saveImage();
 //              hystereticBackbone, updateMaterialStage, updateMaterials,
 //              loadPackage
 #endif
+
+int OPS_RecorderValue();

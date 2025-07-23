@@ -2883,7 +2883,7 @@ ForceBeamColumn2d::displaySelf(Renderer& theViewer, int displayMode, float fact,
 }
 
 Response*
-ForceBeamColumn2d::setResponse(const char** argv, int argc, OPS_Stream& output)
+ForceBeamColumn2d::setResponse(const char** argv, int argc, OPS_Stream* output)
 {
 #ifdef _CSS
 	Response* theResponse = Element::setResponse(argv, argc, output);
@@ -2893,22 +2893,28 @@ ForceBeamColumn2d::setResponse(const char** argv, int argc, OPS_Stream& output)
 	Response* theResponse = 0;
 #endif // _CSS
 
-	output.tag("ElementOutput");
-	output.attr("eleType", "ForceBeamColumn2d");
-	output.attr("eleTag", this->getTag());
-	output.attr("node1", connectedExternalNodes[0]);
-	output.attr("node2", connectedExternalNodes[1]);
+	if (output != 0)
+	{
+		output->tag("ElementOutput");
+		output->attr("eleType", "ForceBeamColumn2d");
+		output->attr("eleTag", this->getTag());
+		output->attr("node1", connectedExternalNodes[0]);
+		output->attr("node2", connectedExternalNodes[1]);
+	}
 
 	// global force - 
 	if (strcmp(argv[0], "forces") == 0 || strcmp(argv[0], "force") == 0
 		|| strcmp(argv[0], "globalForce") == 0 || strcmp(argv[0], "globalForces") == 0) {
 
-		output.tag("ResponseType", "Px_1");
-		output.tag("ResponseType", "Py_1");
-		output.tag("ResponseType", "Mz_1");
-		output.tag("ResponseType", "Px_2");
-		output.tag("ResponseType", "Py_2");
-		output.tag("ResponseType", "Mz_2");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "Px_1");
+			output->tag("ResponseType", "Py_1");
+			output->tag("ResponseType", "Mz_1");
+			output->tag("ResponseType", "Px_2");
+			output->tag("ResponseType", "Py_2");
+			output->tag("ResponseType", "Mz_2");
+		}
 
 		theResponse = new ElementResponse(this, 1, theVector);
 
@@ -2916,12 +2922,15 @@ ForceBeamColumn2d::setResponse(const char** argv, int argc, OPS_Stream& output)
 	}
 	else if (strcmp(argv[0], "localForce") == 0 || strcmp(argv[0], "localForces") == 0) {
 
-		output.tag("ResponseType", "N_1");
-		output.tag("ResponseType", "V_1");
-		output.tag("ResponseType", "M_1");
-		output.tag("ResponseType", "N_2");
-		output.tag("ResponseType", "V_2");
-		output.tag("ResponseType", "M_2");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "N_1");
+			output->tag("ResponseType", "V_1");
+			output->tag("ResponseType", "M_1");
+			output->tag("ResponseType", "N_2");
+			output->tag("ResponseType", "V_2");
+			output->tag("ResponseType", "M_2");
+		}
 
 		theResponse = new ElementResponse(this, 2, theVector);
 
@@ -2929,51 +2938,70 @@ ForceBeamColumn2d::setResponse(const char** argv, int argc, OPS_Stream& output)
 	}
 	else if (strcmp(argv[0], "basicForce") == 0 || strcmp(argv[0], "basicForces") == 0) {
 
-		output.tag("ResponseType", "N");
-		output.tag("ResponseType", "M_1");
-		output.tag("ResponseType", "M_2");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "N");
+			output->tag("ResponseType", "M_1");
+			output->tag("ResponseType", "M_2");
+		}
 
 		theResponse = new ElementResponse(this, 7, Vector(3));
 
-  // global damping force -
-  } else if (theDamping && (strcmp(argv[0],"globalDampingForce") == 0 || strcmp(argv[0],"globalDampingForces") == 0)) {
+		// global damping force -
+	}
+	else if (theDamping && (strcmp(argv[0], "globalDampingForce") == 0 || strcmp(argv[0], "globalDampingForces") == 0)) {
 
-    output.tag("ResponseType","Px_1");
-    output.tag("ResponseType","Py_1");
-    output.tag("ResponseType","Mz_1");
-    output.tag("ResponseType","Px_2");
-    output.tag("ResponseType","Py_2");
-    output.tag("ResponseType","Mz_2");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "Px_1");
+			output->tag("ResponseType", "Py_1");
+			output->tag("ResponseType", "Mz_1");
+			output->tag("ResponseType", "Px_2");
+			output->tag("ResponseType", "Py_2");
+			output->tag("ResponseType", "Mz_2");
+		}
 
-    theResponse =  new ElementResponse(this, 21, theVector);
+		theResponse = new ElementResponse(this, 21, theVector);
 
-  // local damping force -
-  } else if (theDamping && (strcmp(argv[0],"localDampingForce") == 0 || strcmp(argv[0],"localDampingForces") == 0)) {
+		// local damping force -
+	}
+	else if (theDamping && (strcmp(argv[0], "localDampingForce") == 0 || strcmp(argv[0], "localDampingForces") == 0)) {
 
-    output.tag("ResponseType","N_1");
-    output.tag("ResponseType","V_1");
-    output.tag("ResponseType","M_1");
-    output.tag("ResponseType","N_2");
-    output.tag("ResponseType","V_2");
-    output.tag("ResponseType","M_2");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "N_1");
+			output->tag("ResponseType", "V_1");
+			output->tag("ResponseType", "M_1");
+			output->tag("ResponseType", "N_2");
+			output->tag("ResponseType", "V_2");
+			output->tag("ResponseType", "M_2");
+		}
 
-    theResponse =  new ElementResponse(this, 22, theVector);
+		theResponse = new ElementResponse(this, 22, theVector);
 
-  // basic damping force -
-  } else if (theDamping && (strcmp(argv[0],"basicDampingForce") == 0 || strcmp(argv[0],"basicDampingForces") == 0)) {
+		// basic damping force -
+	}
+	else if (theDamping && (strcmp(argv[0], "basicDampingForce") == 0 || strcmp(argv[0], "basicDampingForces") == 0)) {
 
-    output.tag("ResponseType","N");
-    output.tag("ResponseType","M_1");
-    output.tag("ResponseType","M_2");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "N");
+			output->tag("ResponseType", "M_1");
+			output->tag("ResponseType", "M_2");
+		}
 
-    theResponse =  new ElementResponse(this, 23, Vector(3));
+		theResponse = new ElementResponse(this, 23, Vector(3));
 
-  // basic stiffness -
-  } else if (strcmp(argv[0],"basicStiffness") == 0) {
+		// basic stiffness -
+	}
+	else if (strcmp(argv[0], "basicStiffness") == 0) {
 
-		output.tag("ResponseType", "N");
-		output.tag("ResponseType", "M1");
-		output.tag("ResponseType", "M2");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "N");
+			output->tag("ResponseType", "M1");
+			output->tag("ResponseType", "M2");
+		}
 
 		theResponse = new ElementResponse(this, 19, Matrix(3, 3));
 
@@ -2982,9 +3010,12 @@ ForceBeamColumn2d::setResponse(const char** argv, int argc, OPS_Stream& output)
 	else if (strcmp(argv[0], "chordRotation") == 0 || strcmp(argv[0], "chordDeformation") == 0
 		|| strcmp(argv[0], "basicDeformation") == 0) {
 
-		output.tag("ResponseType", "eps");
-		output.tag("ResponseType", "theta_1");
-		output.tag("ResponseType", "theta_2");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "eps");
+			output->tag("ResponseType", "theta_1");
+			output->tag("ResponseType", "theta_2");
+		}
 
 		theResponse = new ElementResponse(this, 3, Vector(3));
 
@@ -2992,9 +3023,12 @@ ForceBeamColumn2d::setResponse(const char** argv, int argc, OPS_Stream& output)
 	}
 	else if (strcmp(argv[0], "plasticRotation") == 0 || strcmp(argv[0], "plasticDeformation") == 0) {
 
-		output.tag("ResponseType", "epsP");
-		output.tag("ResponseType", "thetaP_1");
-		output.tag("ResponseType", "thetaP_2");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "epsP");
+			output->tag("ResponseType", "thetaP_1");
+			output->tag("ResponseType", "thetaP_2");
+		}
 
 		theResponse = new ElementResponse(this, 4, Vector(3));
 
@@ -3002,7 +3036,8 @@ ForceBeamColumn2d::setResponse(const char** argv, int argc, OPS_Stream& output)
 	}
 	else if (strcmp(argv[0], "inflectionPoint") == 0) {
 
-		output.tag("ResponseType", "inflectionPoint");
+		if (output != 0)
+			output->tag("ResponseType", "inflectionPoint");
 
 		theResponse = new ElementResponse(this, 5, 0.0);
 
@@ -3019,11 +3054,11 @@ ForceBeamColumn2d::setResponse(const char** argv, int argc, OPS_Stream& output)
 	/*
 	// Curvature sensitivity
 	else if (strcmp(argv[0],"dcurvdh") == 0)
-	  return new ElementResponse(this, 7, Vector(numSections));
+		return new ElementResponse(this, 7, Vector(numSections));
 
 	// basic deformation sensitivity
 	else if (strcmp(argv[0],"dvdh") == 0)
-	  return new ElementResponse(this, 8, Vector(3));
+		return new ElementResponse(this, 8, Vector(3));
 	*/
 
 	// plastic deformation sensitivity
@@ -3046,24 +3081,28 @@ ForceBeamColumn2d::setResponse(const char** argv, int argc, OPS_Stream& output)
 	else if (strcmp(argv[0], "sectionDisplacements") == 0)
 		theResponse = new ElementResponse(this, 111, Matrix(numSections, 3));
 
-  else if (strcmp(argv[0],"cbdiDisplacements") == 0)
-    theResponse = new ElementResponse(this, 112, Matrix(1,3));  
-  
-  else if (strcmp(argv[0],"RayleighForces") == 0 || strcmp(argv[0],"rayleighForces") ==0 || strcmp(argv[0],"dampingForces") == 0) { 
+	else if (strcmp(argv[0], "cbdiDisplacements") == 0)
+		theResponse = new ElementResponse(this, 112, Matrix(1, 3));
 
-		output.tag("ResponseType", "Px_1");
-		output.tag("ResponseType", "Py_1");
-		output.tag("ResponseType", "Mz_1");
-		output.tag("ResponseType", "Px_2");
-		output.tag("ResponseType", "Py_2");
-		output.tag("ResponseType", "Mz_2");
+	else if (strcmp(argv[0], "RayleighForces") == 0 || strcmp(argv[0], "rayleighForces") == 0 || strcmp(argv[0], "dampingForces") == 0) {
 
-    theResponse =  new ElementResponse(this, 13, theVector);
-  
-    // section response -
-  } else if (strcmp(argv[0],"sectionX") == 0) {
-    if (argc > 2) {
-      float sectionLoc = atof(argv[1]);
+		if (output != 0)
+		{
+			output->tag("ResponseType", "Px_1");
+			output->tag("ResponseType", "Py_1");
+			output->tag("ResponseType", "Mz_1");
+			output->tag("ResponseType", "Px_2");
+			output->tag("ResponseType", "Py_2");
+			output->tag("ResponseType", "Mz_2");
+		}
+
+		theResponse = new ElementResponse(this, 13, theVector);
+
+		// section response -
+	}
+	else if (strcmp(argv[0], "sectionX") == 0) {
+		if (argc > 2) {
+			float sectionLoc = atof(argv[1]);
 
 			double xi[maxNumSections];
 			double L = crdTransf->getInitialLength();
@@ -3080,9 +3119,12 @@ ForceBeamColumn2d::setResponse(const char** argv, int argc, OPS_Stream& output)
 				}
 			}
 
-			output.tag("GaussPointOutput");
-			output.attr("number", sectionNum + 1);
-			output.attr("eta", xi[sectionNum] * L);
+			if (output != 0)
+			{
+				output->tag("GaussPointOutput");
+				output->attr("number", sectionNum + 1);
+				output->attr("eta", xi[sectionNum] * L);
+			}
 
 			if (strcmp(argv[2], "dsdh") != 0) {
 				theResponse = sections[sectionNum]->setResponse(&argv[2], argc - 2, output);
@@ -3096,8 +3138,8 @@ ForceBeamColumn2d::setResponse(const char** argv, int argc, OPS_Stream& output)
 		}
 	}
 
-  // section response -
-  else if (strcmp(argv[0],"section") == 0) {
+	// section response -
+	else if (strcmp(argv[0], "section") == 0) {
 
 		if (argc > 1) {
 
@@ -3109,9 +3151,12 @@ ForceBeamColumn2d::setResponse(const char** argv, int argc, OPS_Stream& output)
 				double L = crdTransf->getInitialLength();
 				beamIntegr->getSectionLocations(numSections, L, xi);
 
-				output.tag("GaussPointOutput");
-				output.attr("number", sectionNum);
-				output.attr("eta", xi[sectionNum - 1] * L);
+				if (output != 0)
+				{
+					output->tag("GaussPointOutput");
+					output->attr("number", sectionNum);
+					output->attr("eta", xi[sectionNum - 1] * L);
+				}
 
 				if (strcmp(argv[2], "dsdh") != 0) {
 					theResponse = sections[sectionNum - 1]->setResponse(&argv[2], argc - 2, output);
@@ -3123,7 +3168,8 @@ ForceBeamColumn2d::setResponse(const char** argv, int argc, OPS_Stream& output)
 					info.theInt = sectionNum;
 				}
 
-				output.endTag();
+				if (output != 0)
+					output->endTag();
 
 			}
 			else if (sectionNum == 0) { // argv[1] was not an int, we want all sections, 
@@ -3136,9 +3182,12 @@ ForceBeamColumn2d::setResponse(const char** argv, int argc, OPS_Stream& output)
 
 				for (int i = 0; i < numSections; i++) {
 
-					output.tag("GaussPointOutput");
-					output.attr("number", i + 1);
-					output.attr("eta", xi[i] * L);
+					if (output != 0)
+					{
+						output->tag("GaussPointOutput");
+						output->attr("number", i + 1);
+						output->attr("eta", xi[i] * L);
+					}
 
 					Response* theSectionResponse = sections[i]->setResponse(&argv[1], argc - 1, output);
 
@@ -3146,7 +3195,8 @@ ForceBeamColumn2d::setResponse(const char** argv, int argc, OPS_Stream& output)
 						numResponse = theCResponse->addResponse(theSectionResponse);
 					}
 
-					output.endTag();
+					if (output != 0)
+						output->endTag();
 
 				}
 
@@ -3170,7 +3220,8 @@ ForceBeamColumn2d::setResponse(const char** argv, int argc, OPS_Stream& output)
 #endif
 	if (theResponse == 0)
 		theResponse = crdTransf->setResponse(argv, argc, output);
-	output.endTag(); // ElementOutput
+	if (output != 0)
+		output->endTag(); // ElementOutput
 
 	return theResponse;
 }

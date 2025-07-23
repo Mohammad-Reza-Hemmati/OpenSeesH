@@ -4377,7 +4377,7 @@ int ConcreteCM::setTrialStrain (double strain, double strainRate)
 	// KK
 	Response* 
 	ConcreteCM::setResponse(const char **argv, int argc,
-				 OPS_Stream &theOutput)
+				 OPS_Stream *theOutput)
 	{
 	Response *theResponse = 0;
 

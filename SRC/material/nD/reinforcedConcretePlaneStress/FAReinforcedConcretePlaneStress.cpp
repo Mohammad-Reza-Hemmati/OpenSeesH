@@ -138,130 +138,127 @@ OPS_FAReinforcedConcretePlaneStressMaterial()
   return theMaterial;
 }
  
-FAReinforcedConcretePlaneStress ::FAReinforcedConcretePlaneStress (int      tag, 
-								   double   RHO,
-								   UniaxialMaterial *s1,
-								   UniaxialMaterial *s2,
-								   UniaxialMaterial *c1,
-								   UniaxialMaterial *c2,
-								   double   ANGLE1,
-								   double   ANGLE2,
-								   double   ROU1,
-								   double   ROU2,
-								   double   FPC,
-								   double   FY,
-								   double   E,
-								   double   EPSC0) :
-  NDMaterial(tag, ND_TAG_FAReinforcedConcretePlaneStress), 
+FAReinforcedConcretePlaneStress::FAReinforcedConcretePlaneStress(int      tag,
+  double   RHO,
+  UniaxialMaterial* s1,
+  UniaxialMaterial* s2,
+  UniaxialMaterial* c1,
+  UniaxialMaterial* c2,
+  double   ANGLE1,
+  double   ANGLE2,
+  double   ROU1,
+  double   ROU2,
+  double   FPC,
+  double   FY,
+  double   E,
+  double   EPSC0) :
+  NDMaterial(tag, ND_TAG_FAReinforcedConcretePlaneStress),
   rho(RHO), angle1(ANGLE1), angle2(ANGLE2), rou1(ROU1), rou2(ROU2),
-  fpc(FPC), fy(FY), E0(E), epsc0(EPSC0), strain_vec(3), stress_vec(3),tangent_matrix(3,3)
+  fpc(FPC), fy(FY), E0(E), epsc0(EPSC0), strain_vec(3), stress_vec(3), tangent_matrix(3, 3)
 {
-    steelStatus = 0;
-    dirStatus = 0;
-    G12 = 0;
-    citaStrain = 10;
-    citaStress = 10;
-    
-    TOneReverseStatus = 0;         
-    TOneNowMaxComStrain = 0.0;
-    TOneLastMaxComStrain = 0.0;
-    
-    TTwoReverseStatus = 0;         
-    TTwoNowMaxComStrain = 0.0;
-    TTwoLastMaxComStrain = 0.0;
-    
-    COneReverseStatus = 0;         
-    COneNowMaxComStrain = 0.0;
-    COneLastMaxComStrain = 0.0;
-    
-    CTwoReverseStatus = 0;         
-    CTwoNowMaxComStrain = 0.0;
-    CTwoLastMaxComStrain = 0.0;
-    
-    lastStress[0] = 0.0;  // add at 7.28
-    lastStress[1] = 0.0;  // add at 7.28
-    lastStress[2] = 0.0;  // add at 7.28 
-    
-    
-    if ( fpc < 0.0 ) { fpc = -fpc; } // set fpc > 0
-    
-    theMaterial = 0;
-    
-    // Allocate pointers to theSteel1
-    theMaterial = new UniaxialMaterial *[4];
-    
-    if ( theMaterial == 0 ) {
-      opserr << " FAReinforcedConcretePlaneStress::FAReinforcedConcretePlaneStress - failed allocate material array\n";
-      exit(-1);
-    }
-    
-    // Get the copy for theSteel1
-    theMaterial[0] = s1->getCopy();
-    // Check allocation    
-    if ( theMaterial[0] == 0 ) {
-      opserr << " FAReinforcedConcretePlaneStress::FAReinforcedConcretePlaneStress - failed to get a copy for steel1\n";
-      exit(-1);
-    }
-    
-    
-    // Get the copy for theSteel2
-    theMaterial[1] = s2->getCopy();	
-    // Check allocation    
-    if ( theMaterial[1] == 0 ) {
-      opserr << " FAReinforcedConcretePlaneStress::FAReinforcedConcretePlaneStress - failed to get a copy for steel2\n";
-      exit(-1);
-    }
-    
-    // Get the copy for theConcrete1
-    theMaterial[2] = c1->getCopy();	
-    // Check allocation    
-    if ( theMaterial[2] == 0 ) {
-      opserr << " FAReinforcedConcretePlaneStress::FAReinforcedConcretePlaneStress - failed to get a copy for concrete1\n";
-      exit(-1);
-    }
-    
-    // Get the copy for theConcrete2
-    theMaterial[3] = c2->getCopy();	
-    // Check allocation    
-    if ( theMaterial[3] == 0 ) {
-      opserr << " FAReinforcedConcretePlaneStress::FAReinforcedConcretePlaneStress - failed to get a copy for concrete2\n";
-      exit(-1);
-    }
-    
-    /* FMK */
-    theResponses = new Response *[6];  
-    
-    if ( theResponses == 0) {
-      opserr << " ReinforcedConcretePlaneStress::ReinforcedConcretePlaneStress - failed allocate responses  array\n";
-      exit(-1);
-    }
-    
-    OPS_Stream *theDummyStream = new DummyStream();
-    
-    const char **argv = new const char *[1];
+  steelStatus = 0;
+  dirStatus = 0;
+  G12 = 0;
+  citaStrain = 10;
+  citaStress = 10;
 
-    argv[0] = "getCommittedStrain";
-    theResponses[0] = theMaterial[0]->setResponse(argv, 1, *theDummyStream);
-    theResponses[1] = theMaterial[1]->setResponse(argv, 1, *theDummyStream);
-    argv[0] = "setWallVar";
-    theResponses[2] = theMaterial[2]->setResponse(argv, 1, *theDummyStream);
-    theResponses[3] = theMaterial[3]->setResponse(argv, 1, *theDummyStream);
-    argv[0] = "getPD";
-    theResponses[4] = theMaterial[2]->setResponse(argv, 1, *theDummyStream);
-    theResponses[5] = theMaterial[3]->setResponse(argv, 1, *theDummyStream);    
+  TOneReverseStatus = 0;
+  TOneNowMaxComStrain = 0.0;
+  TOneLastMaxComStrain = 0.0;
 
-    if ((theResponses[0] == 0) || (theResponses[1] == 0) ||
-	(theResponses[2] == 0) || (theResponses[3] == 0) ||
-	(theResponses[4] == 0) || (theResponses[5] == 0)) {
+  TTwoReverseStatus = 0;
+  TTwoNowMaxComStrain = 0.0;
+  TTwoLastMaxComStrain = 0.0;
 
-      opserr << " ReinforcedConcretePlaneStress::ReinforcedConcretePlaneStress - failed to set appropriate materials tag: " << tag << "\n";
-      exit(-1);
-    }
-    
-    delete theDummyStream;
-    /* END FMK */
-    
-    this->revertToStart();
+  COneReverseStatus = 0;
+  COneNowMaxComStrain = 0.0;
+  COneLastMaxComStrain = 0.0;
+
+  CTwoReverseStatus = 0;
+  CTwoNowMaxComStrain = 0.0;
+  CTwoLastMaxComStrain = 0.0;
+
+  lastStress[0] = 0.0;  // add at 7.28
+  lastStress[1] = 0.0;  // add at 7.28
+  lastStress[2] = 0.0;  // add at 7.28 
+
+
+  if (fpc < 0.0) { fpc = -fpc; } // set fpc > 0
+
+  theMaterial = 0;
+
+  // Allocate pointers to theSteel1
+  theMaterial = new UniaxialMaterial * [4];
+
+  if (theMaterial == 0) {
+    opserr << " FAReinforcedConcretePlaneStress::FAReinforcedConcretePlaneStress - failed allocate material array\n";
+    exit(-1);
+  }
+
+  // Get the copy for theSteel1
+  theMaterial[0] = s1->getCopy();
+  // Check allocation    
+  if (theMaterial[0] == 0) {
+    opserr << " FAReinforcedConcretePlaneStress::FAReinforcedConcretePlaneStress - failed to get a copy for steel1\n";
+    exit(-1);
+  }
+
+
+  // Get the copy for theSteel2
+  theMaterial[1] = s2->getCopy();
+  // Check allocation    
+  if (theMaterial[1] == 0) {
+    opserr << " FAReinforcedConcretePlaneStress::FAReinforcedConcretePlaneStress - failed to get a copy for steel2\n";
+    exit(-1);
+  }
+
+  // Get the copy for theConcrete1
+  theMaterial[2] = c1->getCopy();
+  // Check allocation    
+  if (theMaterial[2] == 0) {
+    opserr << " FAReinforcedConcretePlaneStress::FAReinforcedConcretePlaneStress - failed to get a copy for concrete1\n";
+    exit(-1);
+  }
+
+  // Get the copy for theConcrete2
+  theMaterial[3] = c2->getCopy();
+  // Check allocation    
+  if (theMaterial[3] == 0) {
+    opserr << " FAReinforcedConcretePlaneStress::FAReinforcedConcretePlaneStress - failed to get a copy for concrete2\n";
+    exit(-1);
+  }
+
+  /* FMK */
+  theResponses = new Response * [6];
+
+  if (theResponses == 0) {
+    opserr << " ReinforcedConcretePlaneStress::ReinforcedConcretePlaneStress - failed allocate responses  array\n";
+    exit(-1);
+  }
+
+  const char** argv = new const char* [1];
+
+  argv[0] = "getCommittedStrain";
+  theResponses[0] = theMaterial[0]->setResponse(argv, 1, 0);
+  theResponses[1] = theMaterial[1]->setResponse(argv, 1, 0);
+  argv[0] = "setWallVar";
+  theResponses[2] = theMaterial[2]->setResponse(argv, 1, 0);
+  theResponses[3] = theMaterial[3]->setResponse(argv, 1, 0);
+  argv[0] = "getPD";
+  theResponses[4] = theMaterial[2]->setResponse(argv, 1, 0);
+  theResponses[5] = theMaterial[3]->setResponse(argv, 1, 0);
+
+  if ((theResponses[0] == 0) || (theResponses[1] == 0) ||
+    (theResponses[2] == 0) || (theResponses[3] == 0) ||
+    (theResponses[4] == 0) || (theResponses[5] == 0)) {
+
+    opserr << " ReinforcedConcretePlaneStress::ReinforcedConcretePlaneStress - failed to set appropriate materials tag: " << tag << "\n";
+    exit(-1);
+  }
+
+  /* END FMK */
+
+  this->revertToStart();
 }
 
 FAReinforcedConcretePlaneStress::FAReinforcedConcretePlaneStress()

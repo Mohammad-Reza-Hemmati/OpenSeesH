@@ -237,7 +237,7 @@ void* OPS_NDGetResponse()
 
     const char* response_type = OPS_GetString();
 
-    Response* theResponse = mat->setResponse(&response_type, 1, opserr);
+    Response* theResponse = mat->setResponse(&response_type, 1, &opserr);
     theResponse->getResponse();
     Information& theInformation = theResponse->getInformation();
 

@@ -1162,7 +1162,7 @@ FiberSection3d::Print(OPS_Stream &s, int flag)
 }
 
 Response*
-FiberSection3d::setResponse(const char **argv, int argc, OPS_Stream &output)
+FiberSection3d::setResponse(const char **argv, int argc, OPS_Stream *output)
 {
   Response *theResponse = 0;
   
@@ -1262,29 +1262,33 @@ FiberSection3d::setResponse(const char **argv, int argc, OPS_Stream &output)
     }
     
     if (key < numFibers && key >= 0) {
-      output.tag("FiberOutput");
-      output.attr("yLoc",matData[3*key]);
-      output.attr("zLoc",matData[3*key+1]);
-      output.attr("area",matData[3*key+2]);
+      if (output != 0)
+      {
+        output->tag("FiberOutput");
+        output->attr("yLoc", matData[3 * key]);
+        output->attr("zLoc", matData[3 * key + 1]);
+        output->attr("area", matData[3 * key + 2]);
+      }
       
       theResponse = theMaterials[key]->setResponse(&argv[passarg], argc-passarg, output);
       
-      output.endTag();
+      if (output != 0)
+        output->endTag();
     }
   
   } else if (strcmp(argv[0],"fiberData") == 0) {
     int numData = numFibers*5;
     for (int j = 0; j < numFibers; j++) {
-      output.tag("FiberOutput");
-      output.attr("yLoc", matData[3*j]);
-      output.attr("zLoc", matData[3*j+1]);
-      output.attr("area", matData[3*j+2]);    
-      output.tag("ResponseType","yCoord");
-      output.tag("ResponseType","zCoord");
-      output.tag("ResponseType","area");
-      output.tag("ResponseType","stress");
-      output.tag("ResponseType","strain");
-      output.endTag();
+      output->tag("FiberOutput");
+      output->attr("yLoc", matData[3*j]);
+      output->attr("zLoc", matData[3*j+1]);
+      output->attr("area", matData[3*j+2]);    
+      output->tag("ResponseType","yCoord");
+      output->tag("ResponseType","zCoord");
+      output->tag("ResponseType","area");
+      output->tag("ResponseType","stress");
+      output->tag("ResponseType","strain");
+      output->endTag();
     }
     Vector theResponseData(numData);
     theResponse = new MaterialResponse(this, 5, theResponseData);
@@ -1292,18 +1296,18 @@ FiberSection3d::setResponse(const char **argv, int argc, OPS_Stream &output)
   } else if (strcmp(argv[0],"fiberData2") == 0) {
     int numData = numFibers*6;
     for (int j = 0; j < numFibers; j++) {
-      output.tag("FiberOutput");
-      output.attr("yLoc", matData[3*j]);
-      output.attr("zLoc", matData[3*j+1]);
-      output.attr("area", matData[3*j+2]);    
-      output.attr("material", theMaterials[j]->getTag());
-      output.tag("ResponseType","yCoord");
-      output.tag("ResponseType","zCoord");
-      output.tag("ResponseType","area");
-      output.tag("ResponseType","material");
-      output.tag("ResponseType","stress");
-      output.tag("ResponseType","strain");
-      output.endTag();
+      output->tag("FiberOutput");
+      output->attr("yLoc", matData[3*j]);
+      output->attr("zLoc", matData[3*j+1]);
+      output->attr("area", matData[3*j+2]);    
+      output->attr("material", theMaterials[j]->getTag());
+      output->tag("ResponseType","yCoord");
+      output->tag("ResponseType","zCoord");
+      output->tag("ResponseType","area");
+      output->tag("ResponseType","material");
+      output->tag("ResponseType","stress");
+      output->tag("ResponseType","strain");
+      output->endTag();
     }
     Vector theResponseData(numData);
     theResponse = new MaterialResponse(this, 55, theResponseData);
@@ -1322,12 +1326,12 @@ FiberSection3d::setResponse(const char **argv, int argc, OPS_Stream &output)
   }
   //by SAJalali
   else if ((strcmp(argv[0], "energy") == 0) || (strcmp(argv[0], "Energy") == 0)) {
-      output.tag("SectionOutput");
-      output.attr("secType", this->getClassType());
-      output.attr("secTag", this->getTag());
-      output.tag("ResponseType", "energy");
+      output->tag("SectionOutput");
+      output->attr("secType", this->getClassType());
+      output->attr("secTag", this->getTag());
+      output->tag("ResponseType", "energy");
 	  theResponse = new MaterialResponse(this, 10, getEnergy());
-      output.endTag();
+      output->endTag();
   }
 #ifdef _CSS
   //by SAJalali

@@ -265,6 +265,8 @@ ResidDriftRecorder::sendSelf(int commitTag, Channel& theChannel)
 	 if (theOutputHandler != 0) {
 		  idData(4) = theOutputHandler->getClassTag();
 	 }
+	 else
+		 idData(4) = 0;
 	 if (echoTimeFlag == true)
 		  idData(5) = 0;
 	 else
@@ -341,16 +343,18 @@ ResidDriftRecorder::recvSelf(int commitTag, Channel& theChannel,
 
 	 if (theOutputHandler != 0)
 		  delete theOutputHandler;
+	 if (idData(4) != 0)
+	 {
+		 theOutputHandler = theBroker.getPtrNewStream(idData(4));
+		 if (theOutputHandler == 0) {
+			 opserr << "ResidDriftRecorder::sendSelf() - failed to get a data output handler\n";
+			 return -1;
+		 }
 
-	 theOutputHandler = theBroker.getPtrNewStream(idData(4));
-	 if (theOutputHandler == 0) {
-		  opserr << "ResidDriftRecorder::sendSelf() - failed to get a data output handler\n";
-		  return -1;
-	 }
-
-	 if (theOutputHandler->recvSelf(commitTag, theChannel, theBroker) < 0) {
-		  delete theOutputHandler;
-		  theOutputHandler = 0;
+		 if (theOutputHandler->recvSelf(commitTag, theChannel, theBroker) < 0) {
+			 delete theOutputHandler;
+			 theOutputHandler = 0;
+		 }
 	 }
 
 	 return 0;

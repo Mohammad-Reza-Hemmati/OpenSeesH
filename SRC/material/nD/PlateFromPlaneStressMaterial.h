@@ -93,7 +93,7 @@ class PlateFromPlaneStressMaterial: public NDMaterial{
     int recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
 
     //setResponse - added by V.K. Papanikolaou [AUTh] - start
-    Response* setResponse(const char** argv, int argc, OPS_Stream& s);
+    Response* setResponse(const char** argv, int argc, OPS_Stream * s);
     //setResponse - added by V.K. Papanikolaou [AUTh] - end
 
 private :

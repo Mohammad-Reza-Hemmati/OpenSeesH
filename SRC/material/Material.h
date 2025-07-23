@@ -51,7 +51,7 @@ class Material : public TaggedObject, public MovableObject
     virtual ~Material();
 
 
-    virtual Response *setResponse(const char **argv, int argc, OPS_Stream &s);
+    virtual Response *setResponse(const char **argv, int argc, OPS_Stream *s);
     virtual int getResponse(int responseID, Information &info);
     virtual int getResponseSensitivity(int responseID, int gradIndex,
 				       Information &info);

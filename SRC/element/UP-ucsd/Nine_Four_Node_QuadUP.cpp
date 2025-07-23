@@ -1693,69 +1693,82 @@ NineFourNodeQuadUP::displaySelf(Renderer &theViewer, int displayMode, float fact
 
 
 Response*
-NineFourNodeQuadUP::setResponse(const char **argv, int argc, OPS_Stream &output)
+NineFourNodeQuadUP::setResponse(const char** argv, int argc, OPS_Stream* output)
 
 {
-  Response *theResponse = 0;
+  Response* theResponse = 0;
 
   char outputData[32];
 
-  output.tag("ElementOutput");
-  output.attr("eleType","NineFourNodeQuadUP");
-  output.attr("eleTag",this->getTag());
-  for (int i=1; i<=9; i++) {
-    sprintf(outputData,"node%d",i);
-    output.attr(outputData, theNodes[i-1]->getTag());
+  if (output != 0)
+  {
+    output->tag("ElementOutput");
+    output->attr("eleType", "NineFourNodeQuadUP");
+    output->attr("eleTag", this->getTag());
+    for (int i = 1; i <= 9; i++) {
+      sprintf(outputData, "node%d", i);
+      output->attr(outputData, theNodes[i - 1]->getTag());
+    }
   }
 
-  if (strcmp(argv[0],"force") == 0 || strcmp(argv[0],"forces") == 0) {
+  if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0) {
 
 
-    for (int i=1; i<=9; i++) {
-      sprintf(outputData,"P1_%d",i);
-      output.tag("ResponseType",outputData);
-      sprintf(outputData,"P2_%d",i);
-      output.tag("ResponseType",outputData);
-      if (i <= nenp) {
-	sprintf(outputData,"Pp_%d",i);
-	output.tag("ResponseType",outputData);
+    if (output != 0)
+      for (int i = 1; i <= 9; i++) {
+        sprintf(outputData, "P1_%d", i);
+        output->tag("ResponseType", outputData);
+        sprintf(outputData, "P2_%d", i);
+        output->tag("ResponseType", outputData);
+        if (i <= nenp) {
+          sprintf(outputData, "Pp_%d", i);
+          output->tag("ResponseType", outputData);
+        }
       }
-    }
 
     theResponse = new ElementResponse(this, 1, P);
 
-  }  else if (strcmp(argv[0],"stiff") == 0 || strcmp(argv[0],"stiffness") == 0) {
+  }
+  else if (strcmp(argv[0], "stiff") == 0 || strcmp(argv[0], "stiffness") == 0) {
     theResponse = new ElementResponse(this, 2, K);
 
 
-  } else if (strcmp(argv[0],"mass") == 0) {
+  }
+  else if (strcmp(argv[0], "mass") == 0) {
 
     theResponse = new ElementResponse(this, 3, K);
 
 
 
-  } else if (strcmp(argv[0],"damp") == 0) {
+  }
+  else if (strcmp(argv[0], "damp") == 0) {
 
     theResponse = new ElementResponse(this, 4, K);
 
 
 
-  } else if (strcmp(argv[0],"material") == 0 || strcmp(argv[0],"integrPoint") == 0) {
+  }
+  else if (strcmp(argv[0], "material") == 0 || strcmp(argv[0], "integrPoint") == 0) {
 
     int pointNum = atoi(argv[1]);
 
     if (pointNum > 0 && pointNum <= nenu) {
 
-      output.tag("GaussPoint");
-      output.attr("number",pointNum);
+      if (output != 0)
+      {
+        output->tag("GaussPoint");
+        output->attr("number", pointNum);
+      }
 
-      theResponse =  theMaterial[pointNum-1]->setResponse(&argv[2], argc-2, output);
+      theResponse = theMaterial[pointNum - 1]->setResponse(&argv[2], argc - 2, output);
 
-      output.endTag(); // GaussPoint
+      if (output != 0)
+        output->endTag(); // GaussPoint
     }
   }
 
-  output.endTag(); // ElementOutput
+  if (output != 0)
+    output->endTag(); // ElementOutput
   return theResponse;
 }
 

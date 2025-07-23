@@ -1077,7 +1077,7 @@ int ConcreteL01::recvSelf (int commitTag, Channel& theChannel,
 
 Response* 
 ConcreteL01::setResponse(const char **argv, int argc,
-			 OPS_Stream &theOutput)
+			 OPS_Stream *theOutput)
 {
   Response *theResponse = 0;
 

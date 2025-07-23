@@ -73,7 +73,7 @@ class PlaneStressLayeredMaterial : public NDMaterial {
 
 
     Response *setResponse (const char **argv, int argc, 
-			   OPS_Stream &s);
+			   OPS_Stream *s);
     int getResponse (int responseID, Information &matInformation);
 
     

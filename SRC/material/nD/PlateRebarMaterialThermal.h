@@ -85,7 +85,7 @@ class PlateRebarMaterialThermal: public NDMaterial{
     //send back the tangent 
     const Matrix& getTangent( ) ;
 
-	  Response *setResponse (const char **argv, int argc, OPS_Stream &output);
+	  Response *setResponse (const char **argv, int argc, OPS_Stream *output);
 	int getResponse (int responseID, Information &matInformation);
 
     const Matrix& getInitialTangent( ) ;  // AV Not Sure if it works

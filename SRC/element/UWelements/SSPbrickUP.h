@@ -94,7 +94,7 @@ class SSPbrickUP : public Element
 	int displaySelf(Renderer &theViewer, int displayMode, float fact, const char **modes, int numMode);
 	void Print(OPS_Stream &s, int flag =0);
 
-	Response *setResponse(const char **argv, int argc, OPS_Stream &eleInfo);
+	Response *setResponse(const char **argv, int argc, OPS_Stream *eleInfo);
 	int getResponse(int responseID, Information &eleInformation);
 
 	// public methods for material stage update

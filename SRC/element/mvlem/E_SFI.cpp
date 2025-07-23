@@ -814,27 +814,33 @@ void E_SFI::Print(OPS_Stream& s, int flag)
 }
 
 // Set element responses
-Response* E_SFI::setResponse(const char** argv, int argc, OPS_Stream& s)
+Response* E_SFI::setResponse(const char** argv, int argc, OPS_Stream* output)
 
 {
 	Response* theResponse = 0;
 
-	s.tag("ElementOutput");
-	s.attr("eleType", "E_SFI");
-	s.attr("eleTag", this->getTag());
-	s.attr("node1", externalNodes[0]);
-	s.attr("node2", externalNodes[1]);
+	if (output != 0)
+	{
+		output->tag("ElementOutput");
+		output->attr("eleType", "E_SFI");
+		output->attr("eleTag", this->getTag());
+		output->attr("node1", externalNodes[0]);
+		output->attr("node2", externalNodes[1]);
+	}
 
 	// Global forces
 	if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0 ||
 		strcmp(argv[0], "globalForce") == 0 || strcmp(argv[0], "globalForces") == 0) {
 
-		s.tag("ResponseType", "Fx_i");
-		s.tag("ResponseType", "Fy_i");
-		s.tag("ResponseType", "Mz_i");
-		s.tag("ResponseType", "Fx_j");
-		s.tag("ResponseType", "Fy_j");
-		s.tag("ResponseType", "Mz_j");
+		if (output != 0)
+		{
+			output->tag("ResponseType", "Fx_i");
+			output->tag("ResponseType", "Fy_i");
+			output->tag("ResponseType", "Mz_i");
+			output->tag("ResponseType", "Fx_j");
+			output->tag("ResponseType", "Fy_j");
+			output->tag("ResponseType", "Mz_j");
+		}
 
 		return theResponse = new ElementResponse(this, 1, Vector(6));
 
@@ -843,7 +849,8 @@ Response* E_SFI::setResponse(const char** argv, int argc, OPS_Stream& s)
 	// Shear deformation
 	else if (strcmp(argv[0], "ShearDef") == 0 || strcmp(argv[0], "sheardef") == 0) {
 
-		s.tag("ResponseType", "Dsh");
+		if (output != 0)
+			output->tag("ResponseType", "Dsh");
 
 		return theResponse = new ElementResponse(this, 2, 0.0);
 
@@ -852,7 +859,8 @@ Response* E_SFI::setResponse(const char** argv, int argc, OPS_Stream& s)
 	// Element curvature
 	else if (strcmp(argv[0], "Curvature") == 0 || strcmp(argv[0], "curvature") == 0) {
 
-		s.tag("ResponseType", "fi");
+		if (output != 0)
+			output->tag("ResponseType", "fi");
 
 		return theResponse = new ElementResponse(this, 3, 0.0);
 	}
@@ -870,14 +878,18 @@ Response* E_SFI::setResponse(const char** argv, int argc, OPS_Stream& s)
 
 		int matNum = atoi(argv[1]);
 
-		s.tag("Material");
-		s.attr("number", matNum);
+		if (output != 0)
+		{
+			output->tag("Material");
+			output->attr("number", matNum);
+		}
 
-		return theResponse = theMaterial[matNum - 1]->setResponse(&argv[argc - 1], argc - 2, s);
+		return theResponse = theMaterial[matNum - 1]->setResponse(&argv[argc - 1], argc - 2, output);
 
 	}
 
-	s.endTag();
+	if (output != 0)
+		output->endTag();
 
 	return 0;
 }

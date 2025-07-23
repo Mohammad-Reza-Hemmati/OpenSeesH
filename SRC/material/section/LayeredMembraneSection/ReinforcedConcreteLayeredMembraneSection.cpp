@@ -393,8 +393,6 @@ double ReinforcedConcreteLayeredMembraneSection::getRho(void)
 
 double ReinforcedConcreteLayeredMembraneSection::getEcAvg(void)
 {
-	DummyStream theDummyStream;
-
 	char aa[80] = "getParameters";
 	const char* argv[1];
 	argv[0] = aa;
@@ -403,7 +401,7 @@ double ReinforcedConcreteLayeredMembraneSection::getEcAvg(void)
 
 	for (int ic = 0; ic < numberConcreteLayers; ic++) {
 		
-		Response* theResponse = TheConcrete2DMaterial[ic]->setResponse(argv, 1, theDummyStream);
+		Response* theResponse = TheConcrete2DMaterial[ic]->setResponse(argv, 1, 0);
 
 		if (theResponse == 0) {
 			opserr << "ReinforcedConcreteLayeredMembraneSection::ReinforcedConcreteLayeredMembraneSection - failed to get concrete parameters for ReinforcedConcreteLayeredMembraneSection with tag: " << this->getTag() << "\n";
@@ -793,18 +791,21 @@ void ReinforcedConcreteLayeredMembraneSection::Print(OPS_Stream& s, int flag)
 
 }
 
-Response* ReinforcedConcreteLayeredMembraneSection::setResponse(const char** argv, int argc, OPS_Stream& s)
+Response* ReinforcedConcreteLayeredMembraneSection::setResponse(const char** argv, int argc, OPS_Stream* s)
 {
 	Response* theResponse = 0;
 
 	if (strcmp(argv[0], "panel_avg_stress") == 0 || strcmp(argv[0], "Panel_AvgStress") == 0) {
-		s.tag("SectionOutput");
-		s.attr("secType", "ReinforcedConcreteLayeredMembraneSection");
-		s.attr("secTag", this->getTag());
-		s.tag("ResponseType", "sigma11");
-		s.tag("ResponseType", "sigma22");
-		s.tag("ResponseType", "sigma12");
-		s.endTag();
+		if (s != 0)
+		{
+			s->tag("SectionOutput");
+			s->attr("secType", "ReinforcedConcreteLayeredMembraneSection");
+			s->attr("secTag", this->getTag());
+			s->tag("ResponseType", "sigma11");
+			s->tag("ResponseType", "sigma22");
+			s->tag("ResponseType", "sigma12");
+			s->endTag();
+		}
 
 		Vector data1(3);
 		data1.Zero();
@@ -813,14 +814,17 @@ Response* ReinforcedConcreteLayeredMembraneSection::setResponse(const char** arg
 
 	}
 	else if (strcmp(argv[0], "cracking_pattern") == 0 || strcmp(argv[0], "Cracking_pattern") == 0) {
-		s.tag("SectionOutput");
-		s.attr("secType", "ReinforcedConcreteLayeredMembraneSection");
-		s.attr("secTag", this->getTag());
-		s.tag("ResponseType", "CP1");
-		s.tag("ResponseType", "CP2");
-		s.tag("ResponseType", "CP3");
-		s.tag("ResponseType", "CP4");
-		s.endTag();
+		if (s != 0)
+		{
+			s->tag("SectionOutput");
+			s->attr("secType", "ReinforcedConcreteLayeredMembraneSection");
+			s->attr("secTag", this->getTag());
+			s->tag("ResponseType", "CP1");
+			s->tag("ResponseType", "CP2");
+			s->tag("ResponseType", "CP3");
+			s->tag("ResponseType", "CP4");
+			s->endTag();
+		}
 
 		Vector data2(4);
 		data2.Zero();
@@ -828,23 +832,29 @@ Response* ReinforcedConcreteLayeredMembraneSection::setResponse(const char** arg
 		theResponse = new MaterialResponse(this, 2, data2);
 
 	}
-	else if (strcmp(argv[0], "thetaPD_angle") == 0 || strcmp(argv[0], "ThetaPD") == 0 || strcmp(argv[0],"thetaPD") == 0) {
-		s.tag("SectionOutput");
-		s.attr("secType", "ReinforcedConcreteLayeredMembraneSection");
-		s.attr("secTag", this->getTag());
-		s.tag("ResponseType", "thetaPD");
-		s.endTag();
+	else if (strcmp(argv[0], "thetaPD_angle") == 0 || strcmp(argv[0], "ThetaPD") == 0 || strcmp(argv[0], "thetaPD") == 0) {
+		if (s != 0)
+		{
+			s->tag("SectionOutput");
+			s->attr("secType", "ReinforcedConcreteLayeredMembraneSection");
+			s->attr("secTag", this->getTag());
+			s->tag("ResponseType", "thetaPD");
+			s->endTag();
+		}
 
 		theResponse = new MaterialResponse(this, 3, 0.0);
 
 	}
 	else if (strcmp(argv[0], "getBendingParameters") == 0) {
-		s.tag("SectionOutput");
-		s.attr("secType", "ReinforcedConcreteLayeredMembraneSection");
-		s.attr("secTag", this->getTag());
-		s.tag("ResponseType", "Eave");
-		s.tag("ResponseType", "Tave");
-		s.endTag();
+		if (s != 0)
+		{
+			s->tag("SectionOutput");
+			s->attr("secType", "ReinforcedConcreteLayeredMembraneSection");
+			s->attr("secTag", this->getTag());
+			s->tag("ResponseType", "Eave");
+			s->tag("ResponseType", "Tave");
+			s->endTag();
+		}
 
 		Vector data3(2);
 		data3.Zero();
@@ -852,13 +862,16 @@ Response* ReinforcedConcreteLayeredMembraneSection::setResponse(const char** arg
 		theResponse = new MaterialResponse(this, 4, data3);
 	}
 	else if (strcmp(argv[0], "panel_force") == 0 || strcmp(argv[0], "Panel_Force") == 0 || strcmp(argv[0], "Panel_force") == 0) {
-		s.tag("SectionOutput");
-		s.attr("secType", "ReinforcedConcreteLayeredMembraneSection");
-		s.attr("secTag", this->getTag());
-		s.tag("ResponseType", "Nxx");
-		s.tag("ResponseType", "Nyy");
-		s.tag("ResponseType", "Nxy");
-		s.endTag();
+		if (s != 0)
+		{
+			s->tag("SectionOutput");
+			s->attr("secType", "ReinforcedConcreteLayeredMembraneSection");
+			s->attr("secTag", this->getTag());
+			s->tag("ResponseType", "Nxx");
+			s->tag("ResponseType", "Nyy");
+			s->tag("ResponseType", "Nxy");
+			s->endTag();
+		}
 
 		Vector data4(3);
 		data4.Zero();
@@ -866,13 +879,16 @@ Response* ReinforcedConcreteLayeredMembraneSection::setResponse(const char** arg
 		theResponse = new MaterialResponse(this, 5, data4);
 	}
 	else if (strcmp(argv[0], "panel_strain") == 0 || strcmp(argv[0], "Panel_Strain") == 0 || strcmp(argv[0], "Panel_strain") == 0) {
-		s.tag("SectionOutput");
-		s.attr("secType", "ReinforcedConcreteLayeredMembraneSection");
-		s.attr("secTag", this->getTag());
-		s.tag("ResponseType", "eps11");
-		s.tag("ResponseType", "eps22");
-		s.tag("ResponseType", "eps12");
-		s.endTag();
+		if (s != 0)
+		{
+			s->tag("SectionOutput");
+			s->attr("secType", "ReinforcedConcreteLayeredMembraneSection");
+			s->attr("secTag", this->getTag());
+			s->tag("ResponseType", "eps11");
+			s->tag("ResponseType", "eps22");
+			s->tag("ResponseType", "eps12");
+			s->endTag();
+		}
 
 		Vector data5(3);
 		data5.Zero();
@@ -886,9 +902,12 @@ Response* ReinforcedConcreteLayeredMembraneSection::setResponse(const char** arg
 		}
 		int pointNum = atoi(argv[1]);
 		if (pointNum > 0 && pointNum <= numberConcreteLayers) {
-			s.tag("LayerOutput");
-			s.attr("number", pointNum);
-			s.attr("thickness", t[pointNum]);
+			if (s != 0)
+			{
+				s->tag("LayerOutput");
+				s->attr("number", pointNum);
+				s->attr("thickness", t[pointNum]);
+			}
 
 			theResponse = TheConcrete2DMaterial[pointNum - 1]->setResponse(&argv[2], argc - 2, s);
 
@@ -901,8 +920,11 @@ Response* ReinforcedConcreteLayeredMembraneSection::setResponse(const char** arg
 		}
 		int pointNum = atoi(argv[1]);
 		if (pointNum > 0 && pointNum <= numberReinforcedSteelLayers) {
-			s.tag("LayerOutput");
-			s.attr("number", pointNum);
+			if (s != 0)
+			{
+				s->tag("LayerOutput");
+				s->attr("number", pointNum);
+			}
 
 			theResponse = TheReinforcedSteel2DMaterial[pointNum - 1]->setResponse(&argv[2], argc - 2, s);
 
@@ -963,14 +985,13 @@ void ReinforcedConcreteLayeredMembraneSection::setCrackPattern(void)
 	double* strainAtFt = new double[numberConcreteLayers];
 	double* strainAtFc = new double[numberConcreteLayers];
 
-	DummyStream theDummyStream;
 	char aa[80] = "getParameters";
 	const char* argv[1];
 	argv[0] = aa;
 
 	for (int i = 0; i < numberConcreteLayers; i++)
 	{
-		Response* theResponse = TheConcrete2DMaterial[i]->setResponse(argv, 1, theDummyStream);
+		Response* theResponse = TheConcrete2DMaterial[i]->setResponse(argv, 1, 0);
 
 		if (theResponse == 0) {
 			opserr << "ReinforcedConcreteLayeredMembraneSection::ReinforcedConcreteLayeredMembraneSection - failed to get strain concrete parameters for RCLMS section with tag: " << this->getTag() << "\n";

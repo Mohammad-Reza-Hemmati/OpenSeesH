@@ -1078,7 +1078,7 @@ FiberSection2dThermal::Print(OPS_Stream &s, int flag)
 
 Response*
 FiberSection2dThermal::setResponse(const char **argv, int argc,
-			    OPS_Stream &output)
+			    OPS_Stream *output)
 {
   Response *theResponse = 0;
   
@@ -1150,14 +1150,18 @@ FiberSection2dThermal::setResponse(const char **argv, int argc,
     }
     
     if (key < numFibers && key >= 0) {
-      output.tag("FiberOutput");
-      output.attr("yLoc",matData[2*key]);
-      output.attr("zLoc",0.0);
-      output.attr("area",matData[2*key+1]);
+      if (output != 0)
+      {
+        output->tag("FiberOutput");
+        output->attr("yLoc", matData[2 * key]);
+        output->attr("zLoc", 0.0);
+        output->attr("area", matData[2 * key + 1]);
+      }
       
       theResponse = theMaterials[key]->setResponse(&argv[passarg], argc-passarg, output);
       
-      output.endTag();
+      if (output != 0)
+        output->endTag();
     }
   }
 

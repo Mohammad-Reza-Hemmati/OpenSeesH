@@ -30,23 +30,18 @@
 class SmoothIMK : public UniaxialMaterial
 {
 public:
-	enum ebranch { gapping, precap, postcap, residual, failing, failed, peakOriented, pinching, peakPassing };
+	//enum ebranch { gapping, precap, postcap, residual, failing, failed, peakOriented, pinching, peakPassing };
 	SmoothIMK(int tag,
-		double pd1, double pf1,
-		double pd2, double pf2,
-		double pd3, double pf3,
-		double pdu, 
-		double nd1, double nf1,
-		double nd2, double nf2,
-		double nd3, double nf3,
-		double ndu,
+		std::vector<double> pd, std::vector<double> pf,
+		std::vector<double> nd, std::vector<double> nf,
 		double gamaS, double cS,
 		double gamaUnloadE, double cUnloadE,
 		double r0, double r1, double r2,
 		int cyclicRule,
 		double pinchXPos, double pinchYPos, double sigPenetFacPos,
 		double pinchXNeg, double pinchYNeg, double sigPenetFacNeg,
-		double sigInit, double gap);
+		double unloadingStiffFacPos, double unloadingStiffFacNeg,
+		double sigInit, double gap, double bilinEndAmp);
 
 	SmoothIMK(void);
 	virtual ~SmoothIMK();
@@ -77,29 +72,28 @@ public:
 
 	virtual double getEnergy() { return EnergyP; };
 
-	double getInitYieldStrain() { return pd1_; }
+	double getInitYieldStrain() { return pd[0]; }
 	virtual void resetEnergy(void) { EnergyP = 0; }
 	virtual Response* setResponse(const char** argv, int argc,
-		OPS_Stream& theOutputStream);
+		OPS_Stream * theOutputStream);
 	virtual int getResponse(int responseID, Information& matInformation);
 
 protected:
 
 private:
-	double pf1, pd1, pf2, pd2, pf3, pd3, pdu;
-	double pd1_, pd2_, pd3_, pdu_, nd1_, nd2_, nd3_, ndu_;
-	double nf1, nd1, nf2, nd2, nf3, nd3, ndu;
+	std::vector<double> pd, pf, nd, nf, gpd, gnd; //gpd: gapped pd
 	double r0, r1, r2;
 	double gap;
+	double bilinEndAmp;	//strain amplitude limit at which bilin behavior ends and either pinched or peak-oriented rules start based on the cyclicRule
 	double sigPenetFacP, sigPenetFacN;
 	int cyclicRule;  // 1:bilinear, 2:pinched, 3:peak-oriented
 	double FailEnergS, FailEnergUnloadE, cS, cUnloadE;			//damage parameters
 	double pinchXPos, pinchXNeg, pinchYPos, pinchYNeg;
-	double FydP, FydN;		//Pos and Neg Fy's affected by damage
+	//double FydP, FydN;		//Pos and Neg Fy's affected by damage
 	double ExcurEnergy;
 	double EnergyP; //by SAJalali
 	double sigini; // initial 
-	
+	double unloadingStiffFacPos, unloadingStiffFacNeg;
 	//HISTORY VARIABLES
 	double epsminP; //  = hstvP(1) : max eps in compression
 	double epsmaxP; //  = hstvP(2) : max eps in tension
@@ -110,12 +104,21 @@ private:
 	double sigsrP;  //  = hstvP(7) : sig at last inversion point
 	//int    stat, statP;    //  = hstvP(8) : index for loading/unloading
 	bool isPosDir, isPosDirP;
-	ebranch branch, branchP;
-	// hstv : STEEL HISTORY VARIABLES   
-	double epsP;  //  = strain at previous converged step
-	double sigP;  //  = stress at previous converged step
-	double eP;    //   stiffness modulus at last converged step;
+	int branch, branchP; 
+	// 0: initial on-envelope branch,
+	// 1~n: segment-wise on-envelope,
+	// 10011: initial gapped loading,
+	// 10012: gapped unloading,
+	// 1002: pinching,
+	// 1003: peak-oriented,
+	// 1005: peak-passing,
+	// 1010: failed
+
+	double eps, epsP;  //  = strain at trial and last converged steps
+	double sig, sigP;  //  = stress at traial and converged steps
+	double e, eP;    //   stiffness modulus at trial and last converged stepa;
 	double slopeRat, slopeRatP;
+	double epsPl, epsPlP;	//cumulative plastic strain at trial and last converged steps
 	double epsmin;
 	double epsmax;
 	double epsLimit;
@@ -123,25 +126,19 @@ private:
 	double sigs0;
 	double epsr;
 	double sigr;
-	double sig;
-	double e;
-	double eps;   //  = strain at current step
-	double EshP, EshN, E0p, E0n, EunloadP, EunloadN;
+	double E0p, E0n, EunloadP, EunloadN;
+	//double EshP, EshN;
 	double R0, R0P;
-	double FcP, FcN;
-	double FrP, FrN;
+	std::vector<double> fpDmgd, fnDmgd;
+	int FyIndP,FyIndN, FcIndP, FcIndN;
+	int FrIndP, FrIndN;
 	bool onEnvelope, onEnvelopeP;
 	bool initiated, initiatedP;
-	double epsPl, epsPlP;
 	void updateDamage();
 	void updateAsymptote();
-	void bilinAsymptote();
-	void peakOrientedAsymptote();
-	void pinchedAsymptote();
 	void changeBranch(bool isReturning);
-	void gappedBilinAsymptote();
-	ebranch nextBranch(ebranch branch);
-	void getEnvelope(double eps, double& targStress, SmoothIMK::ebranch& targBranch, double& k, double& limitEps);
+	int nextBranch(int branch);
+	void getEnvelope(double eps, bool pSide, double& targStress, int& targBranch, double& k, double& limitEps);
 	void computeR0(double k1, double k2, double E1, double dy);
 };
 

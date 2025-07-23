@@ -101,7 +101,7 @@ public:
 
     // method for obtaining information specific to a coordinate transformation
     virtual Response *setResponse(const char **argv, int argc, 
-				  OPS_Stream &theHandler);
+				  OPS_Stream *theHandler);
   virtual int getResponse(int responseID, Information &eleInformation);
     
 protected:

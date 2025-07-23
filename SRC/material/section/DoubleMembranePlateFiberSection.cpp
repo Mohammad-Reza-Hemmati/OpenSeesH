@@ -856,7 +856,7 @@ DoubleMembranePlateFiberSection::recvSelf(int commitTag, Channel &theChannel, FE
 
 Response*
 DoubleMembranePlateFiberSection::setResponse(const char **argv, int argc,
-				       OPS_Stream &output)
+				       OPS_Stream *output)
 {
   Response *theResponse =0;
 
@@ -873,12 +873,16 @@ DoubleMembranePlateFiberSection::setResponse(const char **argv, int argc,
       double fiber_location = 0.5 * (d + h) + (0.5 * h) * sg[quadrature_id];
       if (key > numFibers)
           fiber_location = -fiber_location;
-      output.tag("FiberOutput");
-      output.attr("number", key);
-      output.attr("zLoc", fiber_location);
-      output.attr("thickness", fiber_thickness);
+      if (output != 0)
+      {
+        output->tag("FiberOutput");
+        output->attr("number", key);
+        output->attr("zLoc", fiber_location);
+        output->attr("thickness", fiber_thickness);
+      }
       theResponse =  theFibers[key-1]->setResponse(&argv[passarg], argc-passarg, output);
-      output.endTag();
+      if (output != 0)
+        output->endTag();
     }
   }
 

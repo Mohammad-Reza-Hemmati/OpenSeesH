@@ -95,7 +95,7 @@ class DispBeamColumn3d : public Element
     int displaySelf(Renderer &theViewer, int displayMode, float fact, const char **displayModes=0, int numModes=0);
     void Print(OPS_Stream &s, int flag =0);
 
-    Response *setResponse(const char **argv, int argc, OPS_Stream &s);
+    Response *setResponse(const char **argv, int argc, OPS_Stream *s);
     int getResponse(int responseID, Information &eleInfo);
 
     // AddingSensitivity:BEGIN //////////////////////////////////////////

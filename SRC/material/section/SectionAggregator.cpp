@@ -961,7 +961,7 @@ SectionAggregator::recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &the
 }
 
 Response*
-SectionAggregator::setResponse(const char **argv, int argc, OPS_Stream &output)
+SectionAggregator::setResponse(const char **argv, int argc, OPS_Stream *output)
 {
   
   Response *theResponse =0;

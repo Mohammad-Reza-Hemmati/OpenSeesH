@@ -1300,7 +1300,7 @@ PressureDependMultiYield::recvSelf(int commitTag, Channel &theChannel,
 }
 
 Response*
-PressureDependMultiYield::setResponse (const char **argv, int argc, OPS_Stream &output)
+PressureDependMultiYield::setResponse (const char **argv, int argc, OPS_Stream *output)
 {
   // begin change by Alborz Ghofrani - UW --- get only 6 components of stress
   if (strcmp(argv[0],"stress") == 0 || strcmp(argv[0],"stresses") == 0)

@@ -56,7 +56,7 @@ Fiber::~Fiber()
 }
 
 Response*
-Fiber::setResponse(const char **argv, int argc, OPS_Stream &s)
+Fiber::setResponse(const char **argv, int argc, OPS_Stream *s)
 {
   return 0;
 }

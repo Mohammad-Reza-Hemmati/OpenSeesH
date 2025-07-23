@@ -101,7 +101,7 @@ public:
   int displaySelf(Renderer&, int mode, float fact, const char** displayModes = 0, int numModes = 0);
 
   // method for obtaining information specific to an element
-  Response* setResponse(const char** argv, int argc, OPS_Stream& s);
+  Response* setResponse(const char** argv, int argc, OPS_Stream * s);
   int getResponse(int responseID, Information& eleInformation);
   int sendSelf(int commitTag, Channel& theChannel);
   int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);

@@ -34,7 +34,7 @@
 #define HeatTransferModule_h
 
 #include <elementAPI.h>
-#include <PythonWrapper.h>
+#include <interpreter/PythonWrapper.h>
 #include <HeatTransferDomain.h>
 #include <HeatTransferMaterial.h>  // for member functions adding and returning HeatTransfer Materials
 #include <Simple_Entity.h>    //for member functions adding and returning Simple Entities

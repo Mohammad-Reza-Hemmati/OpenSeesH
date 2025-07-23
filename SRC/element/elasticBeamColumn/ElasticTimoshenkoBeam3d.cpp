@@ -980,86 +980,96 @@ void ElasticTimoshenkoBeam3d::Print(OPS_Stream &s, int flag)
 }
 
 
-Response* ElasticTimoshenkoBeam3d::setResponse(const char **argv, int argc,
-    OPS_Stream &output)
+Response* ElasticTimoshenkoBeam3d::setResponse(const char** argv, int argc,
+  OPS_Stream* output)
 {
-    Response *theResponse = 0;
-    
-    output.tag("ElementOutput");
-    output.attr("eleType","ElasticTimoshenkoBeam3d");
-    output.attr("eleTag",this->getTag());
-    output.attr("node1",connectedExternalNodes[0]);
-    output.attr("node2",connectedExternalNodes[1]);
-    
-    // global forces
-    if (strcmp(argv[0],"force") == 0 || strcmp(argv[0],"forces") == 0 ||
-        strcmp(argv[0],"globalForce") == 0 || strcmp(argv[0],"globalForces") == 0)
+  Response* theResponse = 0;
+
+  if (output != 0)
+  {
+    output->tag("ElementOutput");
+    output->attr("eleType", "ElasticTimoshenkoBeam3d");
+    output->attr("eleTag", this->getTag());
+    output->attr("node1", connectedExternalNodes[0]);
+    output->attr("node2", connectedExternalNodes[1]);
+  }
+
+  // global forces
+  if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0 ||
+    strcmp(argv[0], "globalForce") == 0 || strcmp(argv[0], "globalForces") == 0)
+  {
+    if (output != 0)
     {
-        output.tag("ResponseType","Px_1");
-        output.tag("ResponseType","Py_1");
-        output.tag("ResponseType","Pz_1");
-        output.tag("ResponseType","Mx_1");
-        output.tag("ResponseType","My_1");
-        output.tag("ResponseType","Mz_1");
-        output.tag("ResponseType","Px_2");
-        output.tag("ResponseType","Py_2");
-        output.tag("ResponseType","Pz_2");
-        output.tag("ResponseType","Mx_2");
-        output.tag("ResponseType","My_2");
-        output.tag("ResponseType","Mz_2");
-        
-        theResponse =  new ElementResponse(this, 1, theVector);
+      output->tag("ResponseType", "Px_1");
+      output->tag("ResponseType", "Py_1");
+      output->tag("ResponseType", "Pz_1");
+      output->tag("ResponseType", "Mx_1");
+      output->tag("ResponseType", "My_1");
+      output->tag("ResponseType", "Mz_1");
+      output->tag("ResponseType", "Px_2");
+      output->tag("ResponseType", "Py_2");
+      output->tag("ResponseType", "Pz_2");
+      output->tag("ResponseType", "Mx_2");
+      output->tag("ResponseType", "My_2");
+      output->tag("ResponseType", "Mz_2");
     }
-    // local forces
-    else if (strcmp(argv[0],"localForce") == 0 || strcmp(argv[0],"localForces") == 0)
+
+    theResponse = new ElementResponse(this, 1, theVector);
+  }
+  // local forces
+  else if (strcmp(argv[0], "localForce") == 0 || strcmp(argv[0], "localForces") == 0)
+  {
+    if (output != 0)
     {
-        output.tag("ResponseType","N_1");
-        output.tag("ResponseType","Vy_1");
-        output.tag("ResponseType","Vz_1");
-        output.tag("ResponseType","T_1");
-        output.tag("ResponseType","My_1");
-        output.tag("ResponseType","Mz_1");
-        output.tag("ResponseType","N_2");
-        output.tag("ResponseType","Vy_2");
-        output.tag("ResponseType","Vz_2");
-        output.tag("ResponseType","T_2");
-        output.tag("ResponseType","My_2");
-        output.tag("ResponseType","Mz_2");
-        
-        theResponse =  new ElementResponse(this, 2, theVector);
+      output->tag("ResponseType", "N_1");
+      output->tag("ResponseType", "Vy_1");
+      output->tag("ResponseType", "Vz_1");
+      output->tag("ResponseType", "T_1");
+      output->tag("ResponseType", "My_1");
+      output->tag("ResponseType", "Mz_1");
+      output->tag("ResponseType", "N_2");
+      output->tag("ResponseType", "Vy_2");
+      output->tag("ResponseType", "Vz_2");
+      output->tag("ResponseType", "T_2");
+      output->tag("ResponseType", "My_2");
+      output->tag("ResponseType", "Mz_2");
     }
+
+    theResponse = new ElementResponse(this, 2, theVector);
+  }
 #ifdef _CSS
-	//SAJalali
-	else if (strcmp(argv[0], "internalForce") == 0 || strcmp(argv[0], "InternalForce") == 0)
-	{
+  //SAJalali
+  else if (strcmp(argv[0], "internalForce") == 0 || strcmp(argv[0], "InternalForce") == 0)
+  {
 
-		if (argc > 1) {
+    if (argc > 1) {
 
-			double xi = atof(argv[1]);
-			if (xi >= 0 && xi <= 1) {
-				output.tag("InternalForce");
-				output.attr("xi", xi);
+      double xi = atof(argv[1]);
+      if (xi >= 0 && xi <= 1) {
+        output->tag("InternalForce");
+        output->attr("xi", xi);
 
-				theResponse = new ElementResponse(this, 3, Vector(6));
-				Information& info = theResponse->getInformation();
-				info.theDouble = xi;
+        theResponse = new ElementResponse(this, 3, Vector(6));
+        Information& info = theResponse->getInformation();
+        info.theDouble = xi;
 
-				output.endTag();
+        output->endTag();
 
-			}
-			else {
-				opserr << "WARNING! ElasticBeam3d::invalid section location: " << xi << " value must be in 0<= <=1 range" << endln;
-			}
-		}
-	}
+      }
+      else {
+        opserr << "WARNING! ElasticBeam3d::invalid section location: " << xi << " value must be in 0<= <=1 range" << endln;
+      }
+    }
+  }
 #endif // _CSS
 
-    output.endTag(); // ElementOutput
+  if (output != 0)
+    output->endTag(); // ElementOutput
 
-    if (theResponse == 0)
-      theResponse = theCoordTransf->setResponse(argv, argc, output);
-  
-    return theResponse;
+  if (theResponse == 0)
+    theResponse = theCoordTransf->setResponse(argv, argc, output);
+
+  return theResponse;
 }
 
 

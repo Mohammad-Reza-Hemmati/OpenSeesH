@@ -914,100 +914,119 @@ void FlatSliderSimple2d::Print(OPS_Stream &s, int flag)
 }
 
 
-Response* FlatSliderSimple2d::setResponse(const char **argv, int argc,
-    OPS_Stream &output)
+Response* FlatSliderSimple2d::setResponse(const char** argv, int argc,
+  OPS_Stream* output)
 {
-    Response *theResponse = 0;
-    
-    output.tag("ElementOutput");
-    output.attr("eleType","FlatSliderSimple2d");
-    output.attr("eleTag",this->getTag());
-    output.attr("node1",connectedExternalNodes[0]);
-    output.attr("node2",connectedExternalNodes[1]);
-    
-    // global forces
-    if (strcmp(argv[0],"force") == 0 ||
-        strcmp(argv[0],"forces") == 0 ||
-        strcmp(argv[0],"globalForce") == 0 ||
-        strcmp(argv[0],"globalForces") == 0)
+  Response* theResponse = 0;
+
+  if (output != 0)
+  {
+    output->tag("ElementOutput");
+    output->attr("eleType", "FlatSliderSimple2d");
+    output->attr("eleTag", this->getTag());
+    output->attr("node1", connectedExternalNodes[0]);
+    output->attr("node2", connectedExternalNodes[1]);
+  }
+
+  // global forces
+  if (strcmp(argv[0], "force") == 0 ||
+    strcmp(argv[0], "forces") == 0 ||
+    strcmp(argv[0], "globalForce") == 0 ||
+    strcmp(argv[0], "globalForces") == 0)
+  {
+    if (output != 0)
     {
-        output.tag("ResponseType","Px_1");
-        output.tag("ResponseType","Py_1");
-        output.tag("ResponseType","Mz_1");
-        output.tag("ResponseType","Px_2");
-        output.tag("ResponseType","Py_2");
-        output.tag("ResponseType","Mz_2");
-        
-        theResponse = new ElementResponse(this, 1, theVector);
+      output->tag("ResponseType", "Px_1");
+      output->tag("ResponseType", "Py_1");
+      output->tag("ResponseType", "Mz_1");
+      output->tag("ResponseType", "Px_2");
+      output->tag("ResponseType", "Py_2");
+      output->tag("ResponseType", "Mz_2");
     }
-    // local forces
-    else if (strcmp(argv[0],"localForce") == 0 ||
-        strcmp(argv[0],"localForces") == 0)
+
+    theResponse = new ElementResponse(this, 1, theVector);
+  }
+  // local forces
+  else if (strcmp(argv[0], "localForce") == 0 ||
+    strcmp(argv[0], "localForces") == 0)
+  {
+    if (output != 0)
     {
-        output.tag("ResponseType","N_1");
-        output.tag("ResponseType","V_1");
-        output.tag("ResponseType","M_1");
-        output.tag("ResponseType","N_2");
-        output.tag("ResponseType","V_2");
-        output.tag("ResponseType","M_2");
-        
-        theResponse = new ElementResponse(this, 2, theVector);
+      output->tag("ResponseType", "N_1");
+      output->tag("ResponseType", "V_1");
+      output->tag("ResponseType", "M_1");
+      output->tag("ResponseType", "N_2");
+      output->tag("ResponseType", "V_2");
+      output->tag("ResponseType", "M_2");
     }
-    // basic forces
-    else if (strcmp(argv[0],"basicForce") == 0 ||
-        strcmp(argv[0],"basicForces") == 0)
+
+    theResponse = new ElementResponse(this, 2, theVector);
+  }
+  // basic forces
+  else if (strcmp(argv[0], "basicForce") == 0 ||
+    strcmp(argv[0], "basicForces") == 0)
+  {
+    if (output != 0)
     {
-        output.tag("ResponseType","qb1");
-        output.tag("ResponseType","qb2");
-        output.tag("ResponseType","qb3");
-        
-        theResponse = new ElementResponse(this, 3, Vector(3));
+      output->tag("ResponseType", "qb1");
+      output->tag("ResponseType", "qb2");
+      output->tag("ResponseType", "qb3");
     }
-    // local displacements
-    else if (strcmp(argv[0],"localDisplacement") == 0 ||
-        strcmp(argv[0],"localDisplacements") == 0)
+
+    theResponse = new ElementResponse(this, 3, Vector(3));
+  }
+  // local displacements
+  else if (strcmp(argv[0], "localDisplacement") == 0 ||
+    strcmp(argv[0], "localDisplacements") == 0)
+  {
+    if (output != 0)
     {
-        output.tag("ResponseType","ux_1");
-        output.tag("ResponseType","uy_1");
-        output.tag("ResponseType","rz_1");
-        output.tag("ResponseType","ux_2");
-        output.tag("ResponseType","uy_2");
-        output.tag("ResponseType","rz_2");
-        
-        theResponse = new ElementResponse(this, 4, theVector);
+      output->tag("ResponseType", "ux_1");
+      output->tag("ResponseType", "uy_1");
+      output->tag("ResponseType", "rz_1");
+      output->tag("ResponseType", "ux_2");
+      output->tag("ResponseType", "uy_2");
+      output->tag("ResponseType", "rz_2");
     }
-    // basic displacements
-    else if (strcmp(argv[0],"deformation") == 0 ||
-        strcmp(argv[0],"deformations") == 0 || 
-        strcmp(argv[0],"basicDeformation") == 0 ||
-        strcmp(argv[0],"basicDeformations") == 0 ||
-        strcmp(argv[0],"basicDisplacement") == 0 ||
-        strcmp(argv[0],"basicDisplacements") == 0)
+
+    theResponse = new ElementResponse(this, 4, theVector);
+  }
+  // basic displacements
+  else if (strcmp(argv[0], "deformation") == 0 ||
+    strcmp(argv[0], "deformations") == 0 ||
+    strcmp(argv[0], "basicDeformation") == 0 ||
+    strcmp(argv[0], "basicDeformations") == 0 ||
+    strcmp(argv[0], "basicDisplacement") == 0 ||
+    strcmp(argv[0], "basicDisplacements") == 0)
+  {
+    if (output != 0)
     {
-        output.tag("ResponseType","ub1");
-        output.tag("ResponseType","ub2");
-        output.tag("ResponseType","ub3");
-        
-        theResponse = new ElementResponse(this, 5, Vector(3));
+      output->tag("ResponseType", "ub1");
+      output->tag("ResponseType", "ub2");
+      output->tag("ResponseType", "ub3");
     }
-    // material output
-    else if (strcmp(argv[0],"material") == 0)  {
-        if (argc > 2)  {
-            int matNum = atoi(argv[1]);
-            if (matNum >= 1 && matNum <= 2)
-                theResponse = theMaterials[matNum-1]->setResponse(&argv[2], argc-2, output);
-        }
+
+    theResponse = new ElementResponse(this, 5, Vector(3));
+  }
+  // material output
+  else if (strcmp(argv[0], "material") == 0) {
+    if (argc > 2) {
+      int matNum = atoi(argv[1]);
+      if (matNum >= 1 && matNum <= 2)
+        theResponse = theMaterials[matNum - 1]->setResponse(&argv[2], argc - 2, output);
     }
-    // friction model output
-    else if (strcmp(argv[0],"frictionModel") == 0 || strcmp(argv[0],"frnMdl") == 0 ||
-        strcmp(argv[0],"frictionMdl") == 0 || strcmp(argv[0],"frnModel") == 0)  {
-            if (argc > 1)
-                theResponse = theFrnMdl->setResponse(&argv[1], argc-1, output);
-    }
-    
-    output.endTag(); // ElementOutput
-    
-    return theResponse;
+  }
+  // friction model output
+  else if (strcmp(argv[0], "frictionModel") == 0 || strcmp(argv[0], "frnMdl") == 0 ||
+    strcmp(argv[0], "frictionMdl") == 0 || strcmp(argv[0], "frnModel") == 0) {
+    if (argc > 1)
+      theResponse = theFrnMdl->setResponse(&argv[1], argc - 1, output);
+  }
+
+  if (output != 0)
+    output->endTag(); // ElementOutput
+
+  return theResponse;
 }
 
 

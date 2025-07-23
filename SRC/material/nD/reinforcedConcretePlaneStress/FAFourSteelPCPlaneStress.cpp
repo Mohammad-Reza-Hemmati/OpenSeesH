@@ -161,161 +161,158 @@ pc? fy1? fy2? E0? epsc0?\n";
   return theMaterial;
 } 
  
-FAFourSteelPCPlaneStress::FAFourSteelPCPlaneStress ( int      tag, 
-						     double   RHO,
-						     UniaxialMaterial *t1,
-						     UniaxialMaterial *t2,
-						     UniaxialMaterial *s1,
-						     UniaxialMaterial *s2,
-						     UniaxialMaterial *c1,
-						     UniaxialMaterial *c2,
-						     double   ANGLE1,
-						     double   ANGLE2,
-						     double   ANGLE3,
-						     double   ANGLE4,
-						     double   ROU1,
-						     double   ROU2,
-						     double   ROU3,
-						     double   ROU4,
-						     double	PSTRAIN1,
-						     double	PSTRAIN2,
-						     double   FPC,
-						     double   FY1,
-						     double	FY2,
-						     double   E,
-						     double   EPSC0) :
-  NDMaterial(tag, ND_TAG_FAFourSteelPCPlaneStress), rho(RHO), 
-  angle1(ANGLE1), angle2(ANGLE2), angle3(ANGLE3), angle4(ANGLE4), 
-  rou1(ROU1), rou2(ROU2), rou3(ROU3), rou4(ROU4), pstrain1(PSTRAIN1), pstrain2(PSTRAIN2),
-  fpc(FPC), fy1(FY1), fy2(FY2), E0(E), epsc0(EPSC0), strain_vec(3), stress_vec(3),tangent_matrix(3,3)
+FAFourSteelPCPlaneStress::FAFourSteelPCPlaneStress(int      tag,
+	double   RHO,
+	UniaxialMaterial* t1,
+	UniaxialMaterial* t2,
+	UniaxialMaterial* s1,
+	UniaxialMaterial* s2,
+	UniaxialMaterial* c1,
+	UniaxialMaterial* c2,
+	double   ANGLE1,
+	double   ANGLE2,
+	double   ANGLE3,
+	double   ANGLE4,
+	double   ROU1,
+	double   ROU2,
+	double   ROU3,
+	double   ROU4,
+	double	PSTRAIN1,
+	double	PSTRAIN2,
+	double   FPC,
+	double   FY1,
+	double	FY2,
+	double   E,
+	double   EPSC0) :
+NDMaterial(tag, ND_TAG_FAFourSteelPCPlaneStress), rho(RHO),
+angle1(ANGLE1), angle2(ANGLE2), angle3(ANGLE3), angle4(ANGLE4),
+rou1(ROU1), rou2(ROU2), rou3(ROU3), rou4(ROU4), pstrain1(PSTRAIN1), pstrain2(PSTRAIN2),
+fpc(FPC), fy1(FY1), fy2(FY2), E0(E), epsc0(EPSC0), strain_vec(3), stress_vec(3), tangent_matrix(3, 3)
 {
-  steelStatus = 0;
-  dirStatus = 0;
-  G12 = 0;
-  citaStrain = 10;
-  citaStress = 10;
-  
-  TOneReverseStatus = 0;         
-  TOneNowMaxComStrain = 0.0;
-  TOneLastMaxComStrain = 0.0;
-  
-  TTwoReverseStatus = 0;         
-  TTwoNowMaxComStrain = 0.0;
-  TTwoLastMaxComStrain = 0.0;
-  
-  COneReverseStatus = 0;         
-  COneNowMaxComStrain = 0.0;
-  COneLastMaxComStrain = 0.0;
-  
-  CTwoReverseStatus = 0;         
-  CTwoNowMaxComStrain = 0.0;
-  CTwoLastMaxComStrain = 0.0;
-  
-  lastStress[0] = 0.0;  // add at 7.28/04
-  lastStress[1] = 0.0;  // add at 7.28
-  lastStress[2] = 0.0;  // add at 7.28
-  
-  if ( fpc < 0.0 ) { fpc = -fpc; } // set fpc > 0
-  
-  theMaterial = 0;
-  
-  // Allocate pointers to Steel and concrete
-  theMaterial = new UniaxialMaterial *[6];
-  
-  if ( theMaterial == 0 ) {
-    opserr << " FAFourSteelPCPlaneStress::FAFourSteelPCPlaneStress - failed to allocate material array\n";
-    exit(-1);
-  }
-  
-  // Get the copy for theSteel1
-  theMaterial[0] = t1->getCopy();
-  // Check allocation    
-  if ( theMaterial[0] == 0 ) {
-    opserr << " FAFourSteelPCPlaneStress::FAFourSteelPCPlaneStress - failed to get a copy for tendon1\n";
-    exit(-1);
-  }
-  
-  
-  // Get the copy for theSteel2
-  theMaterial[1] = t2->getCopy();	
-  // Check allocation    
-  if ( theMaterial[1] == 0 ) {
-    opserr << " FAFourSteelPCPlaneStress::FAFourSteelPCPlaneStress - failed to get a copy for tendon2\n";
-    exit(-1);
-  }
-  
-  // Get the copy for theSteel3
-  theMaterial[2] = s1->getCopy();	
-  // Check allocation    
-  if ( theMaterial[2] == 0 ) {
-    opserr << " FAFourSteelPCPlaneStress::FAFourSteelPCPlaneStress - failed to get a copy for steel1\n";
-    exit(-1);
-  }
-  
-  // Get the copy for theSteel4
-  theMaterial[3] = s2->getCopy();	
-  // Check allocation    
-  if ( theMaterial[3] == 0 ) {
-    opserr << " FAFourSteelPCPlaneStress::FAFourSteelPCPlaneStress - failed to get a copy for steel2\n";
-    exit(-1);
-  }
-  
-  
-  
-  // Get the copy for theConcrete1
-  theMaterial[4] = c1->getCopy();	
-  // Check allocation    
-  if ( theMaterial[4] == 0 ) {
-    opserr << " FAFourSteelPCPlaneStress::FAFourSteelPCPlaneStress - failed to get a copy for concrete1\n";
-    exit(-1);
-  }
-  
-  // Get the copy for theConcrete2
-  theMaterial[5] = c2->getCopy();	
-  // Check allocation    
-  if ( theMaterial[5] == 0 ) {
-    opserr << " FAFourSteelPCPlaneStress::FAFourSteelPCPlaneStress - failed to get a copy for concrete2\n";
-    exit(-1);
-  }
+	steelStatus = 0;
+	dirStatus = 0;
+	G12 = 0;
+	citaStrain = 10;
+	citaStress = 10;
 
-    /* FMK */
-    theResponses = new Response *[8];  
-    
-    if ( theResponses == 0) {
-      opserr << " ReinforcedConcretePlaneStress::ReinforcedConcretePlaneStress - failed allocate responses  array\n";
-      exit(-1);
-    }
-    
-    OPS_Stream *theDummyStream = new DummyStream();
-    
-    const char **argv = new const char *[1];
-    argv[0] = "getCommittedStrain";
-    theResponses[0] = theMaterial[0]->setResponse(argv, 1, *theDummyStream);
-    theResponses[1] = theMaterial[1]->setResponse(argv, 1, *theDummyStream);
-    theResponses[2] = theMaterial[2]->setResponse(argv, 1, *theDummyStream);
-    theResponses[3] = theMaterial[3]->setResponse(argv, 1, *theDummyStream);
+	TOneReverseStatus = 0;
+	TOneNowMaxComStrain = 0.0;
+	TOneLastMaxComStrain = 0.0;
 
-    argv[0] = "setWallVar";
-    theResponses[4] = theMaterial[4]->setResponse(argv, 1, *theDummyStream);
-    theResponses[5] = theMaterial[5]->setResponse(argv, 1, *theDummyStream);
+	TTwoReverseStatus = 0;
+	TTwoNowMaxComStrain = 0.0;
+	TTwoLastMaxComStrain = 0.0;
 
-    argv[0] = "getPD";
-    theResponses[6] = theMaterial[4]->setResponse(argv, 1, *theDummyStream);
-    theResponses[7] = theMaterial[5]->setResponse(argv, 1, *theDummyStream);
-    
-    if ((theResponses[0] == 0) || (theResponses[1] == 0) ||
-	(theResponses[2] == 0) || (theResponses[3] == 0) ||
-	(theResponses[4] == 0) || (theResponses[5] == 0) ||
-	(theResponses[6] == 0) || (theResponses[7] == 0)) {
+	COneReverseStatus = 0;
+	COneNowMaxComStrain = 0.0;
+	COneLastMaxComStrain = 0.0;
 
-      opserr << " FAFourSteelPCPLaneStress::FAFourSteelPCPlaneStress - failed to set appropriate materials tag:" << tag << endln;
-      exit(-1);
-    }
-    
-    delete theDummyStream;
-    /* END FMK */
-  
-  this->revertToStart();
+	CTwoReverseStatus = 0;
+	CTwoNowMaxComStrain = 0.0;
+	CTwoLastMaxComStrain = 0.0;
+
+	lastStress[0] = 0.0;  // add at 7.28/04
+	lastStress[1] = 0.0;  // add at 7.28
+	lastStress[2] = 0.0;  // add at 7.28
+
+	if (fpc < 0.0) { fpc = -fpc; } // set fpc > 0
+
+	theMaterial = 0;
+
+	// Allocate pointers to Steel and concrete
+	theMaterial = new UniaxialMaterial * [6];
+
+	if (theMaterial == 0) {
+		opserr << " FAFourSteelPCPlaneStress::FAFourSteelPCPlaneStress - failed to allocate material array\n";
+		exit(-1);
+	}
+
+	// Get the copy for theSteel1
+	theMaterial[0] = t1->getCopy();
+	// Check allocation    
+	if (theMaterial[0] == 0) {
+		opserr << " FAFourSteelPCPlaneStress::FAFourSteelPCPlaneStress - failed to get a copy for tendon1\n";
+		exit(-1);
+	}
+
+
+	// Get the copy for theSteel2
+	theMaterial[1] = t2->getCopy();
+	// Check allocation    
+	if (theMaterial[1] == 0) {
+		opserr << " FAFourSteelPCPlaneStress::FAFourSteelPCPlaneStress - failed to get a copy for tendon2\n";
+		exit(-1);
+	}
+
+	// Get the copy for theSteel3
+	theMaterial[2] = s1->getCopy();
+	// Check allocation    
+	if (theMaterial[2] == 0) {
+		opserr << " FAFourSteelPCPlaneStress::FAFourSteelPCPlaneStress - failed to get a copy for steel1\n";
+		exit(-1);
+	}
+
+	// Get the copy for theSteel4
+	theMaterial[3] = s2->getCopy();
+	// Check allocation    
+	if (theMaterial[3] == 0) {
+		opserr << " FAFourSteelPCPlaneStress::FAFourSteelPCPlaneStress - failed to get a copy for steel2\n";
+		exit(-1);
+	}
+
+
+
+	// Get the copy for theConcrete1
+	theMaterial[4] = c1->getCopy();
+	// Check allocation    
+	if (theMaterial[4] == 0) {
+		opserr << " FAFourSteelPCPlaneStress::FAFourSteelPCPlaneStress - failed to get a copy for concrete1\n";
+		exit(-1);
+	}
+
+	// Get the copy for theConcrete2
+	theMaterial[5] = c2->getCopy();
+	// Check allocation    
+	if (theMaterial[5] == 0) {
+		opserr << " FAFourSteelPCPlaneStress::FAFourSteelPCPlaneStress - failed to get a copy for concrete2\n";
+		exit(-1);
+	}
+
+	/* FMK */
+	theResponses = new Response * [8];
+
+	if (theResponses == 0) {
+		opserr << " ReinforcedConcretePlaneStress::ReinforcedConcretePlaneStress - failed allocate responses  array\n";
+		exit(-1);
+	}
+
+	const char** argv = new const char* [1];
+	argv[0] = "getCommittedStrain";
+	theResponses[0] = theMaterial[0]->setResponse(argv, 1, 0);
+	theResponses[1] = theMaterial[1]->setResponse(argv, 1, 0);
+	theResponses[2] = theMaterial[2]->setResponse(argv, 1, 0);
+	theResponses[3] = theMaterial[3]->setResponse(argv, 1, 0);
+
+	argv[0] = "setWallVar";
+	theResponses[4] = theMaterial[4]->setResponse(argv, 1, 0);
+	theResponses[5] = theMaterial[5]->setResponse(argv, 1, 0);
+
+	argv[0] = "getPD";
+	theResponses[6] = theMaterial[4]->setResponse(argv, 1, 0);
+	theResponses[7] = theMaterial[5]->setResponse(argv, 1, 0);
+
+	if ((theResponses[0] == 0) || (theResponses[1] == 0) ||
+		(theResponses[2] == 0) || (theResponses[3] == 0) ||
+		(theResponses[4] == 0) || (theResponses[5] == 0) ||
+		(theResponses[6] == 0) || (theResponses[7] == 0)) {
+
+		opserr << " FAFourSteelPCPLaneStress::FAFourSteelPCPlaneStress - failed to set appropriate materials tag:" << tag << endln;
+		exit(-1);
+	}
+
+	/* END FMK */
+
+	this->revertToStart();
 }
 
 FAFourSteelPCPlaneStress::FAFourSteelPCPlaneStress()

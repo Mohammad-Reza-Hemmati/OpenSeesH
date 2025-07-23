@@ -386,7 +386,7 @@ PlateFromPlaneStressMaterial::recvSelf(int commitTag, Channel &theChannel, FEM_O
 
 //setResponse - added by V.K. Papanikolaou [AUTh] - start
 Response*
-PlateFromPlaneStressMaterial::setResponse(const char** argv, int argc, OPS_Stream& output)
+PlateFromPlaneStressMaterial::setResponse(const char** argv, int argc, OPS_Stream * output)
 {
     if (strcmp(argv[0], "Tangent") == 0 || strcmp(argv[0], "tangent") == 0 ||
         strcmp(argv[0], "stress") == 0 || strcmp(argv[0], "stresses") == 0 ||

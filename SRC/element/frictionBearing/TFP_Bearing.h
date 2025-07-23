@@ -86,7 +86,7 @@ class TFP_Bearing : public Element
     void Print(OPS_Stream &s, int flag =0);    
     int displaySelf(Renderer &theViewer, int displayMode, float fact, const char **modes, int numMode);
 
-    Response *setResponse(const char **argv, int argc, OPS_Stream &s);
+    Response *setResponse(const char **argv, int argc, OPS_Stream *s);
     int getResponse(int responseID, Information &eleInformation);
 
   protected:
