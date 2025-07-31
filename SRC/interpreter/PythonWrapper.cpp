@@ -1615,6 +1615,30 @@ static PyObject* Py_ops_record(PyObject* self, PyObject* args)
 	return wrapper->getResults();
 }
 
+static PyObject* Py_ops_recordSingle(PyObject* self, PyObject* args)
+{
+	wrapper->resetCommandLine(PyTuple_Size(args), 1, args);
+
+	if (OPS_recordSingle() < 0) {
+		opserr << (void*)0;
+		return NULL;
+	}
+
+	return wrapper->getResults();
+}
+
+static PyObject* Py_ops_flushRecorders(PyObject* self, PyObject* args)
+{
+	wrapper->resetCommandLine(PyTuple_Size(args), 1, args);
+
+	if (OPS_flushRecorders() < 0) {
+		opserr << (void*)0;
+		return NULL;
+	}
+
+	return wrapper->getResults();
+}
+
 static PyObject* Py_ops_metaData(PyObject* self, PyObject* args)
 {
 	wrapper->resetCommandLine(PyTuple_Size(args), 1, args);
@@ -3247,6 +3271,8 @@ PythonWrapper::addOpenSeesCommands()
 	addCommand("searchPeerNGA", &Py_ops_searchPeerNGA);
 	addCommand("domainChange", &Py_ops_domainChange);
 	addCommand("record", &Py_ops_record);
+	addCommand("recordSingle", &Py_ops_recordSingle);
+	addCommand("flushRecorders", &Py_ops_flushRecorders);
 	addCommand("metaData", &Py_ops_metaData);
 	addCommand("defaultUnits", &Py_ops_defaultUnits);
 	addCommand("stripXML", &Py_ops_stripXML);

@@ -353,6 +353,8 @@ int OPS_MeshRegion();
 int OPS_peerNGA();
 int OPS_domainChange();
 int OPS_record();
+int OPS_recordSingle();
+int OPS_flushRecorders();
 int OPS_stripOpenSeesXML();
 int OPS_convertBinaryToText();
 int OPS_convertTextToBinary();

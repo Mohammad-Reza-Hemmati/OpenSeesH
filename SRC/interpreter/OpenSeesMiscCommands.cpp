@@ -1204,6 +1204,33 @@ int OPS_domainChange()
 	return 0;
 }
 
+int OPS_recordSingle()
+{
+	Domain* theDomain = OPS_GetDomain();
+	if (theDomain == 0) return -1;
+	if (OPS_GetNumRemainingInputArgs() < 1) {
+		opserr << "recordSingle - error reading recorder tag" << endln;
+		return -1;
+	}
+	int tag = 0;
+	int numData = 1;
+	if (OPS_GetInt(&numData, &tag) < 0) {
+		opserr << "recordSingle - error reading recorder tag" << endln;
+		return -1;
+	}	
+	theDomain->recordSingle(tag);
+
+	return 0;
+}
+int OPS_flushRecorders()
+{
+	Domain* theDomain = OPS_GetDomain();
+	if (theDomain == 0) return -1;
+	theDomain->flushRecorders();
+
+	return 0;
+}
+
 int OPS_record()
 {
 	Domain* theDomain = OPS_GetDomain();

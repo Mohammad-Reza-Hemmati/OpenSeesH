@@ -421,6 +421,7 @@ int PythonModule::setDouble(std::map<const char*, std::vector<double>>& data) {
 	return 0;
 }
 
+
 int
 PythonModule::setString(const char* str) {
 	wrapper.setOutputs(str);
@@ -508,7 +509,7 @@ static int opensees_clear(PyObject* m) {
 
 static struct PyModuleDef moduledef = {
 				PyModuleDef_HEAD_INIT,
-				"opensees",
+				"OpenSeesH",
 				NULL,
 				sizeof(struct module_state),
 				getmethodsFunc(),
@@ -521,20 +522,20 @@ static struct PyModuleDef moduledef = {
 #define INITERROR return NULL
 
 PyMODINIT_FUNC
-PyInit_opensees(void)
+PyInit_OpenSeesH(void)
 
 #else
 #define INITERROR return
 
 //void
 PyMODINIT_FUNC
-initopensees(void)
+initOpenSeesH(void)
 #endif
 {
 #if PY_MAJOR_VERSION >= 3
 	PyObject* pymodule = PyModule_Create(&moduledef);
 #else
-	PyObject* pymodule = Py_InitModule("opensees", getmethodsFunc());
+	PyObject* pymodule = Py_InitModule("OpenSeesH", getmethodsFunc());
 #endif
 
 	if (pymodule == NULL)
@@ -542,7 +543,7 @@ initopensees(void)
 	struct module_state* st = GETSTATE(pymodule);
 
 	// add OpenSeesError
-	st->error = PyErr_NewExceptionWithDoc("opensees.OpenSeesError", "Internal OpenSees errors.", NULL, NULL);
+	st->error = PyErr_NewExceptionWithDoc("OpenSeesH.OpenSeesError", "Internal OpenSees errors.", NULL, NULL);
 	if (st->error == NULL) {
 		Py_DECREF(pymodule);
 		INITERROR;
