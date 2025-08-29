@@ -2873,9 +2873,10 @@ TclCommand_addElementalLoad(ClientData clientData, Tcl_Interp* interp, int argc,
 					TimeSeries* theSeries = new PathTimeSeriesThermal(eleLoadTag, argv[count]);
 
 					count++;
-					Vector locs(9);
 					//---------------for receiving 2 arguments
-					if (argc - count == 2) {
+					int numPnts = argc - count;
+					Vector locs(numPnts);
+					if (numPnts == 2) {
 						double RcvLoc1, RcvLoc2;
 						if (Tcl_GetDouble(interp, argv[count], &RcvLoc1) != TCL_OK) {
 							opserr << "WARNING eleLoad - invalid single loc  " << argv[count] << " for -beamThermal\n";
@@ -2892,7 +2893,7 @@ TclCommand_addElementalLoad(ClientData clientData, Tcl_Interp* interp, int argc,
 						}
 					}
 					//----------------for receiving 9 arguments
-					else if (argc - count == 9) {
+					else {
 
 						int ArgStart = count;
 						int ArgEnd = argc;
@@ -2905,10 +2906,6 @@ TclCommand_addElementalLoad(ClientData clientData, Tcl_Interp* interp, int argc,
 							}
 						}
 
-					}
-					//end of receiving 9 arguments
-					else {
-						opserr << "WARNING eleLoad - invalid input for -beamThermal\n";
 					}
 #ifdef _DEBUG 
 					opserr << "TclModelBuilder:: locs" << locs << endln;
