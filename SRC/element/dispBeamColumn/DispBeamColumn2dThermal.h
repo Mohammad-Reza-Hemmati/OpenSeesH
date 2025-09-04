@@ -139,12 +139,10 @@ class DispBeamColumn2dThermal : public Element
 
     static double workArea[];
 
-	double *dataMix; //   temperature and location
-
 	double q0Temperature[3];  // Fixed end thermal forces  of current step in basic system
 	double q0TemperatureP[3];  // Fixed end thermal forces of last step in basic system
 	int counterTemperature; // trace to remove thermal force from the second iteration step
-    double SectionThermalElong[20];
+    Vector SectionThermalElong;
     double AverageThermalElong;
     // AddingSensitivity:BEGIN //////////////////////////////////////////
     int parameterID;
@@ -152,16 +150,6 @@ class DispBeamColumn2dThermal : public Element
 
 	//static double zz;
 	//static double* kk;
-	//Adding loadfactors to 'dispbeam2dThermal' for'FireLoadPattern' [-BEGIN-]: by L.J&P.K--8-May-2012--//
-	double loadFactor2;
-	double loadFactor3;
-	double loadFactor4;
-	double loadFactor5;
-	double loadFactor6;
-	double loadFactor7;
-	double loadFactor8;
-	double loadFactor9;
-	//Adding loadfactors to 'dispbeam2dThermal' for'FireLoadPattern'  [-END-]: by L.J&P.K--8-May-2012--//
 };
 
 #endif

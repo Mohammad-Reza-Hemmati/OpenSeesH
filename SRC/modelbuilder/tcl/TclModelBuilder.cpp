@@ -1642,7 +1642,9 @@ TclCommand_addSection(ClientData clientData, Tcl_Interp* interp,
 	bool hasBlock = false;
 	if (strcmp(argv[1], "Fiber") == 0 ||
 		strcmp(argv[1], "fiberSec") == 0 ||
-		strcmp(argv[1], "NDFiber") == 0)
+		strcmp(argv[1], "NDFiber") == 0 ||
+		strcmp(argv[1], "FiberThermal") == 0
+		)
 		hasBlock = true;
 	printArgv(interp, argc, argv, hasBlock);
 	int ret = TclModelBuilderSectionCommand(clientData, interp,
@@ -2892,7 +2894,6 @@ TclCommand_addElementalLoad(ClientData clientData, Tcl_Interp* interp, int argc,
 							locs(i) = locs(0) - i * (locs(0) - locs(8)) / 8;
 						}
 					}
-					//----------------for receiving 9 arguments
 					else {
 
 						int ArgStart = count;
@@ -2908,7 +2909,7 @@ TclCommand_addElementalLoad(ClientData clientData, Tcl_Interp* interp, int argc,
 
 					}
 #ifdef _DEBUG 
-					opserr << "TclModelBuilder:: locs" << locs << endln;
+					//opserr << "TclModelBuilder:: locs" << locs << endln;
 #endif
 					for (int i = 0; i < theEleTags.Size(); i++) {
 						theLoad = new Beam2dThermalAction(eleLoadTag, locs,

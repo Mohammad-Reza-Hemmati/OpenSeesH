@@ -118,7 +118,8 @@ class FiberSection2dThermal : public SectionForceDeformation
     Vector eCommit;    // committed section deformations
     Vector *s;         // section resisting forces  (axial force, bending moment)
     Matrix *ks;        // section stiffness
-    Vector DataMixed;
+    //Vector DataMixed;
+    Vector FiberTemperatures;
 
     Vector  sT;  //  Pointer to sTData
     double *Fiber_Tangent;

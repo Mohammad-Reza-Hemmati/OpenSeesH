@@ -493,7 +493,7 @@ Steel02Thermal::getElongTangent(double TempT, double&ET, double&Elong, double Te
 	  E0 = E0T*(0.0225 - (TempT - 1080)*0.0225/100);
   }
   else  {
-      opserr << "the temperature is invalid\n"; 
+      opserr << "Steel02Thermal::the temperature is invalid\n"; 
   } 
 
   // calculation of thermal elongation of reinforcing steel. JZ
@@ -511,7 +511,7 @@ Steel02Thermal::getElongTangent(double TempT, double&ET, double&Elong, double Te
       ThermalElongation = -6.2e-3 + 2e-5*(TempT+20);
   }
   else {
-	  opserr << "the temperature is invalid\n";
+	  opserr << "Steel02Thermal::the temperature is invalid\n";
   }
   
 

@@ -49,10 +49,11 @@ class PathTimeSeriesThermal : public TimeSeries
     // constructors     
   
   PathTimeSeriesThermal(int tag,
-		 const char *fileName,int DataNum =9, bool tempOut =true ,
+		 const char *fileName, bool tempOut =true ,
 		 double cfactor = 1.0);
   PathTimeSeriesThermal(int tag,
-		 int DataNum =9, bool tempOut =true ,
+    int dataNum,
+		 bool tempOut =true ,
 		 double cfactor = 1.0);
 
     PathTimeSeriesThermal();    

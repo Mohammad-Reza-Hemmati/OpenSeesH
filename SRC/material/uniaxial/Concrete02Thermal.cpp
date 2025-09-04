@@ -347,7 +347,7 @@ Concrete02Thermal::getElongTangent(double TempT, double& ET, double& Elong, doub
 	  epscu = -(0.045 + 0.0025*(Temp - 980)/100);
   }
   else  {
-      opserr << "the temperature is invalid\n"; 
+      opserr << "Concrete02Thermal::the temperature is invalid: " << Temp << "\n";
   }
 //jz assign a miner to the valuables
 
@@ -365,7 +365,7 @@ Concrete02Thermal::getElongTangent(double TempT, double& ET, double& Elong, doub
       ThermalElongation = 14.009e-3;  //Modified by Liming,2013
   }
   else {
-	  opserr << "the temperature is invalid\n";
+	  opserr << "Concrete02Thermal::the temperature is invalid: " << Temp << "\n";
   }
 
   ET = 1.5*fc/epsc0; 
@@ -456,7 +456,7 @@ Concrete02Thermal::getElongTangent(double TempT, double& ET, double& Elong, doub
     fcumax = fcuT*(0.04 - (Tempmax - 980)*0.03/100);
   }
   else  {
-    opserr << "the temperature is invalid\n"; 
+    opserr << "Concrete02Thermal::the temperature is invalid: " << Temp << "\n";
   }
   // PK 2nd step is to determine compressice strength at ambient after cooling as shown in ANNEX C (EN1994-1-2:2005)  
   if (Tempmax < 0) {
@@ -475,7 +475,7 @@ Concrete02Thermal::getElongTangent(double TempT, double& ET, double& Elong, doub
     fcuamb = 0.9*kappa*fcuT;
   }
   else {
-    opserr << "the temperature is invalid\n";
+    opserr << "Concrete02Thermal::the temperature is invalid: " << Temp << "\n";
   }
   
   // Calculation of current compressive strength
@@ -533,7 +533,7 @@ Concrete02Thermal::getElongTangent(double TempT, double& ET, double& Elong, doub
     epscumax = -(0.045 + 0.0025*(Tempmax - 980)/100);
   }
   else  {
-    opserr << "the temperature is invalid\n"; 
+    opserr << "Concrete02Thermal::the temperature is invalid: " << Temp << "\n";
   }
 
   //make eps0 = eps0max
