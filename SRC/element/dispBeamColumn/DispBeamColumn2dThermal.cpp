@@ -734,7 +734,6 @@ DispBeamColumn2dThermal::addLoad(ElementalLoad* theLoad, double loadFactor)
 		beamInt->getSectionWeights(numSections, L, wt);
 
 		int n = data.Size() / 2;
-		opserr << n << endln;
 		Vector dataMixV(3 * n);
 		for (int m = 0; m < n; m++) {
 			dataMixV(2 * m) = data(2 * m); //Linear temperature interpolation
