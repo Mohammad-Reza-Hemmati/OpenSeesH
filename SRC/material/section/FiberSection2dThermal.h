@@ -99,6 +99,9 @@ class FiberSection2dThermal : public SectionForceDeformation
     const Vector& determineFiberTemperature(const Vector& , double );  //Added by Liming (UoE)
 
   protected:
+    double getEnergy() const;
+    double getDmax();
+    virtual double getMaxDuctility(const char* matType = 0) const;
 
     //  private:
     int numFibers, sizeFibers;       // number of fibers in the section
@@ -125,7 +128,7 @@ class FiberSection2dThermal : public SectionForceDeformation
     double *Fiber_Tangent;
     double *Fiber_ElongP;
     Vector AverageThermalElong;
-	//Basically this data stores the last committed fiber tangent for calculating thermal forces
+    //Basically this data stores the last committed fiber tangent for calculating thermal forces
 
 // AddingSensitivity:BEGIN //////////////////////////////////////////
     Vector dedh; // MHS hack

@@ -830,11 +830,11 @@ DispBeamColumn2dThermal::addLoad(ElementalLoad* theLoad, double loadFactor)
 
 			// Get section stress resultant 
 			// FMk const Vector &s = theSections[i]->getTemperatureStress(dataMix);
-			Vector dataMixV(n*3);
+			Vector dataMixV(n * 3);
 			for (int m = 0; m < n; m++) {
 				dataMixV(2 * m) = NodalT0(m) + xi[i] * (NodalT1(m) - NodalT0(m)); //Linear temperature interpolation
 				dataMixV(2 * m + 1) = Loc(m);
-				dataMixV(2*n + m) = 1000;
+				dataMixV(2 * n + m) = 1000;
 			}
 			const Vector& s = theSections[i]->getTemperatureStress(dataMixV);    //contribuited by ThermalElongation
 			if (theSections[i]->getClassTag() == SEC_TAG_FiberSection2dThermal) {
@@ -1684,6 +1684,20 @@ DispBeamColumn2dThermal::setResponse(const char** argv, int argc,
 
 	else if (strcmp(argv[0], "integrationWeights") == 0)
 		return new ElementResponse(this, 8, Vector(numSections));
+	else if (strcmp(argv[0], "energy") == 0) {
+		theResponse = new ElementResponse(this, 10, 0.0);
+	}
+	else if (strcmp(argv[0], "energy") == 0) {
+		theResponse = new ElementResponse(this, 10, 0.0);
+	}
+	else if (strcmp(argv[0], "maxDuctility") == 0 || strcmp(argv[0], "MaxDuctility") == 0) //by SAJalali
+	{
+		theResponse = new ElementResponse(this, 11, 0.0);
+		if (argc > 1) {
+			Information& info = theResponse->getInformation();
+			info.setString(argv[1]);
+		}
+	}
 
 	if (output != 0)
 		output->endTag();
@@ -1796,6 +1810,26 @@ DispBeamColumn2dThermal::getResponse(int responseID, Information& eleInfo)
 		for (int i = 0; i < numSections; i++)
 			weights(i) = wt[i] * L;
 		return eleInfo.setVector(weights);
+	}
+	else if (responseID == 10) {
+		double xi[maxNumSections];
+		double L = crdTransf->getInitialLength();
+		beamInt->getSectionWeights(numSections, L, xi);
+		double energy = 0;
+		for (int i = 0; i < numSections; i++) {
+			energy += theSections[i]->getEnergy() * xi[i] * L;
+		}
+		return eleInfo.setDouble(energy);
+	}
+	else if (responseID == 11) {
+		double max = 0;
+		const char* matType = eleInfo.theString;
+		for (int i = 0; i < numSections; i++) {
+			double mu = theSections[i]->getMaxDuctility(matType);
+			if (mu > max)
+				max = mu;
+		}
+		return eleInfo.setDouble(max);
 	}
 
 	else

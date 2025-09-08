@@ -1156,6 +1156,16 @@ FiberSection2dThermal::setResponse(const char** argv, int argc,
 		}
 	}
 
+	else if ((strcmp(argv[0], "energy") == 0) || (strcmp(argv[0], "Energy") == 0)) {
+		return theResponse = new MaterialResponse(this, 8, getEnergy());
+	}
+	else if ((strcmp(argv[0], "maxStrain") == 0) || (strcmp(argv[0], "MaxStrain") == 0)) {
+
+		return theResponse = new MaterialResponse(this, 9, 0.0);
+	}
+	else if ((strcmp(argv[0], "maxDuctility") == 0) || (strcmp(argv[0], "MaxDuctility") == 0)) {
+		return theResponse = new MaterialResponse(this, 10, 0.0);
+	}
 	if (theResponse == 0)
 		return SectionForceDeformation::setResponse(argv, argc, output);
 
@@ -1166,9 +1176,17 @@ FiberSection2dThermal::setResponse(const char** argv, int argc,
 int
 FiberSection2dThermal::getResponse(int responseID, Information& sectInfo)
 {
-	// Just call the base class method ... don't need to define
-	// this function, but keeping it here just for clarity
-	return SectionForceDeformation::getResponse(responseID, sectInfo);
+	if (responseID == 8) {
+		return sectInfo.setDouble(getEnergy());
+	}
+	else if (responseID == 9) {
+
+		return sectInfo.setDouble(getDmax());
+	}
+	else if (responseID == 10) {
+
+		return sectInfo.setDouble(getMaxDuctility());
+	}
 }
 
 
@@ -1452,3 +1470,86 @@ FiberSection2dThermal::determineFiberTemperature(const Vector& dataMixed, double
 	returnedTemperature(1) = FiberTempMax;
 	return returnedTemperature;
 }
+
+double FiberSection2dThermal::getEnergy() const
+{
+	static double fiberArea[10000];
+
+	if (sectionIntegr != 0) {
+		sectionIntegr->getFiberWeights(numFibers, fiberArea);
+	}
+	else {
+		for (int i = 0; i < numFibers; i++) {
+			fiberArea[i] = matData[2 * i + 1];
+		}
+	}
+	double energy = 0;
+	for (int i = 0; i < numFibers; i++)
+	{
+		double A = fiberArea[i];
+		energy += A * theMaterials[i]->getEnergy();
+	}
+	return energy;
+}
+
+double FiberSection2dThermal::getDmax()
+{
+	double d0 = e(0);
+	double d1 = e(1);
+
+	static double fiberLocs[10000];
+
+	if (sectionIntegr != 0) {
+		sectionIntegr->getFiberLocations(numFibers, fiberLocs);
+	}
+	else {
+		for (int i = 0; i < numFibers; i++) {
+			fiberLocs[i] = matData[2 * i];
+		}
+	}
+	double dMax = 0.;
+	for (int i = 0; i < numFibers; i++) {
+		double y = fiberLocs[i] - yBar;
+
+		// determine material strain and set it
+		double strain = fabs(d0 - y * d1);
+		if (strain > dMax)
+			dMax = strain;
+	}
+	return dMax;
+}
+
+double FiberSection2dThermal::getMaxDuctility(const char* matType) const
+{
+	double d0 = e(0);
+	double d1 = e(1);
+
+	static double fiberLocs[10000];
+
+	if (sectionIntegr != 0) {
+		sectionIntegr->getFiberLocations(numFibers, fiberLocs);
+	}
+	else {
+		for (int i = 0; i < numFibers; i++) {
+			fiberLocs[i] = matData[2 * i];
+		}
+	}
+	double muMax = 0.;
+	for (int i = 0; i < numFibers; i++) {
+		const char* thisMat = theMaterials[i]->getClassType();
+		if (matType != 0 && strcmp(matType, thisMat) != 0)
+			continue;
+		double y = fiberLocs[i] - yBar;
+
+		// determine material strain and set it
+		double strain = fabs(d0 - y * d1);
+		double mu = 0;
+		double sYield = fabs(theMaterials[i]->getInitYieldStrain());
+		if (sYield > 1.e-6)
+			mu = strain / sYield;
+		if (mu > muMax)
+			muMax = mu;
+	}
+	return muMax;
+}
+

@@ -79,7 +79,12 @@ class Steel01Thermal : public UniaxialMaterial
     double getInitialTangentSensitivity(int gradIndex);
     int    commitSensitivity        (double strainGradient, int gradIndex, int numGrads);
     // AddingSensitivity:END ///////////////////////////////////////////
-    
+    virtual double getEnergy() { return Energy; }
+#ifdef _CSS
+    //by SAJalali
+    double getInitYieldStrain() { return fy / E0; }
+    virtual void resetEnergy(void) { Energy = 0; }
+
  protected:
     
  private:
@@ -144,6 +149,7 @@ class Steel01Thermal : public UniaxialMaterial
     int parameterID;
 	Matrix *SHVs;
 // AddingSensitivity:END ///////////////////////////////////////////
+  double Energy;
 };
 
 #endif

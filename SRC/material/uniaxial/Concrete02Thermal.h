@@ -45,7 +45,11 @@ class Concrete02Thermal : public UniaxialMaterial
 
     int getVariable(const char *variable, Information &);
 
-    
+    double EnergyP;
+    double getEnergy() { return EnergyP; }
+    double getInitYieldStrain() { return fabs(epsc0 / 2); }
+    virtual void resetEnergy(void) { EnergyP = 0; }
+
  protected:
     
  private:

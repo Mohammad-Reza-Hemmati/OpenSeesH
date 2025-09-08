@@ -59,7 +59,7 @@ Concrete02Thermal::Concrete02Thermal(int tag, double _fc, double _epsc0, double 
   //fc(_fc), epsc0(_epsc0), fcu(_fcu), epscu(_epscu), rat(_rat), ft(_ft), Ets(_Ets)
   fcT(_fc), epsc0T(_epsc0), fcuT(_fcu), epscuT(_epscu), rat(_rat), ftT(_ft), EtsT(_Ets) //JZ
 {
-
+  EnergyP = 0;
 //JZ 07/10 /////////////////////////////////////////////////////////////start
   fc = fcT;
   epsc0 = epsc0T;
@@ -93,7 +93,7 @@ Concrete02Thermal::Concrete02Thermal(int tag, double _fc, double _epsc0, double 
 Concrete02Thermal::Concrete02Thermal(void):
   UniaxialMaterial(0, MAT_TAG_Concrete02Thermal)
 {
- 
+  EnergyP = 0;
 }
 
 Concrete02Thermal::~Concrete02Thermal(void)
@@ -108,7 +108,7 @@ UniaxialMaterial*
 Concrete02Thermal::getCopy(void)
 {
   Concrete02Thermal *theCopy = new Concrete02Thermal(this->getTag(), fc, epsc0, fcu, epscu, rat, ft, Ets);
-  
+  theCopy->EnergyP = EnergyP;
   return theCopy;
 }
 
@@ -567,7 +567,8 @@ Concrete02Thermal::commitState(void)
 {
   ecminP = ecmin;
   deptP = dept;
-  
+  EnergyP += 0.5 * (sigP + sig) * (eps - epsP);
+
   eP = e;
   sigP = sig;
   epsP = eps;
@@ -599,7 +600,7 @@ Concrete02Thermal::revertToStart(void)
 {
   ecminP = 0.0;
   deptP = 0.0;
-
+  EnergyP = 0;
   eP = 2.0*fc/epsc0;
   epsP = 0.0;
   sigP = 0.0;
@@ -613,7 +614,7 @@ Concrete02Thermal::revertToStart(void)
 int 
 Concrete02Thermal::sendSelf(int commitTag, Channel &theChannel)
 {
-  static Vector data(13);
+  static Vector data(14);
   data(0) =fc;    
   data(1) =epsc0; 
   data(2) =fcu;   
@@ -627,7 +628,7 @@ Concrete02Thermal::sendSelf(int commitTag, Channel &theChannel)
   data(10) =sigP; 
   data(11) =eP;   
   data(12) = this->getTag();
-
+  data(13) = EnergyP;
   if (theChannel.sendVector(this->getDbTag(), commitTag, data) < 0) {
     opserr << "Concrete02Thermal::sendSelf() - failed to sendSelf\n";
     return -1;
@@ -640,7 +641,7 @@ Concrete02Thermal::recvSelf(int commitTag, Channel &theChannel,
 	     FEM_ObjectBroker &theBroker)
 {
 
-  static Vector data(13);
+  static Vector data(14);
 
   if (theChannel.recvVector(this->getDbTag(), commitTag, data) < 0) {
     opserr << "Concrete02Thermal::recvSelf() - failed to recvSelf\n";
@@ -660,7 +661,7 @@ Concrete02Thermal::recvSelf(int commitTag, Channel &theChannel,
   sigP = data(10);
   eP = data(11);
   this->setTag(data(12));
-
+  EnergyP = data(13);
   e = eP;
   sig = sigP;
   eps = epsP;

@@ -75,11 +75,14 @@ class Steel02Thermal : public UniaxialMaterial
     void Print(OPS_Stream &s, int flag =0);
 
     int getVariable(const char *variable, Information &);
-    
+    virtual double getEnergy() { return Energy; }
+    double getInitYieldStrain() { return Fy / E0; }
+    virtual void resetEnergy(void) { Energy = 0; }
+
  protected:
     
  private:
-
+   double Energy;
 //JZ 11/10 /////////////////////////////////////////////////////////////start
    	double Temp;  // material temp
 	//double steps;    //the amount of the steps. 
