@@ -89,7 +89,14 @@ Response::Print(ofstream &s, int flag)
 }
 
 Information &
-Response::getInformation(void)
+Response::getInformation(int respNum)
 {
+  if (respNum != 0) {
+    opserr << "Response::getInformation -- only one response available\n";
+	}
   return myInfo;
+}
+const Vector& Response::getData(void)
+{
+	return myInfo.getData();
 }

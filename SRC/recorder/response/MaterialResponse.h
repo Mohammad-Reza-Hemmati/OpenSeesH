@@ -50,6 +50,13 @@ class MaterialResponse : public Response
   MaterialResponse(Material *mat, int id, const Vector &val);
   MaterialResponse(Material *mat, int id, const Matrix &val);
 
+  MaterialResponse(Material **mat, int id, int numMats);
+  MaterialResponse(Material **mat, int id, int val, int numMats);
+  MaterialResponse(Material **mat, int id, double val, int numMats);
+  MaterialResponse(Material **mat, int id, const ID &val, int numMats);
+  MaterialResponse(Material **mat, int id, const Vector &val, int numMats);
+  MaterialResponse(Material **mat, int id, const Matrix &val, int numMats);
+
   MaterialResponse(MaterialState *mat, int id);
   MaterialResponse(MaterialState *mat, int id, int val);
   MaterialResponse(MaterialState *mat, int id, double val);
@@ -61,10 +68,17 @@ class MaterialResponse : public Response
   
   int getResponse(void);
   int getResponseSensitivity(int gradNumber);
-
+  int getResponseId() {
+    return responseID;
+  }
+  virtual Information& getInformation(int respNum = 0);
+  const Vector& getData(void);
 private:
-  Material *theMaterial;
-  MaterialState *theMaterialState;  
+  Material **theMaterials;
+  MaterialState *theMaterialState;
+	Information* infoList;
+	Vector* respVec;
+  int numMaterialas;
   int responseID;
 };
 

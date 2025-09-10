@@ -1883,9 +1883,7 @@ Domain::getElementResponse(int eleTag, const char** argv, int argc)
 			return 0;
 		}
 
-		Information& eleInfo = theResponse->getInformation();
-		//const Vector *data = &(eleInfo.getData());
-		responseData = eleInfo.getData();
+		responseData = theResponse->getData();
 		delete theResponse;
 		return &responseData;
 	}

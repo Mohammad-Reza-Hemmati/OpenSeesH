@@ -316,8 +316,7 @@ HTElementRecorder::record(double timeStamp)
 	if (( res = theResponses[i]->getResponse()) < 0)
 	  result += res;
 	else {
-	  Information &eleInfo = theResponses[i]->getInformation();
-	  const Vector &eleData = eleInfo.getData();
+	  const Vector &eleData = theResponses[i]->getData();
 	  if (numDOF == 0) {
 	    for (int j=0; j<eleData.Size(); j++)
 	      (*data)(loc++) = eleData(j);
@@ -458,8 +457,7 @@ HTElementRecorder::initialize(void)
 	theResponses[i] = theEle->setResponse((const char **)responseArgs, numArgs, *theOutputHandler);
 	if (theResponses[i] != 0) {
 	  // from the response type determine no of cols for each
-	  Information &eleInfo = theResponses[i]->getInformation();
-	  const Vector &eleData = eleInfo.getData();
+	  const Vector &eleData = theResponses[i]->getData();
 	  int dataSize = eleData.Size();
 	  if (numDOF == 0)
 	    numDbColumns += dataSize;
@@ -529,8 +527,7 @@ HTElementRecorder::initialize(void)
 	theResponses[numResponse] = theResponse;
 
 	// from the response type determine no of cols for each
-	Information &eleInfo = theResponses[numResponse]->getInformation();
-	const Vector &eleData = eleInfo.getData();
+	const Vector &eleData = theResponses[numResponse]->getData();
 	numDbColumns += eleData.Size();
 
 	numResponse++;

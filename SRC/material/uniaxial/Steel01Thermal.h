@@ -80,7 +80,6 @@ class Steel01Thermal : public UniaxialMaterial
     int    commitSensitivity        (double strainGradient, int gradIndex, int numGrads);
     // AddingSensitivity:END ///////////////////////////////////////////
     virtual double getEnergy() { return Energy; }
-#ifdef _CSS
     //by SAJalali
     double getInitYieldStrain() { return fy / E0; }
     virtual void resetEnergy(void) { Energy = 0; }

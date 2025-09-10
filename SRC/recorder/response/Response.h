@@ -51,10 +51,11 @@ class Response
   
   virtual int getResponse(void) = 0;
   virtual int getResponseSensitivity(int gradNumber) {return 0;}
-  virtual Information &getInformation(void);
+  virtual Information &getInformation(int respNum = 0);
 
   virtual void Print(OPS_Stream &s, int flag = 0);
   virtual void Print(ofstream &s, int flag = 0);
+	virtual const Vector& getData(void);
 
  protected:
   Information myInfo;

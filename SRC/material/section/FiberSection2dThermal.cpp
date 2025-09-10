@@ -1072,7 +1072,96 @@ FiberSection2dThermal::setResponse(const char** argv, int argc,
 {
 	Response* theResponse = 0;
 
-	if (argc > 2 && strcmp(argv[0], "fiber") == 0) {
+	if (argc > 2 && strcmp(argv[0], "fiberList") == 0) {
+
+		static double fiberLocs[10000];
+
+		if (sectionIntegr != 0) {
+			sectionIntegr->getFiberLocations(numFibers, fiberLocs);
+		}
+		else {
+			for (int i = 0; i < numFibers; i++) {
+				fiberLocs[i] = matData[2 * i];
+			}
+		}
+		int numData = (argc - 2) / 3; //(y, z, matTag) should be given for all fibers, assumes 1 material response arg
+
+		int passarg = argc-1;
+		int iLoc = 1;
+		int matTag = 0;
+		double yCoord = 0;
+		double closestDist = 0;
+		double ySearch, dy;
+		double distance;
+		Response* baseResponse = 0;
+		Material** matList = new Material * [numData];
+		for (int i = 0; i < numData; i++)
+		{
+			int key = -1;
+			matTag = atoi(argv[iLoc + 2]);
+			yCoord = atof(argv[iLoc]);
+
+			closestDist = 0;
+			int j;
+			// Find first fiber with specified material tag
+			for (j = 0; j < numFibers; j++) {
+				if (matTag == theMaterials[j]->getTag()) {
+					//ySearch = matData[2*j];
+					ySearch = fiberLocs[j];
+					dy = ySearch - yCoord;
+					closestDist = dy * dy;
+					key = j;
+					break;
+				}
+			}
+			// Search the remaining fibers
+			for (; j < numFibers; j++) {
+				if (matTag == theMaterials[j]->getTag()) {
+					//ySearch = matData[2*j];
+					ySearch = fiberLocs[j];
+					dy = ySearch - yCoord;
+					distance = dy * dy;
+					if (distance < closestDist) {
+						closestDist = distance;
+						key = j;
+					}
+				}
+			}
+			if (key < numFibers && key >= 0)
+				matList[i] = theMaterials[key];
+			if (baseResponse == 0)
+				baseResponse = theMaterials[key]->setResponse(&argv[passarg], 1, output);
+			iLoc += 3;
+		}
+		if (baseResponse == 0)
+		{
+			opserr << "FiberSection2dthermal::invalid fiberList recorder option: " << argv[passarg] << endln;
+			return 0;
+		}
+		int id = ((MaterialResponse*)baseResponse)->getResponseId();
+		switch (baseResponse->getInformation().theType)
+		{
+		case InfoType::IntType:
+			theResponse = new MaterialResponse(matList, id, 0, numData);
+			break;
+		case InfoType::DoubleType:
+			theResponse = new MaterialResponse(matList, id, 0.0, numData);
+			break;
+		case InfoType::IdType:
+			theResponse = new MaterialResponse(matList, id, *baseResponse->getInformation().theID, numData);
+			break;
+		case InfoType::MatrixType:
+			theResponse = new MaterialResponse(matList, id, *baseResponse->getInformation().theMatrix, numData);
+			break;
+		case InfoType::VectorType:
+			theResponse = new MaterialResponse(matList, id, *baseResponse->getInformation().theVector, numData);
+			break;
+		default:
+			opserr << "FiberSection2d::setResponse:fiberList option, unknown InfoType: " << baseResponse->getInformation().theType << endln;
+			return 0;
+		}
+	}
+	else if (argc > 2 && strcmp(argv[0], "fiber") == 0) {
 
 		int key = numFibers;
 		int passarg = 2;

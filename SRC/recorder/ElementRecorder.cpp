@@ -208,8 +208,7 @@ ElementRecorder::record(int commitTag, double timeStamp)
 				result += theResponses[i]->getResponse();
 				if (numDOF == 0)
 				{
-					 Information& eleInfo = theResponses[i]->getInformation();
-					 const Vector& eleData = eleInfo.getData();
+					 const Vector& eleData = theResponses[i]->getData();
 					 int sz = eleData.Size();
 					 if (sz > respSize)
 						  respSize = sz;
@@ -239,8 +238,7 @@ ElementRecorder::record(int commitTag, double timeStamp)
 				for (int i = 0; i < numEle; i++) {
 					 if (theResponses[i] == 0)
 						  continue;
-					 Information& eleInfo = theResponses[i]->getInformation();
-					 const Vector& eleData = eleInfo.getData();
+					 const Vector& eleData = theResponses[i]->getData();
 					 if (index >= eleData.Size())
 						  continue;
 					 val1 = eleData(index);
@@ -285,8 +283,7 @@ ElementRecorder::record(int commitTag, double timeStamp)
 					 if ((res = theResponses[i]->getResponse()) < 0)
 						  result += res;
 					 else {
-						  Information& eleInfo = theResponses[i]->getInformation();
-						  const Vector& eleData = eleInfo.getData();
+						  const Vector& eleData = theResponses[i]->getData();
 						  if (numDOF == 0) {
 								for (int j = 0; j < eleData.Size(); j++)
 									 (*data)(loc++) = eleData(j);
@@ -735,8 +732,7 @@ ElementRecorder::initialize(void)
 					theResponses[i] = theEle->setResponse((const char**)responseArgs, numArgs, theOutputHandler);
 				if (theResponses[i] == 0)
 					continue;
-				Information& eleInfo = theResponses[i]->getInformation();
-				const Vector& eleData = eleInfo.getData();
+				const Vector& eleData = theResponses[i]->getData();
 				int size = eleData.Size();
 				if (numDOF == 0 && size != dataSize)
 				{
@@ -789,8 +785,7 @@ ElementRecorder::initialize(void)
 						theResponses[i] = theEle->setResponse((const char**)responseArgs, numArgs, theOutputHandler);
 					if (theResponses[i] != 0) {
 						// from the response type determine no of cols for each
-						Information& eleInfo = theResponses[i]->getInformation();
-						const Vector& eleData = eleInfo.getData();
+						const Vector& eleData = theResponses[i]->getData();
 						int dataSize = eleData.Size();
 						if (numDOF == 0)
 							numDbColumns += dataSize;
@@ -882,8 +877,7 @@ ElementRecorder::initialize(void)
 				theResponses[numResponse] = theResponse;
 
 				// from the response type determine no of cols for each
-				Information& eleInfo = theResponses[numResponse]->getInformation();
-				const Vector& eleData = eleInfo.getData();
+				const Vector& eleData = theResponses[numResponse]->getData();
 				numDbColumns += eleData.Size();
 
 				numResponse++;

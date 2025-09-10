@@ -39,7 +39,6 @@
 #include <string.h>
 #include <Response.h>
 #include <FE_Datastore.h>
-#include <Information.h>
 
 #include <Message.h>
 #include <FEM_ObjectBroker.h>
@@ -195,8 +194,7 @@ ConditionalElementRecorder::record(int commitTag, double timeStamp)
             result += theResponses[i]->getResponse();
             if (numDOF == 0)
             {
-                Information& eleInfo = theResponses[i]->getInformation();
-                const Vector& eleData = eleInfo.getData();
+                const Vector& eleData = theResponses[i]->getData();
                 int sz = eleData.Size();
                 if (sz > respSize)
                     respSize = sz;
@@ -226,8 +224,7 @@ ConditionalElementRecorder::record(int commitTag, double timeStamp)
             for (int i = 0; i < numEle; i++) {
                 if (theResponses[i] == 0)
                     continue;
-                Information& eleInfo = theResponses[i]->getInformation();
-                const Vector& eleData = eleInfo.getData();
+                const Vector& eleData = theResponses[i]->getData();
                 int index = j;
                 if (numDOF != 0)
                     index = (*dof)(j);
@@ -276,8 +273,7 @@ ConditionalElementRecorder::record(int commitTag, double timeStamp)
                 continue;
             }
             // from the response determine no of cols for each
-            Information& eleInfo = theResponses[i]->getInformation();
-            const Vector& eleData = eleInfo.getData();
+            const Vector& eleData = theResponses[i]->getData();
             if (numDOF == 0) {
                 for (int j = 0; j < eleData.Size(); j++)
                     (*data)(0, loc++) = eleData(j);
@@ -644,8 +640,7 @@ ConditionalElementRecorder::initialize(void)
                 theResponses[i] = theEle->setResponse((const char**)responseArgs, numArgs, theHandler);
                 if (theResponses[i] == 0)
                     continue;
-                Information& eleInfo = theResponses[i]->getInformation();
-                const Vector& eleData = eleInfo.getData();
+                const Vector& eleData = theResponses[i]->getData();
                 int size = eleData.Size();
                 if (numDOF == 0 && size != dataSize)
                 {
@@ -688,8 +683,7 @@ ConditionalElementRecorder::initialize(void)
                     theResponses[ii] = theEle->setResponse((const char**)responseArgs, numArgs, theHandler);
                     if (theResponses[ii] != 0) {
                         // from the response type determine no of cols for each      
-                        Information& eleInfo = theResponses[ii]->getInformation();
-                        const Vector& eleData = eleInfo.getData();
+                        const Vector& eleData = theResponses[ii]->getData();
                         int dataSize = eleData.Size();
                         //	  numDbColumns += dataSize;
                         if (numDOF == 0)
@@ -780,8 +774,7 @@ ConditionalElementRecorder::initialize(void)
                 theResponses[numResponse] = theResponse;
 
                 // from the response type determine no of cols for each
-                Information& eleInfo = theResponses[numResponse]->getInformation();
-                const Vector& eleData = eleInfo.getData();
+                const Vector& eleData = theResponses[numResponse]->getData();
                 if (numDOF == 0) {
                     numDbColumns += eleData.Size();
                 }
