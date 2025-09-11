@@ -77,84 +77,79 @@ PathTimeSeriesThermal::PathTimeSeriesThermal(int tag,
 		opserr << " - could not open file " << fileName << endln;
 	}
 	else {
-		std::string firstLine;
-		std::getline(theFile, firstLine);
-		std::istringstream iss(firstLine);
-		double value;
-		while (iss >> value) {
-			numCols++;
-		}
-		numDataPoints = numCols;
-		numCols--; // exclude the first column which is time
-		while (theFile >> dataPoint) {
-			numDataPoints++;
-			//theFile >> dataPoint;	// Read in second value of pair
-		}
-	}
-
-	if ((numDataPoints % (numCols + 1)) != 0) {
-		opserr << "WARNING - PathTimeSeriesThermal::PathTimeSeriesThermal()";
-		opserr << " - num data entries in file NOT COMPATIABLE! " << fileName << endln;
-	}
-	numRows = numDataPoints / (numCols + 1);
-
-
-	theFile.close();
-
-	// create a vector and read in the data
-	if (numRows != 0) {
-
-		// now create the two vector
-		thePath = new Matrix(numRows, numCols);
-		time = new Vector(numRows);
-		CurrentFactors = new Vector(numCols);
-
-		// ensure did not run out of memory creating copies
-		if (thePath == 0 || thePath->noCols() == 0 || thePath->noRows() == 0 || time == 0 || time->Size() == 0) {
-
-			opserr << "WARNING PathTimeSeriesThermal::PathTimeSeriesThermal() - out of memory\n ";
-			if (thePath != 0)
-				delete thePath;
-			if (time != 0)
-				delete time;
-			thePath = 0;
-			time = 0;
-		}
-
-		// first open the file and read in the data
-		ifstream theFile1;
-		theFile1.open(fileName, ios::in);
-		if (theFile1.bad() || !theFile1.is_open()) {
-
-			opserr << "WARNING - PathTimeSeriesThermal::PathTimeSeriesThermal()";
-			opserr << " - could not open file " << fileName << endln;
-			delete thePath;
-			delete time;
-			thePath = 0;
-			time = 0;
-		}
-		else { // read in the time and then read the value
-			int RowCount = 0;
-			while (theFile1 >> dataPoint) {
-				(*time)(RowCount) = dataPoint;
-				for (int j = 0; j < numCols; j++) {
-					theFile1 >> dataPoint;
-					if (TempOut)
-						(*thePath)(RowCount, j) = dataPoint - 20;
-					else
-						(*thePath)(RowCount, j) = dataPoint;
-
+		int numRows = 0;
+		std::string line;
+		while (std::getline(theFile, line)) {
+			if (!line.empty()) // Optionally skip empty lines
+			{
+				if (numRows == 0) {
+					// Process the first line to determine the number of columns
+					std::istringstream iss(line);
+					double value;
+					while (iss >> value) {
+						numCols++;
+					}
+					numCols--; // exclude the first column which is time
 				}
-
-				RowCount++;
+				++numRows;
 			}
+		}
+		theFile.close();
 
-			// finally close the file
-			theFile1.close();
+		// create a vector and read in the data
+		if (numRows != 0) {
+
+			// now create the two vector
+			thePath = new Matrix(numRows, numCols);
+			time = new Vector(numRows);
+			CurrentFactors = new Vector(numCols);
+
+			// ensure did not run out of memory creating copies
+			if (thePath == nullptr || thePath->noCols() == 0 || thePath->noRows() == 0 || time == nullptr || time->Size() == 0) {
+				opserr << "WARNING PathTimeSeriesThermal::PathTimeSeriesThermal() - out of memory\n ";
+				delete thePath;
+				delete time;
+				thePath = nullptr;
+				time = nullptr;
+			}
+			else {
+				// Efficiently read the file line by line and parse values
+				theFile.open(fileName, ios::in);
+				if (theFile.bad() || !theFile.is_open()) {
+					opserr << "WARNING - PathTimeSeriesThermal::PathTimeSeriesThermal()";
+					opserr << " - could not open file " << fileName << endln;
+					delete thePath;
+					delete time;
+					thePath = nullptr;
+					time = nullptr;
+				}
+				else {
+					std::string line;
+					int RowCount = 0;
+					while (std::getline(theFile, line) && RowCount < numRows) {
+						std::istringstream iss(line);
+						double t;
+						if (!(iss >> t)) {
+							opserr << "WARNING - PathTimeSeriesThermal::PathTimeSeriesThermal() - invalid time value in file " << fileName << endln;
+							break;
+						}
+						(*time)(RowCount) = t;
+						for (int j = 0; j < numCols; j++) {
+							double value;
+							if (!(iss >> value)) {
+								opserr << "WARNING - PathTimeSeriesThermal::PathTimeSeriesThermal() - insufficient data columns in file " << fileName << " at row " << RowCount << endln;
+								break;
+							}
+							(*thePath)(RowCount, j) = TempOut ? (value - 20) : value;
+						}
+						++RowCount;
+					}
+					theFile.close();
+				}
+			}
 		}
 	}
 }
-
 
 PathTimeSeriesThermal::PathTimeSeriesThermal(int tag,
 	int DataNum, bool tempOut,

@@ -2235,10 +2235,10 @@ analyzeModel(ClientData clientData, Tcl_Interp* interp, int argc, TCL_Char** arg
 		if (Tcl_GetInt(interp, argv[1], &numIncr) != TCL_OK)
 			return TCL_ERROR;
 
-		bool flush = true;
+		bool flush = false;
 		if (argc > 2) {
-			if (strcmp(argv[2], "-noFlush") == 0) {
-				flush = false;
+			if (strcmp(argv[2], "-flush") == 0) {
+				flush = true;
 			}
 		}
 
@@ -2268,10 +2268,10 @@ analyzeModel(ClientData clientData, Tcl_Interp* interp, int argc, TCL_Char** arg
 		// Set global timestep variable
 		ops_Dt = dT;
 
-		bool flush = true;
+		bool flush = false;
 		if (argc == 4) {
-			if (strcmp(argv[3], "-noFlush") == 0) {
-				flush = false;
+			if (strcmp(argv[3], "-flush") == 0) {
+				flush = true;
 			}
 		}
 
@@ -2285,8 +2285,8 @@ analyzeModel(ClientData clientData, Tcl_Interp* interp, int argc, TCL_Char** arg
 			if (Tcl_GetInt(interp, argv[5], &Jd) != TCL_OK)
 				return TCL_ERROR;
 			if (argc > 6) {
-				if (strcmp(argv[6], "-noFlush") == 0) {
-					flush = false;
+				if (strcmp(argv[6], "-flush") == 0) {
+					flush = true;
 				}
 			}
 
