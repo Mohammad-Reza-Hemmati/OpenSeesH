@@ -375,3 +375,17 @@ HTNodeRecorder::initialize(void)
 	initialRecording =true;
 	return 0;
 }
+
+double HTNodeRecorder::getRecordedValue(int clmnId, int rowOffset, bool reset)
+{
+	double res = 0;
+	if (!initializationDone)
+		return res;
+	if (clmnId >= response.Size())
+	{
+		opserr << "NodeRecorder::getRecordedValue: columnId exceeds valid range" << endln;
+		return 0;
+	}
+	res = response(clmnId);
+	return res;
+}

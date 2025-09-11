@@ -46,7 +46,8 @@ class HTRecorder: public TaggedObject
 
     virtual int domainChanged(void);    
     virtual int setDomain(HeatTransferDomain &theDomain);
-	virtual void  Print(OPS_Stream&, int flag = 0);
+    virtual double getRecordedValue(int clmnId, int rowOffset, bool reset) { return 0; } //added by SAJalali
+    virtual void  Print(OPS_Stream&, int flag = 0);
 
     protected:
 

@@ -1702,14 +1702,14 @@ int OPS_recorderValue(ClientData clientData, Tcl_Interp* interp, int argc, TCL_C
 			res = -1.e20;
 		// now we copy the value to the tcl string that is returned
 		char buffer[40];
-		sprintf(buffer, "%35.8f", res);
+		sprintf(buffer, "%-.8f", res);
 		Tcl_SetResult(interp, buffer, TCL_VOLATILE);
 		return TCL_OK;
 	}
 	opserr << "WARNING: recorderValue Could Not Find Recorder Object with tag: " << tag << " in the Domain\n";
 	//return TCL_ERROR;
 	char buffer[40];
-	sprintf(buffer, "%35.8f", 0.0);
+	sprintf(buffer, "%-.8f", 0);
 	Tcl_SetResult(interp, buffer, TCL_VOLATILE);
 	return TCL_OK;
 }

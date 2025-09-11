@@ -39,37 +39,38 @@
 class HeatTransferDomain;
 class HeatTransferNode;
 
-class HTNodeRecorder: public HTRecorder
+class HTNodeRecorder : public HTRecorder
 {
-    public:
+public:
 	HTNodeRecorder(int tag);
-  HTNodeRecorder(int tag, const ID* theNodes,
-					HeatTransferDomain& theDomain); 
-					
-  HTNodeRecorder(int tag, const ID* theNodes,
-					HeatTransferDomain& theDomain,
-					OPS_Stream &theOutputHandle);
-  
-  HTNodeRecorder(int tag, const ID* theNodes,
-                 HeatTransferDomain& theDomain,
-                 PathTimeSeriesThermal* thePathSeries);
-  
-  HTNodeRecorder(int tag, const ID* theNodes,
-                 HeatTransferDomain& theDomain,
-                 OPS_Stream &theOutputHandle,PathTimeSeriesThermal* thePathSeries);
-    
-    ~HTNodeRecorder();
+	HTNodeRecorder(int tag, const ID* theNodes,
+		HeatTransferDomain& theDomain);
 
-    int record(double timeStamp);
-  
-    int setDomain(HeatTransferDomain &theDomain);
-	void  Print(OPS_Stream&, int = 0) {return;};
+	HTNodeRecorder(int tag, const ID* theNodes,
+		HeatTransferDomain& theDomain,
+		OPS_Stream& theOutputHandle);
 
-    protected:
+	HTNodeRecorder(int tag, const ID* theNodes,
+		HeatTransferDomain& theDomain,
+		PathTimeSeriesThermal* thePathSeries);
 
-    private:	
+	HTNodeRecorder(int tag, const ID* theNodes,
+		HeatTransferDomain& theDomain,
+		OPS_Stream& theOutputHandle, PathTimeSeriesThermal* thePathSeries);
+
+	~HTNodeRecorder();
+
+	int record(double timeStamp);
+
+	int setDomain(HeatTransferDomain& theDomain);
+	void  Print(OPS_Stream&, int = 0) { return; };
+	virtual double getRecordedValue(int clmnId, int rowOffset, bool reset); //added by SAJalali
+
+protected:
+
+private:
 	int initialize(void);
-	
+
 	Vector response;
 
 	ID* theNodalTags;
@@ -77,9 +78,9 @@ class HTNodeRecorder: public HTRecorder
 
 	HeatTransferDomain* theDomain;
 
-	OPS_Stream *theOutputHandler;
-  
-  PathTimeSeriesThermal* ThePathSeries;
+	OPS_Stream* theOutputHandler;
+
+	PathTimeSeriesThermal* ThePathSeries;
 
 	bool initializationDone;
 	bool initialRecording;

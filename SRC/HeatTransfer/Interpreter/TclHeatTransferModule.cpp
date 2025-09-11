@@ -162,6 +162,7 @@ int TclHeatTransferCommand_HTAnalyze(ClientData clientData, Tcl_Interp* interp, 
 
 int TclHeatTransferCommand_PrintNodes(ClientData clientData, Tcl_Interp* interp, int argc, TCL_Char** argv);
 int TclHeatTransferCommand_getHTTime(ClientData clientData, Tcl_Interp* interp, int argc, TCL_Char** argv);
+int TclHeatTransferCommand_recorderValue(ClientData clientData, Tcl_Interp* interp, int argc, TCL_Char** argv);
 
 TclHeatTransferModule::TclHeatTransferModule(int ndm, Tcl_Interp* interp)
 {
@@ -218,6 +219,7 @@ TclHeatTransferModule::TclHeatTransferModule(int ndm, Tcl_Interp* interp)
 
 	Tcl_CreateCommand(interp, "HTPrintNodes", (Tcl_CmdProc*)TclHeatTransferCommand_PrintNodes, (ClientData)NULL, NULL);
 	Tcl_CreateCommand(interp, "getHTTime", (Tcl_CmdProc*)TclHeatTransferCommand_getHTTime, (ClientData)NULL, NULL);
+	Tcl_CreateCommand(interp, "recorderValue", (Tcl_CmdProc*)TclHeatTransferCommand_recorderValue, (ClientData)NULL, NULL);
 	//Tcl_CreateCommand(interp, "HTMaterial", (Tcl_ObjCmdProc*) TclHeatTransferCommand_addHTMaterial,(ClientData)NULL, (Tcl_CmdDeleteProc *)NULL);
 
 
@@ -3919,7 +3921,6 @@ int TclHeatTransferCommand_HTRecorder(ClientData clientData, Tcl_Interp* interp,
 
 	//HTRecorderToStru::HTRecorderToStru(int tag, const Matrix& theCrds, HeatTransferDomain &theDom, OPS_Stream &theOutputHandler, double tolerance)
 // for geting uncertain number of doubel values 
-
 	if (theHTRecorder != 0) {
 		theHTDomain->addRecorder(*theHTRecorder);
 	}
@@ -3927,7 +3928,11 @@ int TclHeatTransferCommand_HTRecorder(ClientData clientData, Tcl_Interp* interp,
 		opserr << "WARNING::HeatTransfer Recoder is not defined" << endln;
 	}
 	// HTNodeRecorder(int tag, const ID* theNodes, HeatTransferDomain& theDomain,OPS_Stream &theOutputHandle); 
-
+	int tag = theHTRecorder->getTag();
+	int numData = 1;
+	char buffer[30];
+	sprintf(buffer, "%d", tag);
+	Tcl_SetResult(interp, buffer, TCL_VOLATILE);
 	return TCL_OK;
 }
 
@@ -3975,6 +3980,77 @@ TclHeatTransferCommand_PrintNodes(ClientData clientData, Tcl_Interp* interp, int
 
 	return 0;
 }
+
+int TclHeatTransferCommand_recorderValue(ClientData clientData, Tcl_Interp* interp, int argc, TCL_Char** argv)
+{
+	if (theTclHTModule == 0) {
+		opserr << "WARNING current HeatTransfer Module has been destroyed - OPS_RecorderValue\n";
+		return TCL_ERROR;
+	}
+
+	if (theHTDomain == 0) {
+		opserr << "WARNING no active HeatTransfer Domain - OPS_RecorderValue\n";
+		return TCL_ERROR;
+	}
+	// make sure at least one other argument to contain type of system
+	if (argc < 2) {
+		opserr << "WARNING want - recorderValue recorderTag clmnID <rowOffset> <-reset>\n";
+		return -1;
+	}
+	int tag, rowOffset;
+	int dof = -1;
+	if (Tcl_GetInt(interp, argv[1], &tag) != 0) {
+		opserr << "WARNING recorderValue recorderTag? clmnID <rowOffset> <-reset> could not read recorderTag \n";
+		return -1;
+	}
+
+	if (Tcl_GetInt(interp, argv[2], &dof) != 0) {
+		opserr << "WARNING recorderValue recorderTag? clmnID - could not read clmnID \n";
+		return -1;
+	}
+	dof--;
+	rowOffset = 0;
+	int curArg = 3;
+	if (argc > 3)
+	{
+		if (Tcl_GetInt(interp, argv[3], &rowOffset) != 0) {
+			opserr << "WARNING recorderValue recorderTag? clmnID <rowOffset> <-reset> could not read rowOffset \n";
+			return -1;
+		}
+		curArg++;
+	}
+	bool reset = false;
+	if (argc > 4)
+	{
+		const char* option = argv[4];
+
+		if (strcmp(option, "-reset") == 0)
+			reset = true;
+	}
+	double res = 0.0;
+	int numData = 1;
+	HTRecorder* theRecorder = theHTDomain->getRecorder(tag);
+	if (theRecorder != 0)
+	{
+		double res = theRecorder->getRecordedValue(dof, rowOffset, reset);
+		//check result limit to prevent buffer overrun:
+		if (res > 1.e20)
+			res = 1.e20;
+		if (res < -1.e20)
+			res = -1.e20;
+		// now we copy the value to the tcl string that is returned
+		char buffer[40];
+    sprintf(buffer, "%-.8f", res);
+		Tcl_SetResult(interp, buffer, TCL_VOLATILE);
+		return 0;
+	}
+	opserr << "WARNING: recorderValue Could Not Find Recorder Object with tag: " << tag << " in the Domain\n";
+	char buffer[40];
+	sprintf(buffer, "%-.8f", res);
+	Tcl_SetResult(interp, buffer, TCL_VOLATILE);
+	return 0;
+}
+
 int
 TclHeatTransferCommand_getHTTime(ClientData clientData, Tcl_Interp* interp, int argc, TCL_Char** argv) {
 
