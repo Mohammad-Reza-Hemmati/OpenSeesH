@@ -32,8 +32,8 @@
 #include <cmath>
 
 
-ConcreteEC2::ConcreteEC2(int tag, double moisture, bool isLower, bool _seeCooling)
-	:HeatTransferMaterial(tag), trial_temp(0.0), ini_temp(0.0),
+ConcreteEC2::ConcreteEC2(int tag, double moisture, bool isLower, bool _seeCooling, double initT)
+	:HeatTransferMaterial(tag), trial_temp(0.0), ini_temp(initT-273.15),
 	rho(2300.0), rho_a(2300.0), cp(900.0), enthalpy(0.0), moist(moisture), IsLower(isLower), seeCooling(_seeCooling)
 {
 	max_temp = trial_temp;
@@ -57,7 +57,9 @@ int
 ConcreteEC2::setTrialTemperature(double temp, int par)
 {
 	temp -= 273.15;
-	if (temp > max_temp)
+	if (temp < ini_temp)
+		temp = ini_temp;
+	else if (temp > max_temp)
 	{
 		max_temp = temp;
 		trial_temp = max_temp;

@@ -583,12 +583,7 @@ FiberSection2dThermal::getTemperatureStress(const Vector& dataMixed)
 		//Updating the fibre temperature  ---UoE Group
 		FiberTemperatures[i] = 0;
 		double FiberTempMax = 0; //PK add for max temp
-		if (fabs(dataMixed(1)) <= 1e-10 && fabs(dataMixed(2 * n - 1)) <= 1e-10) //no tempe load
-		{
-			//FiberTemperatures[i] = 0;
-			FiberTempMax = 0;
-		}
-		else
+		if (fabs(dataMixed(1)) > 1e-10 || fabs(dataMixed(2 * n - 1)) > 1e-10)
 		{
 			//calculate the fiber tempe, T=T1-(Y-Y1)*(T1-T2)/(Y1-Y2)
 			Vector TempV = this->determineFiberTemperature(dataMixed, fiberLocs[i]);

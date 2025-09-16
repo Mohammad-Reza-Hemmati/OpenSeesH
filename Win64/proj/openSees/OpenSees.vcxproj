@@ -105,7 +105,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\..\..\bin\release</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\Alireza\AppData\Roaming\OpenSees House\OpenSeesH\bin</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='PyDebug|x64'">.\..\..\bin\release</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\..\..\obj\opensees\release\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='PyDebug|x64'">.\..\..\obj\opensees\release\</IntDir>
@@ -159,7 +159,7 @@
     <Link>
       <AdditionalOptions>/FORCE:MULTIPLE  %(AdditionalOptions)</AdditionalOptions>
       <AdditionalDependencies>actor.lib;analysis.lib;arpack.lib;blas.lib;cblas.lib;convergence.lib;cssparse.lib;database.lib;DoddRestrepo.lib;domain.lib;drain.lib;element.lib;feap.lib;fedeas.lib;glu32.lib;graph.lib;handler.lib;heatTransfer.lib;ifconsol.lib;lapack.lib;libifcoremt.lib;libmmt.lib;material.lib;matrix.lib;modelbuilder.lib;opengl32.lib;recorder.lib;renderer.lib;sdmuc.lib;superLU.lib;system.lib;tagged.lib;tcl.lib;tcl86t.lib;tk86t.lib;umfpackC.lib;utility.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>.\..\..\bin\release\OpenSeesH.exe</OutputFile>
+      <OutputFile>C:\Users\Alireza\AppData\Roaming\OpenSees House\OpenSeesH\bin\OpenSeesH.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\compiler\lib\intel64_win;c:\Program Files\tcl\lib;..\..\lib;..\..\lib\release;%(AdditionalLibraryDirectories);C:\Program Files (x86)\Intel\oneAPI\compiler\latest\lib</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>

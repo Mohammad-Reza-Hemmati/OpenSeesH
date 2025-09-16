@@ -147,23 +147,6 @@ LocalizedFireEC1::applyFluxBC(HeatFluxBC* theFlux, double time)
    
 	if (flux_type == 1) {
 		Convection* convec = (Convection*)theFlux;
-		//convec->setSurroundingTemp(this->getGasTemperature(time));
-		int eleTag = theFlux->getElementTag();
-		int fTag = theFlux->getFaceTag();
-		HeatTransferDomain* theDomain = theFlux->getDomain();
-		if (theDomain == 0) {
-			opserr << "LocalizedFireSFPE::applyFluxBC() - HeatFluxBC has not been associated with a domain";
-			exit(-1);
-		}
-
-		HeatTransferElement* theEle = theDomain->getElement(eleTag);
-		if (theEle == 0) {
-			opserr << "LocalizedFireSFPE::applyFluxBC() - no element with tag " << eleTag << " exists in the domain";
-			exit(-1);
-		}
-
-		const ID& faceNodes = theEle->getNodesOnFace(fTag);
-		HeatTransferNode* theNode = theDomain->getNode(faceNodes(0));
 		convec->applyFluxBC(time);
 	}
 	else if (flux_type == 2) {

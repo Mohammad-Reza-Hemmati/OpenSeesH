@@ -183,25 +183,36 @@ UserDefinedFire::getData(double theTime)
 
 	// check for a quick return
 	if (theData == 0)
-		return 0.0;
+	{
+		thefireData(0) = 0;
+		return thefireData;
+	}
 
 	// determine indexes into the data array whose boundary holds the time
 	double time1 = (*time)(currentTimeLoc);
 
 	// check for another quick return
 	if (theTime == time1)
-		return (*theData)[currentTimeLoc];
-
+	{
+		thefireData(0) = (*theData)[currentTimeLoc];
+		return thefireData;
+	}
 	int size = time->Size();
 	int sizem1 = size - 1;
 	int sizem2 = size - 2;
 
 	// check we are not at the end
 	if (theTime > time1 && currentTimeLoc == sizem1)
-		return 0.0;
+	{
+		thefireData(0) = 0;
+		return thefireData;
+	}
 
 	if (theTime < time1 && currentTimeLoc == 0)
-		return 0.0;
+	{
+		thefireData(0) = 0;
+		return thefireData;
+	}
 
 	// otherwise go find the current interval
 	double time2 = (*time)(currentTimeLoc + 1);

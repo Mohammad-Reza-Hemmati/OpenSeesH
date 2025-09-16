@@ -782,34 +782,36 @@ TclHeatTransferCommand_addHTMaterial(ClientData clientData, Tcl_Interp* interp, 
 	//Adding ConcreteEC2
 	else if (strcmp(argv[1], "ConcreteEC2") == 0) {
 
-		double moisture = 0;
-		bool isLower = false;
+		double moisture = 0, initT = 0;
+		bool isLower = false, seeCooling = false;
 
-		if (argc == 3) {
-			moisture = 0;
-		}
-		else if (argc == 4) {
+		if (argc >= 4) {
 			if (Tcl_GetDouble(interp, argv[3], &moisture) != TCL_OK) {
 				opserr << "WARNING invalid mositure" << endln;
 				opserr << " for HeatTransfer material: " << argv[1] << endln;
 				return TCL_ERROR;
 			}
 		}
-		else if (argc == 5) {
-			if (Tcl_GetDouble(interp, argv[3], &moisture) != TCL_OK) {
-				opserr << "WARNING invalid mositure" << endln;
-				opserr << " for HeatTransfer material: " << argv[1] << endln;
-				return TCL_ERROR;
-			}
-
+		if (argc >= 5) {
 			if (strcmp(argv[4], "Lower") == 0 || strcmp(argv[4], "lower") == 0 || strcmp(argv[4], "-lower") == 0) {
 				isLower = true;
 			}
 		}
-		else
-			opserr << "WARNING:: Defining HeatTransfer material: " << argv[1] << " recieved more than 4 arguments." << "\n";
-
-		theHTMaterial = new ConcreteEC2(HTMaterialTag, moisture, isLower);
+		if (argc >= 6) {
+			if (strcmp(argv[5], "-seeCooling") == 0) {
+				seeCooling = true;
+			}
+		}
+		if (argc == 8) {
+			if (strcmp(argv[6], "-initialTemp") == 0) {
+				if (Tcl_GetDouble(interp, argv[7], &initT) != TCL_OK) {
+					opserr << "WARNING invalid initial temperature" << endln;
+					opserr << " for HeatTransfer material: " << argv[1] << endln;
+					return TCL_ERROR;
+				}
+			}
+		}
+		theHTMaterial = new ConcreteEC2(HTMaterialTag, moisture, isLower, seeCooling, initT);
 	}
 	else if (strcmp(argv[1], "SFRMCoating") == 0 || strcmp(argv[1], "SFRM") == 0) {
 

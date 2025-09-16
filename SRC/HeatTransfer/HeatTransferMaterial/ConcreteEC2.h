@@ -35,7 +35,7 @@
 class ConcreteEC2: public HeatTransferMaterial
 {
     public:
-		ConcreteEC2(int tag, double moisture =0.0,bool isLower =false, bool seeCool = false);    
+		ConcreteEC2(int tag, double moisture =0.0,bool isLower =false, bool seeCool = false, double initT = 0);    
 		virtual ~ConcreteEC2();
 
 		// method for this material to update itself according to its new parameters
