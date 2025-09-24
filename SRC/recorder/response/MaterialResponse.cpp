@@ -41,7 +41,7 @@ MaterialResponse::getInformation(int respNum)
 }
 const Vector& MaterialResponse::getData(void)
 {
-	if (numMaterialas <= 1)
+	if (numMaterialas == 0)
 		return myInfo.getData();
 
 	int sizeAll = 0;
@@ -81,7 +81,7 @@ MaterialResponse::MaterialResponse(Material* mat, int id, int val) :
 }
 
 MaterialResponse::MaterialResponse(Material* mat, int id, double val) :
-	Response(val), theMaterialState(0), responseID(id), numMaterialas(1), respVec(0)
+	Response(), theMaterialState(0), responseID(id), numMaterialas(1), respVec(0)
 {
 	theMaterials = new Material * [1];
 	theMaterials[0] = mat;
@@ -90,7 +90,7 @@ MaterialResponse::MaterialResponse(Material* mat, int id, double val) :
 }
 
 MaterialResponse::MaterialResponse(Material* mat, int id, const ID& val) :
-	Response(val), theMaterialState(0), responseID(id), numMaterialas(1), respVec(0)
+	Response(), theMaterialState(0), responseID(id), numMaterialas(1), respVec(0)
 {
 	theMaterials = new Material * [1];
 	theMaterials[0] = mat;
@@ -99,21 +99,21 @@ MaterialResponse::MaterialResponse(Material* mat, int id, const ID& val) :
 }
 
 MaterialResponse::MaterialResponse(Material* mat, int id, const Vector& val) :
-	Response(val), theMaterialState(0), responseID(id), numMaterialas(1), respVec(0)
+	Response(), theMaterialState(0), responseID(id), numMaterialas(1), respVec(0)
 {
 	theMaterials = new Material * [1];
 	theMaterials[0] = mat;
 	infoList = new Information[1];
-	infoList[0] = Information(val);
+  new (&infoList[0]) Information(val);
 }
 
 MaterialResponse::MaterialResponse(Material* mat, int id, const Matrix& val) :
-	Response(val), theMaterialState(0), responseID(id), numMaterialas(1), respVec(0)
+	Response(), theMaterialState(0), responseID(id), numMaterialas(1), respVec(0)
 {
 	theMaterials = new Material * [1];
 	theMaterials[0] = mat;
 	infoList = new Information[1];
-	infoList[0] = Information(val);
+	new (&infoList[0]) Information(val);
 }
 MaterialResponse::MaterialResponse(Material** mats, int id, int numMats) :
 	Response(), theMaterialState(0), responseID(id), numMaterialas(numMats), respVec(0)
@@ -123,60 +123,60 @@ MaterialResponse::MaterialResponse(Material** mats, int id, int numMats) :
 	for (int i = 0; i < numMats; i++)
 	{
 		theMaterials[i] = mats[i];
-		infoList[i] = Information();
+		new (&infoList[i]) Information();
 	}
 }
 
 MaterialResponse::MaterialResponse(Material** mats, int id, int val, int numMats) :
-	Response(val), theMaterialState(0), responseID(id), numMaterialas(numMats), respVec(0)
+	Response(), theMaterialState(0), responseID(id), numMaterialas(numMats), respVec(0)
 {
 	theMaterials = new Material * [numMats];
 	infoList = new Information[numMats];
 	for (int i = 0; i < numMats; i++)
 	{
 		theMaterials[i] = mats[i];
-		infoList[i] = Information(val);
+		new (&infoList[i]) Information(val);
 	}
 }
 
 MaterialResponse::MaterialResponse(Material** mats, int id, double val, int numMats) :
-	Response(val), theMaterialState(0), responseID(id), numMaterialas(numMats), respVec(0)
+	Response(), theMaterialState(0), responseID(id), numMaterialas(numMats), respVec(0)
 {
 	theMaterials = new Material * [numMats];
 	infoList = new Information[numMats];
 	for (int i = 0; i < numMats; i++)
 	{
 		theMaterials[i] = mats[i];
-		infoList[i] = Information(val);
+		new (&infoList[i]) Information(val);
 	}
 }
 
 MaterialResponse::MaterialResponse(Material** mats, int id, const ID& val, int numMats) :
-	Response(val), theMaterialState(0), responseID(id), numMaterialas(numMats), respVec(0)
+	Response(), theMaterialState(0), responseID(id), numMaterialas(numMats), respVec(0)
 {
 	theMaterials = new Material * [numMats];
 	infoList = new Information[numMats];
 	for (int i = 0; i < numMats; i++)
 	{
 		theMaterials[i] = mats[i];
-		infoList[i] = Information(val);
+		new (&infoList[i]) Information(val);
 	}
 }
 
 MaterialResponse::MaterialResponse(Material** mats, int id, const Vector& val, int numMats) :
-	Response(val), theMaterialState(0), responseID(id), numMaterialas(numMats), respVec(0)
+	Response(), theMaterialState(0), responseID(id), numMaterialas(numMats), respVec(0)
 {
 	theMaterials = new Material * [numMats];
 	infoList = new Information[numMats];
 	for (int i = 0; i < numMats; i++)
 	{
 		theMaterials[i] = mats[i];
-		infoList[i] = Information(val);
+		new (&infoList[i]) Information(val);
 	}
 }
 
 MaterialResponse::MaterialResponse(Material** mats, int id, const Matrix& val, int numMats) :
-	Response(val), theMaterialState(0), responseID(id), numMaterialas(numMats), respVec(0)
+	Response(), theMaterialState(0), responseID(id), numMaterialas(numMats), respVec(0)
 {
 	theMaterials = new Material * [numMats];
 	infoList = new Information[numMats];

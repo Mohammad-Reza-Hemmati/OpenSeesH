@@ -53,7 +53,7 @@ void printSyntax()
 	opserr << "                  <-pinched pinchXPos pinchYPos <pinchXNeg pinchYNeg> <-stressPenetFacs stressPenetFacPos <stressPenetFacNeg>> <-bilinEndAmp  bilinEndAmp>> \n";
 	opserr << "                  <-unloadingStiffFactor unloadingStiffFacPos=1 <unloadingStiffFacNeg=1>> \n";
 }
-bool findStr(std::vector<const char*> vec, const char * str)
+bool findStr(std::vector<const char*> vec, const char* str)
 {
 	for (auto iter = vec.begin(); iter != vec.end(); iter++)
 		if (strcmp(*iter, str) == 0)
@@ -379,7 +379,7 @@ SmoothIMK::SmoothIMK(int tag,
 	UniaxialMaterial(tag, MAT_TAG_SmoothIMK),
 	pd(_pd), pf(_pf),
 	nd(_nd), nf(_nf),
-	cS(_cS), FailEnergS(_gamaS* pf[0]* pd[0]),
+	cS(_cS), FailEnergS(_gamaS* pf[0] * pd[0]),
 	cUnloadE(_cUE), FailEnergUnloadE(_gamaUE* pf[0] * pd[0]),
 	r0(_r0), r1(_r1), r2(_r2),
 	cyclicRule(_cyclicRule),
@@ -420,7 +420,7 @@ SmoothIMK::SmoothIMK(int tag,
 			double min = *it;
 			it++;
 			for (; it < pf.end(); it++)
-				if (fabs((*it - min)/min) > 0.01)
+				if (fabs((*it - min) / min) > 0.01)
 				{
 					opserr << "SmoothIMK:: Error (tag = " << tag << "): the positive backbone increase by more than 1% after descending!\n";
 					exit(-1);
@@ -586,8 +586,8 @@ SmoothIMK::revertToStart(void)
 	sigP = sigini;
 	sig = 0.0;
 	eps = 0.0;
-	EunloadP = E0p* unloadingStiffFacPos;
-	EunloadN = E0n* unloadingStiffFacNeg;
+	EunloadP = E0p * unloadingStiffFacPos;
+	EunloadN = E0n * unloadingStiffFacNeg;
 	isPosDirP = isPosDir = true;
 	//epsmaxP = 0;
 	//epsminP = 0;
@@ -610,8 +610,8 @@ int
 SmoothIMK::sendSelf(int commitTag, Channel& theChannel)
 {
 	int numPData = pd.size();
-	int numNData = nd.size(); 
-	static Vector data(41 + (numPData+numNData)*2);// 40 is the number of fixed data members
+	int numNData = nd.size();
+	static Vector data(41 + (numPData + numNData) * 2);// 40 is the number of fixed data members
 	int n = -1;
 	data(n++) = numPData;	// size of the data vector
 	data(n++) = numNData;	// size of the data vector
@@ -776,7 +776,7 @@ SmoothIMK::Print(OPS_Stream& s, int flag)
 
 }
 
-Response* SmoothIMK::setResponse(const char** argv, int argc, OPS_Stream * theOutput)
+Response* SmoothIMK::setResponse(const char** argv, int argc, OPS_Stream* theOutput)
 {
 	Response* theResponse = UniaxialMaterial::setResponse(argv, argc, theOutput);
 	if (theResponse != 0)
@@ -817,7 +817,7 @@ void SmoothIMK::updateDamage()
 			if (EnergyP < 0) EnergyP = 0.;
 			ExcurEnergy += dE;
 			if (ExcurEnergy < 0) ExcurEnergy = 0.;
-			if (branch == pd.size()-1)
+			if (branch == pd.size() - 1)
 			{
 				FyIndP = FrIndP;
 				FcIndP = FrIndP;
@@ -868,7 +868,7 @@ void SmoothIMK::updateDamage()
 			if (EnergyP < 0) EnergyP = 0.;
 			ExcurEnergy += dE;
 			if (ExcurEnergy < 0) ExcurEnergy = 0.;
-			if (branch == pd.size()-1)
+			if (branch == pd.size() - 1)
 			{
 				FyIndN = FrIndN;
 				FcIndN = FrIndN;
@@ -933,22 +933,17 @@ int SmoothIMK::setTrialStrain(double trialStrain, double strainRate)
 		{
 			onEnvelope = true; //allow the next branch to follow the bilin method
 			branch = 10011; // gapped loading;
-			if (isPosDir)
-			{
-				//assuming positive initial loading
-				for (size_t i = 0; i < pd.size(); ++i) {
-					gpd[i] = pd[i] + gap;
-				}
-				epsmax = gpd[0];
-				e = 0.001 * pf[0] / gap;
+			//assuming positive initial loading
+			for (size_t i = 0; i < pd.size(); ++i) {
+				gpd[i] = pd[i] + gap / 2;
 			}
-			else {
-				for (size_t i = 0; i < nd.size(); ++i) {
-					gnd[i] = nd[i] - gap;
-				}
-				epsmin = gnd[0];
-				e = 0.001 * nf[0] / gap;
+			epsmax = gpd[0];
+			e = 0.001 * pf[0] / gap * 2;
+			for (size_t i = 0; i < nd.size(); ++i) {
+				gnd[i] = nd[i] - gap / 2;
 			}
+			epsmin = gnd[0];
+			e = 0.001 * nf[0] / gap * 2;
 		}
 		initiated = true;
 		updateAsymptote();
@@ -1004,8 +999,8 @@ void SmoothIMK::changeBranch(bool isReturning)
 		return;
 	}
 	bool shouldPinch = (
-			(isPosDir && fabs(epsPl - epsmax) / pd[0] >= bilinEndAmp) ||
-			(!isPosDir && fabs(epsPl - epsmin) / nd[0] <= -bilinEndAmp)
+		(isPosDir && fabs(epsPl - epsmax) / pd[0] >= bilinEndAmp) ||
+		(!isPosDir && fabs(epsPl - epsmin) / nd[0] <= -bilinEndAmp)
 		);
 	//unloading:
 	if (gap > 0.001 * pd[0] && !isReturning)
@@ -1016,7 +1011,7 @@ void SmoothIMK::changeBranch(bool isReturning)
 			branch = 10012;
 		return;
 	}
-	branch = cyclicRule == 1 || ! shouldPinch ? 0 : cyclicRule == 2 ? 1002 : 1003;
+	branch = cyclicRule == 1 || !shouldPinch ? 0 : cyclicRule == 2 ? 1002 : 1003;
 }
 
 int SmoothIMK::nextBranch(int branch)
@@ -1046,30 +1041,31 @@ int SmoothIMK::nextBranch(int branch)
 	}
 	else if (branch < 1000 && branch > d.size() - 1)
 		return 1010;//failed
-	else 
+	else
 		return branch + 1;
-	
+
 }
 
 void SmoothIMK::updateAsymptote()
 {
 	//updates: epsr, sigr, epss0, sigs0, epsLimit, slopeRat, R0
-	const double& Esh = isPosDir ? FyIndP == -1 ? 0 : (fpDmgd[FyIndP + 1] - fpDmgd[FyIndP]) / (pd[FyIndP + 1] - pd[FyIndP]) :
-		FyIndN == -1 ? 0 : (fnDmgd[FyIndN + 1] - fnDmgd[FyIndN]) / (nd[FyIndN + 1] - nd[FyIndN]);
-	const double& Fy = isPosDir ? FyIndP == -1 ? 0 : fpDmgd[FyIndP] : FyIndN == -1 ? 0 : fnDmgd[FyIndN];
-	const double& dy = isPosDir ? gpd[0] : gnd[0];
-	const double& dc = isPosDir ? gpd[FcIndP] : gnd[FcIndN];
+	const std::vector<double>& gd = isPosDir ? gpd : gnd;
+	const std::vector<double>& d = isPosDir ? pd : nd;
+	const std::vector<double>& f = isPosDir ? fpDmgd : fnDmgd;
+	const int& FyInd = isPosDir ? FyIndP : FyIndN;
+	const int& FcInd = isPosDir ? FcIndP : FcIndN;
+	const double Esh = FyInd == -1 ? 0 : (f[FyInd + 1] - f[FyInd]) / (gd[FyInd + 1] - gd[FyInd]);
+	const double& Fy = FyInd == -1 ? 0 : f[FyInd];
+	const double& dy = gd[0];
+	const double& dc = gd[FcInd];
 	const double& E1 = isPosDir ? E0p : E0n;
-	const double& E2 = isPosDir ? (sigP < -0.001*Fy ? EunloadN : E0p) : (sigP > 0.001*Fy ? EunloadP : E0n);
+	const double& E2 = isPosDir ? (sigP < -0.001 * Fy ? EunloadN : E0p) : (sigP > 0.001 * Fy ? EunloadP : E0n);
 	const double& Eunload = isPosDir ? EunloadN : EunloadP;
-	const double& gapD = isPosDir ? gap : -gap;
+	const double gapD = isPosDir ? gap / 2 : -gap / 2;
 	const double& epsPeak = isPosDir ? epsmax : epsmin;
 	const double& sigPenetFac = isPosDir ? sigPenetFacP : sigPenetFacN;
 	const double pinchX = isPosDir ? pinchXPos : pinchXNeg;
 	const double pinchY = isPosDir ? pinchYPos : pinchYNeg;
-	const std::vector<double>& d = isPosDir ? pd : nd;
-	const std::vector<double>& gd = isPosDir ? gpd : gnd;
-	const std::vector<double>& f = isPosDir ? fpDmgd : fnDmgd;
 	epsr = epsP;
 	sigr = sigP;
 	double k2 = 0;
@@ -1106,7 +1102,7 @@ void SmoothIMK::updateAsymptote()
 			return updateAsymptote();
 		}
 		sigs0 = (epss0 - (epsP - sigP / E2)) * E1;
-		epsLimit = epss0 + (d[1] - d[0]) / 2;
+		epsLimit = epss0 + (gd[1] - gd[0]) / 2;
 		k2 = Esh;
 	}
 	else if (branch == 1002) // epsPl+gapD to peak
@@ -1173,7 +1169,7 @@ void SmoothIMK::updateAsymptote()
 	else if (branch == 1005)// peak-passing
 	{
 		epss0 = epsPeak;
-		int targBranch; 
+		int targBranch;
 		getEnvelope(epss0, true, sigs0, targBranch, k2, epsLimit);
 		if (fabs((epss0 - epsLimit) / d[0]) < 0.5)
 		{
@@ -1183,7 +1179,7 @@ void SmoothIMK::updateAsymptote()
 	}
 	else if (branch == 1010) //failed branch
 	{
-		
+
 		int b = d.size();
 		const double& du = d[b - 1];
 		const double& dr = d[b - 2];
@@ -1196,10 +1192,10 @@ void SmoothIMK::updateAsymptote()
 	{
 		if (branch < d.size() - 1)
 		{
-			epss0 = d[branch];
+			epss0 = gd[branch];
 			sigs0 = f[branch];
 			double d2, f2;
-			d2 = d[branch + 1];
+			d2 = gd[branch + 1];
 			f2 = f[branch + 1];
 			k2 = (f2 - sigs0) / (d2 - epss0);
 			epsLimit = (epss0 + d2) / 2;
@@ -1207,19 +1203,19 @@ void SmoothIMK::updateAsymptote()
 		else if (branch < d.size())
 		{
 			//failing branch
-			epss0 = d[branch];
+			epss0 = gd[branch];
 			sigs0 = f[branch];
-			const double& du = d[branch];
-			const double& dr = d[branch - 1];
+			const double& du = gd[branch];
+			const double& dr = gd[branch - 1];
 			epsLimit = (3 * du - dr) / 2;
-			k2 = (f[branch - 1] - f[branch - 2]) / (d[branch - 1] - d[branch - 2]);
+			k2 = (f[branch - 1] - f[branch - 2]) / (gd[branch - 1] - gd[branch - 2]);
 			Dy = du - f[branch] / k2;
 			if ((isPosDir && Dy < epsLimit) || (!isPosDir && Dy > epsLimit))
 				epsLimit = Dy;
 		}
 	}
 	else {
-		opserr << "ERROR in SmoothIMK::updateAsymptote: unrecognized branch: " << branch <<  endln;
+		opserr << "ERROR in SmoothIMK::updateAsymptote: unrecognized branch: " << branch << endln;
 		exit(-1);
 	}
 	double k1 = (sigs0 - sigr) / (epss0 - epsr);
@@ -1244,23 +1240,32 @@ void SmoothIMK::getEnvelope(double eps, bool onPlusSide, double& targStress, int
 	else {
 		// Interpolate between points
 		for (size_t i = 0; i < n; ++i) {
-			if (fabs(eps) < fabs(dVec[i])) {
+			if (fabs(eps) < fabs(dVec[i]) || fabs((eps - dVec[i]) / dVec[0]) < 0.01) {
 				targBranch = i;
 				double k1 = (fVec[i] - fVec[i - 1]) / (dVec[i] - dVec[i - 1]);
-				if (fabs((eps - dVec[i]) / dVec[0]) < 0.01)
+				k = k1;
+				if (fabs((eps - dVec[i]) / dVec[0]) < 0.01) {
 					//we are on a vertex and need to decide about which side
+					if (i < n)
+						limitEps = (dVec[i] + dVec[i + 1]) / 2;
+					else
+						limitEps = 2*dVec[i];
 					if (onPlusSide && i < n - 1)
 						k = (fVec[i + 1] - fVec[i]) / (dVec[i + 1] - dVec[i]);
+					targStress = fVec[i];
+				}
+				else
+				{
+					double d1 = epss0;
+					if (i > 0)
+						d1 = dVec[i - 1];
+					double tmp = (d1 + dVec[i]) / 2;
+					if (fabs(eps) < fabs(tmp))
+						limitEps = tmp;
 					else
-						k = k1;
-				else
-					k = k1;
-				targStress = fVec[i-1] + (eps - dVec[i-1]) * k1;
-				double tmp = (dVec[i - 1] + dVec[i]) / 2;
-				if (fabs(eps) < fabs(tmp))
-					limitEps = tmp;
-				else
-					limitEps = (dVec[i] + eps) / 2;
+						limitEps = (dVec[i] + eps) / 2;
+					targStress = fVec[i - 1] + (eps - dVec[i - 1]) * k1;
+				}
 				break;
 			}
 		}
