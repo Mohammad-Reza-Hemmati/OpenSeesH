@@ -560,11 +560,6 @@ Concrete02Thermal::getElongTangent(double TempT, double& ET, double& Elong, doub
 	return 0;
 }
 
-
-
-
-
-
 int
 Concrete02Thermal::commitState(void)
 {
@@ -617,7 +612,7 @@ Concrete02Thermal::revertToStart(void)
 int
 Concrete02Thermal::sendSelf(int commitTag, Channel& theChannel)
 {
-	static Vector data(14);
+	static Vector data(18);
 	data(0) = fc;
 	data(1) = epsc0;
 	data(2) = fcu;
@@ -631,7 +626,11 @@ Concrete02Thermal::sendSelf(int commitTag, Channel& theChannel)
 	data(10) = sigP;
 	data(11) = eP;
 	data(12) = this->getTag();
-	data(13) = EnergyP;
+	data(13) = TempP;
+	data(14) = ThermalElongation;
+	data(15) = cooling;
+	data(16) = Tempmax;
+	data(17) = EnergyP;
 	if (theChannel.sendVector(this->getDbTag(), commitTag, data) < 0) {
 		opserr << "Concrete02Thermal::sendSelf() - failed to sendSelf\n";
 		return -1;
@@ -644,7 +643,7 @@ Concrete02Thermal::recvSelf(int commitTag, Channel& theChannel,
 	FEM_ObjectBroker& theBroker)
 {
 
-	static Vector data(14);
+	static Vector data(18);
 
 	if (theChannel.recvVector(this->getDbTag(), commitTag, data) < 0) {
 		opserr << "Concrete02Thermal::recvSelf() - failed to recvSelf\n";
@@ -664,7 +663,12 @@ Concrete02Thermal::recvSelf(int commitTag, Channel& theChannel,
 	sigP = data(10);
 	eP = data(11);
 	this->setTag(data(12));
-	EnergyP = data(13);
+	TempP = data(13);
+	ThermalElongation = data(14);
+	cooling = data(15);
+	Tempmax = data(16);
+	EnergyP = data(17);
+	Temp = TempP;
 	e = eP;
 	sig = sigP;
 	eps = epsP;

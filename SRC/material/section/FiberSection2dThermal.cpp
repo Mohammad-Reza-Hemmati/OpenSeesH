@@ -278,7 +278,7 @@ FiberSection2dThermal::FiberSection2dThermal() :
 	QzBar(0.0), ABar(0.0), yBar(0.0), computeCentroid(true),
 	sectionIntegr(0), e(2), eCommit(2), s(0), ks(0),
 	Fiber_Tangent(0), Fiber_ElongP(0), AverageThermalElong(2),
-	dedh(2), FiberTemperatures(0)
+	dedh(2), FiberTemperatures(0), sT(2)
 {
 	s = new Vector(sData, 2);
 	ks = new Matrix(kData, 2, 2);
@@ -556,7 +556,6 @@ FiberSection2dThermal::getTemperatureStress(const Vector& dataMixed)
 {
 
 	AverageThermalElong.Zero();
-
 	double fiberLocs[10000];
 	double fiberArea[10000];
 	sT.Zero();
@@ -903,6 +902,11 @@ FiberSection2dThermal::sendSelf(int commitTag, Channel& theChannel)
 		for (int j = 0; j < numFibers; j++)
 			theMaterials[j]->sendSelf(commitTag, theChannel);
 
+		//res += theChannel.sendVector(dbTag, commitTag, FiberTemperatures);
+		//if (res < 0) {
+		//	opserr << "FiberSection2dThermal::sendSelf - failed to send FiberTemperatures\n";
+		//	return res;
+		//}
 	}
 
 	return res;
@@ -1020,7 +1024,12 @@ FiberSection2dThermal::recvSelf(int commitTag, Channel& theChannel,
 			theMaterials[i]->setDbTag(dbTag);
 			res += theMaterials[i]->recvSelf(commitTag, theChannel, theBroker);
 		}
-
+		FiberTemperatures.resize(numFibers);
+		//res += theChannel.recvVector(dbTag, commitTag, FiberTemperatures);
+		//if (res < 0) {
+		//	opserr << "FiberSection2dThermal::recvSelf - failed to recv FiberTemperatures\n";
+		//	return res;
+		//}
 		double Qz = 0.0;
 		double A = 0.0;
 		double yLoc, Area;

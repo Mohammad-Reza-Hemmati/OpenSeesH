@@ -1263,27 +1263,30 @@ DispBeamColumn2d::sendSelf(int commitTag, Channel& theChannel)
 			return -1;
 		}
 	}
-#ifdef _CSS
-	ID loadTags(numEleLoads);
-	for (int i = 0; i < numEleLoads; i++)
-		loadTags(i) = eleLoads[i]->getClassTag();
-	int res = theChannel.sendID(this->getDbTag(), commitTag, loadTags);
-	for (int i = 0; i < numEleLoads; i++)
-	{
-		res += eleLoads[i]->sendSelf(commitTag, theChannel);
-	}
-	res += theChannel.sendVector(this->getDbTag(), commitTag, Vector(eleLoadFactors, numEleLoads));
-	if (res < 0) {
-		opserr << "ElasticBeam3d::sendSelf() - could not send eleLoad Data.\n";
-		return res;
-	}
-#endif // _CSS
-
 	// Ask the Damping to send itself
 	if (theDamping && theDamping->sendSelf(commitTag, theChannel) < 0) {
 		opserr << "DispBeamColumn2d::sendSelf -- could not send Damping\n";
 		return -1;
 	}
+#ifdef _CSS
+	if (numEleLoads > 0)
+	{
+		ID loadTags(numEleLoads);
+		for (int i = 0; i < numEleLoads; i++)
+			loadTags(i) = eleLoads[i]->getClassTag();
+		int res = theChannel.sendID(this->getDbTag(), commitTag, loadTags);
+		for (int i = 0; i < numEleLoads; i++)
+		{
+			res += eleLoads[i]->sendSelf(commitTag, theChannel);
+		}
+		res += theChannel.sendVector(this->getDbTag(), commitTag, Vector(eleLoadFactors, numEleLoads));
+		if (res < 0) {
+			opserr << "ElasticBeam3d::sendSelf() - could not send eleLoad Data.\n";
+			return res;
+		}
+	}
+#endif //_CSS
+
 
 	return 0;
 }
@@ -1503,34 +1506,36 @@ DispBeamColumn2d::recvSelf(int commitTag, Channel& theChannel,
 	}
 #ifdef _CSS
 	numEleLoads = data(17);
-	eleLoads = new ElementalLoad * [numEleLoads];
-	eleLoadFactors = new double[numEleLoads];
-	ID loadTags(numEleLoads);
-	int res = theChannel.recvID(this->getDbTag(), commitTag, loadTags);
-
-	for (int i = 0; i < numEleLoads; i++)
+	if (numEleLoads > 0)
 	{
-		int classtag = loadTags(i);
-		switch (classtag)
+		eleLoads = new ElementalLoad * [numEleLoads];
+		eleLoadFactors = new double[numEleLoads];
+		ID loadTags(numEleLoads);
+		int res = theChannel.recvID(this->getDbTag(), commitTag, loadTags);
+		for (int i = 0; i < numEleLoads; i++)
 		{
-		case LOAD_TAG_Beam2dPointLoad:
-			eleLoads[i] = new Beam2dPointLoad();
-			eleLoads[i]->recvSelf(commitTag, theChannel, theBroker);
-			break;
-		case LOAD_TAG_Beam2dUniformLoad:
-			eleLoads[i] = new Beam2dUniformLoad();
-			eleLoads[i]->recvSelf(commitTag, theChannel, theBroker);
-			break;
-		default:
-			opserr << "DispBeamColumn2d::recvSelf(): error reading elemental Load Data\n";
-			break;
+			int classtag = loadTags(i);
+			switch (classtag)
+			{
+			case LOAD_TAG_Beam2dPointLoad:
+				eleLoads[i] = new Beam2dPointLoad();
+				eleLoads[i]->recvSelf(commitTag, theChannel, theBroker);
+				break;
+			case LOAD_TAG_Beam2dUniformLoad:
+				eleLoads[i] = new Beam2dUniformLoad();
+				eleLoads[i]->recvSelf(commitTag, theChannel, theBroker);
+				break;
+			default:
+				opserr << "DispBeamColumn2d::recvSelf(): error reading elemental Load Data\n";
+				break;
+			}
 		}
-	}
-	Vector loadFacs(eleLoadFactors, numEleLoads);
-	res += theChannel.recvVector(this->getDbTag(), commitTag, loadFacs);
-	if (res < 0) {
-		opserr << "DispBeamColumn2d::recvSelf() - error reading elemental Load Data\n";
-		return res;
+		Vector loadFacs(eleLoadFactors, numEleLoads);
+		res += theChannel.recvVector(this->getDbTag(), commitTag, loadFacs);
+		if (res < 0) {
+			opserr << "DispBeamColumn2d::recvSelf() - error reading elemental Load Data\n";
+			return res;
+		}
 	}
 
 #endif // _CSS

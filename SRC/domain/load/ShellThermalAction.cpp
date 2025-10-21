@@ -134,6 +134,19 @@ ShellThermalAction::ShellThermalAction(int tag,
     indicator=3 ;// USing Nodal Thermal Action;
 }
 
+ShellThermalAction::ShellThermalAction()
+  :ElementalLoad(LOAD_TAG_ShellThermalAction),
+  ThermalActionType(LOAD_TAG_NodalThermalAction),theSeries(0) 
+{
+	 for(int i=0 ;i<9;i++) {
+		Temp[i]=0;
+		TempApp[i]=0;
+		Loc[i]=0;
+	}
+	Factors.Zero();
+    indicator=3 ;// USing Nodal Thermal Action;
+}
+
 ShellThermalAction::~ShellThermalAction()
 {
     // if(theSeries!=0)

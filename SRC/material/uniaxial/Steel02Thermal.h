@@ -84,7 +84,6 @@ class Steel02Thermal : public UniaxialMaterial
  private:
    double Energy;
 //JZ 11/10 /////////////////////////////////////////////////////////////start
-   	double Temp;  // material temp
 	//double steps;    //the amount of the steps. 
     double ThermalElongation; // eps(theata) = alpha * temperature 
 	double FyT;

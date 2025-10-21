@@ -106,6 +106,13 @@ NodalThermalAction::NodalThermalAction(int tag, int theNodeTag,
 	
 }
 
+NodalThermalAction::NodalThermalAction()
+  :NodalLoad(LOAD_TAG_NodalThermalAction),theSeries(theSeries),Crds(0),
+  data(25),ThermalActionType(2)  
+{
+
+}
+
 NodalThermalAction::~NodalThermalAction()
 {
   indicator=0;

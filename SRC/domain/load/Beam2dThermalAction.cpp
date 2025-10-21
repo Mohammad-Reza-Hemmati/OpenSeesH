@@ -39,6 +39,7 @@
 #include <Beam2dThermalAction.h>
 #include <Vector.h>
 #include <Element.h>
+#include <Domain.h>
 Vector Beam2dThermalAction::data(0);
 
 Beam2dThermalAction::Beam2dThermalAction(int tag,
@@ -99,7 +100,8 @@ Beam2dThermalAction::Beam2dThermalAction(int tag,
 		Loc[i] = locs(i);
 	}
 
-
+	Temp.resize(locs.Size());
+	TempApp.resize(locs.Size());
 	for (int i = 0; i < locs.Size(); i++) {
 		Temp[i] = 0;
 		TempApp[i] = 0;
@@ -122,6 +124,12 @@ Beam2dThermalAction::Beam2dThermalAction(int tag,
 	indicator = 3;// USing Nodal Thermal Action;
 }
 
+Beam2dThermalAction::Beam2dThermalAction()
+	:ElementalLoad(LOAD_TAG_Beam2dThermalAction), ThermalActionType(LOAD_TAG_NodalThermalAction), theSeries(0)
+{
+	indicator = 3;// USing Nodal Thermal Action;
+}
+
 Beam2dThermalAction::~Beam2dThermalAction()
 {
 	indicator = 0;
@@ -135,9 +143,9 @@ const Vector&
 Beam2dThermalAction::getData(int& type, double loadFactor)
 {
 	type = ThermalActionType;
-	if (data.Size() != 2 * Temp.Size())
-		data.resize(2 * Temp.Size());
-	for (int i = 0; i < Temp.Size(); i++) {
+	if (data.Size() != 2 * TempApp.Size())
+		data.resize(2 * TempApp.Size());
+	for (int i = 0; i < TempApp.Size(); i++) {
 		data(2 * i) = TempApp[i];
 		data(2 * i + 1) = Loc[i];
 	}
@@ -155,13 +163,23 @@ Beam2dThermalAction::applyLoad(const Vector& factors)
 		theElement->addLoad(this, factors(0));
 }
 
+//void Beam2dThermalAction::setDomain(Domain* pDomain)
+//{
+//	theElement = pDomain->getElement(eleTag);
+//	if (theElement == 0)
+//	{
+//		opserr << "Beam2dThermalAction::setDomain() - failed to retrieve element pointer" << endln;
+//	}
+//}
+//
 void
 Beam2dThermalAction::applyLoad(double loadfactor)
 {
 	// first determine the load factor
-	if (indicator == 2) {
-		for (int i = 0; i < Temp.Size(); i++) {
-			Factors = ((PathTimeSeriesThermal*)theSeries)->getFactors(loadfactor);
+	if (indicator == 2 && theSeries != 0) {
+		// theSeries == 0 occurs after recieveSelf where constant tempApp will be used
+		Factors = ((PathTimeSeriesThermal*)theSeries)->getFactors(loadfactor);
+		for (int i = 0; i < TempApp.Size(); i++) {
 			//PathTimeSeriesThermal returns absolute temperature;
 			TempApp[i] = Factors(i);
 		}
@@ -179,14 +197,77 @@ Beam2dThermalAction::applyLoad(double loadfactor)
 int
 Beam2dThermalAction::sendSelf(int commitTag, Channel& theChannel)
 {
-	return -1;
+	// Currently implemented to only support saving database after thermomechanical analysis is complete
+	// Also, only indicator == 2 (timeSeries-dependant temperature) is supported.
+	// However, the following analysis is assumed to constantly use the temp value reached at the end of previou phase.
+	// So, no timeSeries is saved and restored.
+
+	ID idData(5);
+	idData(0) = this->getTag();
+	idData(1) = eleTag;
+	idData(2) = indicator;
+	idData(3) = ThermalActionType;
+	idData(4) = TempApp.Size();
+	int res = theChannel.sendID(this->getDbTag(), commitTag, idData);
+	if (res < 0)
+	{
+		opserr << "Beam2dThermalAction::sendSelf() - failed to send Id data" << endln;
+		return res;
+	}
+	res = theChannel.sendVector(this->getDbTag(), commitTag, TempApp);
+	if (res < 0)
+	{
+		opserr << "Beam2dThermalAction::sendSelf() - failed to send TempApp" << endln;
+		return res;
+	}
+	res = theChannel.sendVector(this->getDbTag(), commitTag, Loc);
+	if (res < 0)
+	{
+		opserr << "Beam2dThermalAction::sendSelf() - failed to send Loc" << endln;
+		return res;
+	}
+	return 0;
 }
 
 int
 Beam2dThermalAction::recvSelf(int commitTag, Channel& theChannel,
 	FEM_ObjectBroker& theBroker)
 {
-	return -1;
+	ID idData(5);
+	int res = theChannel.recvID(this->getDbTag(), commitTag, idData);
+	if (res < 0)
+	{
+		opserr << "Beam2dThermalAction::recvSelf() - failed to recieve data" << endln;
+		return res;
+	}
+	this->setTag(idData(0));
+	eleTag = idData(1);
+	indicator = idData(2);
+	if (indicator != 2)
+	{
+		opserr << "Beam2dThermalAction::recvSelf(): WARNING, Temp data are not sent and recieved and only indicator == 1 is going to work" << endln;
+	}
+	ThermalActionType = idData(3);
+	theElement = 0;
+	TempApp.resize(idData(4));
+	Loc.resize(idData(4));
+	res = theChannel.recvVector(this->getDbTag(), commitTag, TempApp);
+	if (res < 0)
+	{
+		opserr << "Beam2dThermalAction::sendSelf() - failed to recieve TempApp" << endln;
+		return res;
+	}
+	opserr << "tempApp:\n" << TempApp << endln;
+
+	res = theChannel.recvVector(this->getDbTag(), commitTag, Loc);
+	if (res < 0)
+	{
+		opserr << "Beam2dThermalAction::sendSelf() - failed to recieve Loc" << endln;
+		return res;
+	}
+	theSeries = 0;
+	Temp.resize(0);
+	return 0;
 }
 
 // do it later

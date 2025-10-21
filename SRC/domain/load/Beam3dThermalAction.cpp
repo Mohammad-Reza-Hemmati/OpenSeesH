@@ -165,6 +165,12 @@ Beam3dThermalAction::Beam3dThermalAction(int tag,
 
 }
 
+Beam3dThermalAction::Beam3dThermalAction()
+  :ElementalLoad(LOAD_TAG_Beam3dThermalAction),ThermalActionType(LOAD_TAG_NodalThermalAction), theSeries(0)
+{
+	 indicator=3 ;// USing Nodal Thermal Action;
+}
+
 
 
 

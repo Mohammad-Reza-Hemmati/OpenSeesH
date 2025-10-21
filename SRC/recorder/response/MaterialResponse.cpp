@@ -34,9 +34,6 @@
 Information&
 MaterialResponse::getInformation(int respNum)
 {
-	if (respNum == 0) {
-		return myInfo;
-	}
 	return infoList[respNum];
 }
 const Vector& MaterialResponse::getData(void)

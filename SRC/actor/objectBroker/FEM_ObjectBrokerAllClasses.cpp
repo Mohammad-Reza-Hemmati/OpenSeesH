@@ -81,6 +81,7 @@
 #include "Concrete01.h"
 // #include "Concrete01WithSITC.h"
 #include "Concrete02.h"
+#include "Concrete02Thermal.h"
 // #include "Concrete02IS.h"
 #include "Concrete04.h"
 #include "Concrete06.h" 
@@ -94,7 +95,9 @@
 // #include "CreepMaterial.h"
 // #include "OriginCentered.h"
 #include "Steel01.h"
+#include "Steel01Thermal.h"
 #include "Steel02.h"
+#include "Steel02Thermal.h"
 // #include "SteelMPF.h"
 // #include "Steel2.h"
 // #include "Steel4.h"
@@ -593,6 +596,12 @@
 #include "BrickSelfWeight.h"
 #include "SelfWeight.h"
 #include "SurfaceLoader.h"
+#include "Beam2dTempLoad.h"
+#include "Beam2dThermalAction.h"
+#include "Beam3dThermalAction.h"
+#include "ShellThermalAction.h"
+#include "NodalThermalAction.h"
+#include "ThermalActionWrapper.h"
 
 // matrix, vector & id header files
 #include "Matrix.h"
@@ -1332,6 +1341,8 @@ FEM_ObjectBrokerAllClasses::getNewNodalLoad(int classTag)
 	switch (classTag) {
 	case LOAD_TAG_NodalLoad:
 		return new NodalLoad(classTag);
+	case LOAD_TAG_NodalThermalAction:
+		return new NodalThermalAction();
 
 
 	default:
@@ -1369,6 +1380,17 @@ FEM_ObjectBrokerAllClasses::getNewElementalLoad(int classTag)
 
 	case LOAD_TAG_SurfaceLoader:
 		return new SurfaceLoader();
+//thermal
+	case LOAD_TAG_Beam2dTempLoad:
+		return new Beam2dTempLoad();
+	case LOAD_TAG_Beam2dThermalAction:
+		return new Beam2dThermalAction();
+	case LOAD_TAG_Beam3dThermalAction:
+		return new Beam3dThermalAction();
+	case LOAD_TAG_ShellThermalAction:
+		return new ShellThermalAction();
+	case LOAD_TAG_ThermalActionWrapper:
+		return new ThermalActionWrapper();
 
 	default:
 		opserr << "FEM_ObjectBrokerAllClasses::getNewNodalLoad - ";
@@ -1743,6 +1765,8 @@ FEM_ObjectBrokerAllClasses::getNewUniaxialMaterial(int classTag)
 
 	case MAT_TAG_Concrete02:
 		return new Concrete02();
+	case MAT_TAG_Concrete02Thermal:
+		return new Concrete02Thermal();
 
 		//case MAT_TAG_Concrete02IS:  
 		//     return new Concrete02IS();	     
@@ -1782,6 +1806,10 @@ FEM_ObjectBrokerAllClasses::getNewUniaxialMaterial(int classTag)
 
 	case MAT_TAG_Steel02:
 		return new Steel02();
+	case MAT_TAG_Steel01Thermal:
+		return new Steel01Thermal();
+	case MAT_TAG_Steel02Thermal:
+		return new Steel02Thermal();
 
 		//case MAT_TAG_SteelMPF:  
 		//     return new SteelMPF();	     

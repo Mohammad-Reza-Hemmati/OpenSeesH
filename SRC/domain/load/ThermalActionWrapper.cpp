@@ -258,6 +258,12 @@ ThermalActionWrapper::ThermalActionWrapper(int tag, int EleTag,
 		 
 }
 
+ThermalActionWrapper::ThermalActionWrapper()
+  :ElementalLoad(LOAD_TAG_ThermalActionWrapper),ThermalActionType(LOAD_TAG_ThermalActionWrapper), 
+  theRatios(0),NumData(0),ConstLoc(0),Transpoint(0)
+{
+}
+
 
 ThermalActionWrapper::~ThermalActionWrapper()
 {
