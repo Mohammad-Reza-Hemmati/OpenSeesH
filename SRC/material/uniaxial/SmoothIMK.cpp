@@ -42,24 +42,30 @@ void printSyntax()
 {
 	opserr << "------ SmoothIMK unaxialMaterial -------\n";
 	opserr << "-------Syntax:\n";
-	opserr << "-------UniaxialMaterial SmoothIMK $matTag\n";
-	opserr << "									 pd1, pf1, pd2, pf2, pd3, pf3, ...\n";
-	opserr << "                  <-negBackBone nd1, nf1, nd2, nf2, nd3, nf3, ...>\n";
-	opserr << "                  <-sigInit sigInit>\n";
-	opserr << "                  <-gap gap>\n";
-	opserr << "                  <-deterioration gamaS cS gamaK cK>\n";
-	opserr << "                  <-transition r0 <r1 r2>> \n";
-	opserr << "                  <-peakOriented <-stressPenetFacs stressPenetFacPos <stressPenetFacNeg>> <-bilinEndAmp bilinEndAmp> \n";
-	opserr << "                  <-pinched pinchXPos pinchYPos <pinchXNeg pinchYNeg> <-stressPenetFacs stressPenetFacPos <stressPenetFacNeg>> <-bilinEndAmp  bilinEndAmp>> \n";
-	opserr << "                  <-unloadingStiffFactor unloadingStiffFacPos=1 <unloadingStiffFacNeg=1>> \n";
+	opserr << "-------UniaxialMaterial SmoothIMK $matTag,\n";
+	opserr << "				 -posBackBone pd1 pf1 pd2 pf2 pd3 pf3 ... <-gap gap=0>\n";
+	opserr << "        <-negBackBone nd1 nf1 nd2 nf2 nd3 nf3 ... <-gap gap=0>>\n";
+	opserr << "        <-sigInit sigInit>\n";
+	opserr << "        <-deterioration gamaS cS gamaK cK>\n";
+	opserr << "        <-transition r0 r1=26 r2=0.2> \n";
+	opserr << "        <-posCyclic <-bilinEndAmp value=1>\n";
+	opserr << "                   <-peakOriented>\n";
+	opserr << "                   <-pinched alphaPinch pinchY <-nonlin betaPinch=0 epsPinch=1>>\n";
+	opserr << "                   <-unloading unloadingStiffFac <stressPenetFac=0>>\n";
+	opserr << "        >\n";
+	opserr << "        <-negCyclic <-bilinEndAmp value=1>\n";
+	opserr << "                   <-peakOriented>\n";
+	opserr << "                   <-pinched alphaPinch pinchY <-nonlin betaPinch=0 epsPinch=1>>\n";
+	opserr << "                   <-unloading unloadingStiffFac <stressPenetFac=0>>\n";
+	opserr << "        >\n";
 }
-bool findStr(std::vector<const char*> vec, const char* str)
-{
-	for (auto iter = vec.begin(); iter != vec.end(); iter++)
-		if (strcmp(*iter, str) == 0)
-			return true;
-	return false;
-}
+//bool findStr(std::vector<const char*> vec, const char* str)
+//{
+//	for (auto iter = vec.begin(); iter != vec.end(); iter++)
+//		if (strcmp(*iter, str) == 0)
+//			return true;
+//	return false;
+//}
 void*
 OPS_SmoothIMK()
 {
@@ -69,16 +75,16 @@ OPS_SmoothIMK()
 	// Pointer to a uniaxial material that will be returned
 	UniaxialMaterial* theMaterial = 0;
 	// List of recognized option strings for SmoothIMK
-	const std::vector<const char*> smoothIMKOptions = {
-			"-negBackBone",
-			"-sigInit",
-			"-gap",
-			"-deterioration",
-			"-transition",
-			"-peakOriented",
-			"-pinched",
-			"-unloadingStiffFactor"
-	};
+	//const std::vector<const char*> smoothIMKOptions = {
+	//		"-negBackBone",
+	//		"-sigInit",
+	//		"-gap",
+	//		"-deterioration",
+	//		"-transition",
+	//		"-peakOriented",
+	//		"-pinched",
+	//		"-unloadingStiffFactor"
+	//};
 
 	int numData = 1;
 	int tag = 0;
@@ -94,52 +100,66 @@ OPS_SmoothIMK()
 		return 0;
 	}
 	std::vector<double> pf, pd, nf, nd;
-	double bilinEndAmp = 1;
+	double bilinEndAmpPos = 1, bilinEndAmpNeg = 1;
 	double unloadingStiffFacPos = 1, unloadingStiffFacNeg = 1; //default values for unloading stiffness factors
 	//default parameters:
 	double gamaS = 1e6, cS = 1, gamaUE = 1e6, cUE = 1, r0 = 3, r1 = 26, r2 = 0.2, sigInit = 0;
-	double pinchXPos = 0.5, pinchXNeg = 0.5, pinchYPos = 0.2, pinchYNeg = 0.2;
+	double alphaPinchPos = 0, betaPinchPos = 0, epsPinchPos = 1, pinchYPos = 1,
+		alphaPinchNeg = 0, pinchYNeg = 1, betaPinchNeg = 0, epsPinchNeg = 1;
 	double sigPenetFacP = 0, sigPenetFacN = 0;
-	double gap = 0;
-	int rule = 1;
-	bool posBackRead = false;
+	double gapP = 0, gapN = 0;
+	int ruleP = 1, ruleN = 1;
 	const char* option = "";
 	double val;
 	int n = 0;
-	while (OPS_GetDoubleInput(&numData, &val) == 0)
-	{
-		n++;
-		if (n % 2 == 1)
-			pd.push_back(val);
-		else
-			pf.push_back(val);
-	}
-	n = pd.size();
-	if (pf.size() != n)
-	{
-		opserr << "SmoothIMK:: Error: the number of positive force and displacement inputs are not the same for material with tag: " << tag << endln;
-		return 0;
-	}
-	if (n < 2)
-	{
-		opserr << "SmoothIMK:: Error: at least two positive force and displacement inputs are required for material with tag: " << tag << endln;
-		return 0;
-	}
-	for (int i = 0; i < n - 1; i++)
-	{
-		if (pd[i] >= pd[i + 1])
-		{
-			char buf[16];
-			snprintf(buf, sizeof(buf), "pd%d >= pd%d", i, i + 1);
-			opserr << "SmoothIMK:: Error: " << buf << "in material with tag: " << tag << endln;
-			printSyntax();
-			return 0;
-		}
-	}
 	while (OPS_GetNumRemainingInputArgs() > 0)
 	{
 		option = OPS_GetString();
-		if (strcmp(option, "-negBackBone") == 0) {
+		if (strcmp(option, "-posBackBone") == 0) {
+			n = 0;
+			while (OPS_GetDoubleInput(&numData, &val) == 0)
+			{
+				n++;
+				if (n % 2 == 1)
+					pd.push_back(val);
+				else
+					pf.push_back(val);
+			}
+			n = pd.size();
+			if (pf.size() != n)
+			{
+				opserr << "SmoothIMK:: Error: the number of positive force and displacement inputs are not the same for material with tag: " << tag << endln;
+				return 0;
+			}
+			if (n < 2)
+			{
+				opserr << "SmoothIMK:: Error: at least two positive force and displacement inputs are required for material with tag: " << tag << endln;
+				return 0;
+			}
+			for (int i = 0; i < n - 1; i++)
+			{
+				if (pd[i] >= pd[i + 1])
+				{
+					char buf[16];
+					snprintf(buf, sizeof(buf), "pd%d >= pd%d", i, i + 1);
+					opserr << "SmoothIMK:: Error: " << buf << "in material with tag: " << tag << endln;
+					printSyntax();
+					return 0;
+				}
+			}
+			option = OPS_GetString();
+			if (strcmp(option, "-gap") == 0)
+			{
+				if (OPS_GetDoubleInput(&numData, &gapP) != 0) {
+					opserr << "SmoothIMK:: invalid positive gap for material : " << tag << endln;
+					return 0;
+				}
+				gapN = -gapP;
+			}
+			else if (strcmp(option, "Invalid String Input!") != 0)
+				OPS_ResetCurrentInputArg(-1);
+		}
+		else if (strcmp(option, "-negBackBone") == 0) {
 			n = 0;
 			while (OPS_GetDoubleInput(&numData, &val) == 0)
 			{
@@ -171,16 +191,21 @@ OPS_SmoothIMK()
 					return 0;
 				}
 			}
+			option = OPS_GetString();
+			if (strcmp(option, "-gap") == 0)
+			{
+				if (OPS_GetDoubleInput(&numData, &gapN) != 0) {
+					opserr << "SmoothIMK:: invalid negative gap for material : " << tag << endln;
+					return 0;
+				}
+				gapN = -fabs(gapN);
+			}
+			else if (strcmp(option, "Invalid String Input!") != 0)
+				OPS_ResetCurrentInputArg(-1);
 		}
 		else if (strcmp(option, "-sigInit") == 0) {
 			if (OPS_GetDoubleInput(&numData, &sigInit) != 0) {
 				opserr << "SmoothIMK:: invalid sigInit for material : " << tag << endln;
-				return 0;
-			}
-		}
-		else if (strcmp(option, "-gap") == 0) {
-			if (OPS_GetDoubleInput(&numData, &gap) != 0) {
-				opserr << "SmoothIMK:: invalid gap for material : " << tag << endln;
 				return 0;
 			}
 		}
@@ -218,111 +243,136 @@ OPS_SmoothIMK()
 				}
 			}
 		}
-		else if (strcmp(option, "-peakOriented") == 0) {
-			if (rule != 1)
+		else if (strcmp(option, "-posCyclic") == 0)
+		{
+			while (OPS_GetNumRemainingInputArgs() > 0)
 			{
-				const char* ruleStr = rule == 2 ? "PeakOriented" : "Pinched";
-				opserr << "SmoothIMK::command: WARNING, overwriting previously defined " << ruleStr << " cyclic rule with PeakOriented" << endln;
-			}
-			rule = 2;
-			option = OPS_GetString();
-			// Check if option is in smoothIMKOptions list
-			bool isMatOption = findStr(smoothIMKOptions, option);
-			while (strcmp(option, "Invalid String Input!") != 0 && !isMatOption)
-			{
-				if (strcmp(option, "-stressPenetFacs") == 0)
+				option = OPS_GetString();
+				if (strcmp(option, "-peakOriented") == 0)
 				{
-					if (OPS_GetDoubleInput(&numData, &sigPenetFacP) != 0)
-					{
-						opserr << "SmoothIMK:: invalid sigPenetFacP for material : " << tag << endln;
-						return 0;
-					}
-					if (OPS_GetDoubleInput(&numData, &sigPenetFacN) != 0)
-					{
-						//OPS_ResetCurrentInputArg(-1);
-						sigPenetFacN = sigPenetFacP;
-					}
+					ruleP = 2;
+					alphaPinchPos = 0, betaPinchPos = 0, epsPinchPos = 1, pinchYPos = 0;
 				}
 				else if (strcmp(option, "-bilinEndAmp") == 0)
 				{
-					if (OPS_GetDoubleInput(&numData, &bilinEndAmp) != 0)
+					if (OPS_GetDoubleInput(&numData, &bilinEndAmpPos) != 0)
 					{
-						opserr << "SmoothIMK:: invalid bilinEndAmp for material : " << tag << endln;
+						opserr << "SmoothIMK:: invalid positive startAmp for peakOriented rule for material : " << tag << endln;
 						return 0;
 					}
 				}
-				else {
-					opserr << "SmoothIMK:: invalid peakOriented option: " << option << " for material : " << tag << endln;
-					return 0;
-				}
-				option = OPS_GetString();
-				isMatOption = findStr(smoothIMKOptions, option);
-				if (isMatOption)
-					OPS_ResetCurrentInputArg(-1);
-			}
-		}
-		else if (strcmp(option, "-unloadingStiffFactor") == 0) {
-			if (OPS_GetDoubleInput(&numData, &unloadingStiffFacPos) != 0) {
-				opserr << "SmoothIMK:: invalid sigPenetFacPos for material : " << tag << endln;
-				return 0;
-			}
-			if (OPS_GetDoubleInput(&numData, &unloadingStiffFacNeg) != 0) {
-				unloadingStiffFacNeg = unloadingStiffFacPos; //default value
-			}
-		}
-		else if (strcmp(option, "-pinched") == 0) {
-			if (rule != 1)
-			{
-				const char* ruleStr = rule == 2 ? "PeakOriented" : "Pinched";
-				opserr << "SmoothIMK::command: WARNING, overwriting previously defined " << ruleStr << " cyclic rule with Pinched" << endln;
-			}
-			rule = 3;
-			if (OPS_GetDoubleInput(&numData, &pinchXPos) != 0) {
-				opserr << "SmoothIMK:: invalid pinchXPos for material : " << tag << endln;
-				return 0;
-			}
-			if (OPS_GetDoubleInput(&numData, &pinchYPos) != 0) {
-				opserr << "SmoothIMK:: invalid pinchYPos for material : " << tag << endln;
-				return 0;
-			}
-			pinchXNeg = pinchXPos;
-			pinchYNeg = pinchYPos;
-			if (OPS_GetDoubleInput(&numData, &pinchXNeg) == 0)
-				OPS_GetDoubleInput(&numData, &pinchYNeg);
-			option = OPS_GetString();
-			// Check if option is in smoothIMKOptions list
-			bool isMatOption = findStr(smoothIMKOptions, option);
-			while (strcmp(option, "Invalid String Input!") != 0 && !isMatOption)
-			{
-				if (strcmp(option, "-stressPenetFacs") == 0)
+				else if (strcmp(option, "-unloading") == 0)
 				{
-					if (OPS_GetDoubleInput(&numData, &sigPenetFacP) != 0)
+					if (OPS_GetDoubleInput(&numData, &unloadingStiffFacPos) != 0)
 					{
-						opserr << "SmoothIMK:: invalid sigPenetFacP for material : " << tag << endln;
+						opserr << "SmoothIMK:: invalid positive unloading stiffness factor for material: " << tag << endln;
 						return 0;
 					}
-					if (OPS_GetDoubleInput(&numData, &sigPenetFacN) != 0)
+					OPS_GetDoubleInput(&numData, &sigPenetFacP);
+				}
+				else if (strcmp(option, "-pinched") == 0)
+				{
+					ruleP = 3;
+					if (OPS_GetDoubleInput(&numData, &alphaPinchPos) != 0)
 					{
-						//OPS_ResetCurrentInputArg(-1);
-						sigPenetFacN = sigPenetFacP;
+						opserr << "SmoothIMK:: invalid positive pinching alpha for material : " << tag << endln;
+						return 0;
 					}
+					if (OPS_GetDoubleInput(&numData, &pinchYPos) != 0)
+					{
+						opserr << "SmoothIMK:: invalid positive stress pinching factor for material : " << tag << endln;
+						return 0;
+					}
+					option = OPS_GetString();
+					betaPinchPos = 0, epsPinchPos = 1;
+					if (strcmp(option, "-nonlin") == 0)
+					{
+						if (OPS_GetDoubleInput(&numData, &betaPinchPos) != 0)
+						{
+							opserr << "SmoothIMK:: invalid positive pinching factor power for material : " << tag << endln;
+							return 0;
+						}
+						if (OPS_GetDoubleInput(&numData, &epsPinchPos) != 0)
+						{
+							opserr << "SmoothIMK:: invalid positive pinching power normalizer for material : " << tag << endln;
+							return 0;
+						}
+					}
+					else if (strcmp(option, "Invalid String Input!") != 0)
+						OPS_ResetCurrentInputArg(-1);
+				}
+				else
+				{
+					if (strcmp(option, "Invalid String Input!") != 0)
+						OPS_ResetCurrentInputArg(-1);
+					break;
+				}
+			}
+		}
+		else if (strcmp(option, "-negCyclic") == 0)
+		{
+			while (OPS_GetNumRemainingInputArgs() > 0)
+			{
+				option = OPS_GetString();
+				if (strcmp(option, "-peakOriented") == 0)
+				{
+					ruleN = 2;
+					alphaPinchNeg = 0, betaPinchNeg = 0, epsPinchNeg = 1, pinchYNeg = 0;
 				}
 				else if (strcmp(option, "-bilinEndAmp") == 0)
 				{
-					if (OPS_GetDoubleInput(&numData, &bilinEndAmp) != 0)
+					if (OPS_GetDoubleInput(&numData, &bilinEndAmpNeg) != 0)
 					{
-						opserr << "SmoothIMK:: invalid bilinEndAmp for material : " << tag << endln;
+						opserr << "SmoothIMK:: invalid negative startAmp for peakOriented rule for material : " << tag << endln;
 						return 0;
 					}
 				}
-				else {
-					opserr << "SmoothIMK:: invalid pinched option: " << option << " for material : " << tag << endln;
-					return 0;
+				else if (strcmp(option, "-unloading") == 0)
+				{
+					if (OPS_GetDoubleInput(&numData, &unloadingStiffFacNeg) != 0)
+					{
+						opserr << "SmoothIMK:: invalid negative unloading stiffness factor for material: " << tag << endln;
+						return 0;
+					}
+					OPS_GetDoubleInput(&numData, &sigPenetFacN);
 				}
-				option = OPS_GetString();
-				isMatOption = findStr(smoothIMKOptions, option);
-				if (isMatOption)
-					OPS_ResetCurrentInputArg(-1);
+				else if (strcmp(option, "-pinched") == 0)
+				{
+					ruleN = 3;
+					if (OPS_GetDoubleInput(&numData, &alphaPinchNeg) != 0)
+					{
+						opserr << "SmoothIMK:: invalid negative pinching alpha for material : " << tag << endln;
+						return 0;
+					}
+					if (OPS_GetDoubleInput(&numData, &pinchYNeg) != 0)
+					{
+						opserr << "SmoothIMK:: invalid negative stress pinching factor for material : " << tag << endln;
+						return 0;
+					}
+					option = OPS_GetString();
+					betaPinchNeg = 0, epsPinchNeg = 1;
+					if (strcmp(option, "-nonlin") == 0)
+					{
+						if (OPS_GetDoubleInput(&numData, &betaPinchNeg) != 0)
+						{
+							opserr << "SmoothIMK:: invalid negative pinching factor power for material : " << tag << endln;
+							return 0;
+						}
+						if (OPS_GetDoubleInput(&numData, &epsPinchNeg) != 0)
+						{
+							opserr << "SmoothIMK:: invalid negative pinching power normalizer for material : " << tag << endln;
+							return 0;
+						}
+					}
+					else if (strcmp(option, "Invalid String Input!") != 0)
+						OPS_ResetCurrentInputArg(-1);
+				}
+				else
+				{
+					if (strcmp(option, "Invalid String Input!") != 0)
+						OPS_ResetCurrentInputArg(-1);
+					break;
+				}
 			}
 		}
 		else {
@@ -353,8 +403,9 @@ OPS_SmoothIMK()
 	}
 	// Parsing was successful, allocate the material
 	theMaterial = new SmoothIMK(tag, pd, pf, nd, nf,
-		gamaS, cS, gamaUE, cUE, r0, r1, r2, rule, pinchXPos, pinchYPos, sigPenetFacP,
-		pinchXNeg, pinchYNeg, sigPenetFacN, unloadingStiffFacPos, unloadingStiffFacNeg, sigInit, gap, bilinEndAmp);
+		gamaS, cS, gamaUE, cUE, r0, r1, r2,
+		ruleP, gapP, alphaPinchPos, pinchYPos, betaPinchPos, epsPinchPos, sigPenetFacP, bilinEndAmpPos, unloadingStiffFacPos,
+		ruleN, gapN, alphaPinchNeg, pinchYNeg, betaPinchNeg, epsPinchNeg, sigPenetFacN, bilinEndAmpNeg, unloadingStiffFacNeg, sigInit);
 
 
 	if (theMaterial == 0) {
@@ -371,23 +422,22 @@ SmoothIMK::SmoothIMK(int tag,
 	double _gamaS, double _cS,
 	double _gamaUE, double _cUE,
 	double _r0, double _r1, double _r2,
-	int _cyclicRule,
-	double _pinchXPos, double _pinchYPos, double _sigPenetFacP,
-	double _pinchXNeg, double _pinchYNeg, double _sigPenetFacN,
-	double _unloadingStiffFacPos, double _unloadingStiffFacNeg,
-	double sigInit, double _gap, double _bilinEndAmp) :
+	int _cyclicRuleP, double _gapP, double _alphaPinchPos, double _pinchYPos,
+	double _betaPinchPos, double _epsPinchPos, double _sigPenetFacPos, double _bilinEndAmpPos, double _unloadingStiffFacPos,
+	int _cyclicRuleN, double _gapN, double _alphaPinchNeg, double _pinchYNeg,
+	double _betaPinchNeg, double _epsPinchNeg, double _sigPenetFacNeg, double _bilinEndAmpNeg, double _unloadingStiffFacNeg,
+	double sigInit) :
 	UniaxialMaterial(tag, MAT_TAG_SmoothIMK),
 	pd(_pd), pf(_pf),
 	nd(_nd), nf(_nf),
 	cS(_cS), FailEnergS(_gamaS* pf[0] * pd[0]),
 	cUnloadE(_cUE), FailEnergUnloadE(_gamaUE* pf[0] * pd[0]),
 	r0(_r0), r1(_r1), r2(_r2),
-	cyclicRule(_cyclicRule),
-	pinchXPos(_pinchXPos), pinchYPos(_pinchYPos),
-	pinchXNeg(_pinchXNeg), pinchYNeg(_pinchYNeg),
-	sigPenetFacP(_sigPenetFacP), sigPenetFacN(_sigPenetFacN),
-	unloadingStiffFacPos(_unloadingStiffFacPos), unloadingStiffFacNeg(_unloadingStiffFacNeg),
-	sigini(sigInit), gap(_gap), bilinEndAmp(_bilinEndAmp)
+	cyclicRuleP(_cyclicRuleP), gapP(_gapP), alphaPinchPos(_alphaPinchPos), pinchYPos(_pinchYPos),
+	betaPinchPos(_betaPinchPos), epsPinchPos(_epsPinchPos), sigPenetFacP(_sigPenetFacPos), bilinEndAmpP(_bilinEndAmpPos), unloadingStiffFacPos(_unloadingStiffFacPos),
+	cyclicRuleN(_cyclicRuleN), gapN(_gapN), alphaPinchNeg(_alphaPinchNeg), pinchYNeg(_pinchYNeg),
+	betaPinchNeg(_betaPinchNeg), epsPinchNeg(_epsPinchNeg), sigPenetFacN(_sigPenetFacNeg), bilinEndAmpN(_bilinEndAmpNeg), unloadingStiffFacNeg(_unloadingStiffFacNeg),
+	sigini(sigInit)
 {
 	FyIndP = 0; // Index of the first positive force in the backbone
 	FyIndN = 0; // Index of the first negative force in the backbone
@@ -402,10 +452,10 @@ SmoothIMK::SmoothIMK(int tag,
 		FrIndP = -1;
 	}
 	else {
-		it = std::min_element(pf.begin(), pf.end());
+		it = std::min_element(pf.begin() + 1, pf.end());
 		FrIndP = std::distance(pf.begin(), it);
 		if (it == pf.end() - 1) {
-			if (fabs((pf[FrIndP] - pf[FrIndP - 1]) / pf[FrIndP]) > 0.01)
+			if (fabs((pf[FrIndP] - pf[FrIndP - 1]) / pf[FrIndP]) > 0.015)
 			{
 				//flat end line not detected; du should be computed by extrapolating the end line
 				double du = pd[FrIndP] + (pd[FrIndP] - pd[FrIndP - 1]) / (pf[FrIndP] - pf[FrIndP - 1]) * (0 - pf[FrIndP]);
@@ -420,11 +470,14 @@ SmoothIMK::SmoothIMK(int tag,
 			double min = *it;
 			it++;
 			for (; it < pf.end(); it++)
+			{
 				if (fabs((*it - min) / min) > 0.01)
 				{
-					opserr << "SmoothIMK:: Error (tag = " << tag << "): the positive backbone increase by more than 1% after descending!\n";
+					opserr << "SmoothIMK:: Error the positive backbone increase by more than 1 percent after descending: tag = " << tag << endln;
 					exit(-1);
 				}
+				*it = 0.99 * min;	//apply small increase in post-residual strength to prevent zero slope
+			}
 		}
 	}
 	// Find the index of the Fc and Fr values in nf
@@ -436,10 +489,10 @@ SmoothIMK::SmoothIMK(int tag,
 		FrIndN = -1;
 	}
 	else {
-		it = max_element(nf.begin(), nf.end());
+		it = max_element(nf.begin() + 1, nf.end());
 		FrIndN = std::distance(nf.begin(), it);
 		if (it == nf.end() - 1) {
-			if (fabs((nf[FrIndN] - nf[FrIndN - 1]) / nf[FrIndN]) > 0.01)
+			if (fabs((nf[FrIndN] - nf[FrIndN - 1]) / nf[FrIndN]) > 0.015)
 			{
 				//flat end line not detected; du should be computed by extrapolating the end line
 				double du = nd[FrIndN] + (nd[FrIndN] - nd[FrIndN - 1]) / (nf[FrIndN] - nf[FrIndN - 1]) * (0 - nf[FrIndN]);
@@ -454,23 +507,21 @@ SmoothIMK::SmoothIMK(int tag,
 			double max = *it;
 			it++;
 			for (; it < nf.end(); it++)
+			{
 				if (fabs((*it - max) / max) > 0.01)
 				{
-					opserr << "SmoothIMK:: Error (tag = " << tag << "): the negative backbone increase by more than 1% after descending!\n";
+					opserr << "SmoothIMK:: Error (tag = " << tag << " ) the negative backbone increase by more than 1 percent after descending!" << endln;
 					exit(-1);
 				}
+				*it = 0.99 * max;	//apply small increase in post-residual strength to prevent zero slope
+			}
 		}
 	}
 	revertToStart();
 }
 
 SmoothIMK::SmoothIMK(void) :
-	UniaxialMaterial(0, MAT_TAG_SmoothIMK),
-	cS(0), FailEnergS(0),
-	cUnloadE(0), FailEnergUnloadE(0),
-	r0(0), r1(0), r2(0),
-	cyclicRule(1),
-	sigini(0)
+	UniaxialMaterial(0, MAT_TAG_SmoothIMK)
 {
 }
 
@@ -482,8 +533,11 @@ SmoothIMK::~SmoothIMK(void)
 UniaxialMaterial*
 SmoothIMK::getCopy(void)
 {
-	SmoothIMK* theCopy = new SmoothIMK(this->getTag(), pd, pf, nd, nf, FailEnergS / pf[0] / pd[0], cS, FailEnergUnloadE / pf[0] / pd[0], cUnloadE, r0, r1, r2, cyclicRule,
-		pinchXPos, pinchYPos, sigPenetFacP, pinchXNeg, pinchYNeg, sigPenetFacN, unloadingStiffFacPos, unloadingStiffFacNeg, sigini, gap, bilinEndAmp);
+	SmoothIMK* theCopy = new SmoothIMK(this->getTag(), pd, pf, nd, nf, FailEnergS / pf[0] / pd[0], cS, FailEnergUnloadE / pf[0] / pd[0],
+		cUnloadE, r0, r1, r2,
+		cyclicRuleP, gapP, alphaPinchPos, pinchYPos, betaPinchPos, epsPinchPos, sigPenetFacP, bilinEndAmpP, unloadingStiffFacPos,
+		cyclicRuleN, gapN, alphaPinchNeg, pinchYNeg, betaPinchNeg, epsPinchNeg, sigPenetFacN, bilinEndAmpN, unloadingStiffFacNeg,
+		sigini);
 	theCopy->revertToStart();
 	return theCopy;
 }
@@ -574,9 +628,6 @@ SmoothIMK::revertToStart(void)
 	EnergyP = 0;	//by SAJalali
 	fpDmgd = pf;
 	fnDmgd = nf;
-	gpd = pd;
-	gnd = nd;
-	// Copy pd to gpd and nd to gnd
 	E0p = pf[0] / pd[0];
 	E0n = nf[0] / nd[0];
 	e = eP = E0p;
@@ -603,6 +654,22 @@ SmoothIMK::revertToStart(void)
 	ExcurEnergy = 0;
 	slopeRat = slopeRatP = 0;
 	initiated = initiatedP = false;
+	// Copy pd to gpd and nd to gnd
+	gpd = pd;
+	gnd = nd;
+	if (gapP > 0.001 * pd[0] || gapN < 0.001 * nd[0])
+	{
+		branchP = 10010; // gapped loading;
+		for (size_t i = 0; i < pd.size(); ++i) {
+			gpd[i] += gapP;
+		}
+		epsmax = gpd[0];
+		for (size_t i = 0; i < nd.size(); ++i) {
+			gnd[i] += gapN;
+		}
+		epsmin = gnd[0];
+	}
+
 	return 0;
 }
 
@@ -611,7 +678,7 @@ SmoothIMK::sendSelf(int commitTag, Channel& theChannel)
 {
 	int numPData = pd.size();
 	int numNData = nd.size();
-	static Vector data(41 + (numPData + numNData) * 2);// 40 is the number of fixed data members
+	static Vector data(49 + (numPData + numNData) * 2);// 47 is the number of fixed data members
 	int n = -1;
 	data(n++) = numPData;	// size of the data vector
 	data(n++) = numNData;	// size of the data vector
@@ -624,11 +691,15 @@ SmoothIMK::sendSelf(int commitTag, Channel& theChannel)
 		data(n++) = nd[i];
 		data(n++) = nf[i];
 	}
-	data(n++) = pinchXPos;
+	data(n++) = alphaPinchPos;
 	data(n++) = pinchYPos;
+	data(n++) = betaPinchPos;
+	data(n++) = epsPinchPos;
 	data(n++) = sigPenetFacP;
-	data(n++) = pinchXNeg;
+	data(n++) = alphaPinchNeg;
 	data(n++) = pinchYNeg;
+	data(n++) = betaPinchNeg;
+	data(n++) = epsPinchNeg;
 	data(n++) = sigPenetFacN;
 	data(n++) = FailEnergS;
 	data(n++) = cS;
@@ -660,8 +731,12 @@ SmoothIMK::sendSelf(int commitTag, Channel& theChannel)
 	data(n++) = onEnvelopeP;
 	data(n++) = initiatedP;
 	data(n++) = R0P;
-	data(n++) = gap;
-	data(n++) = bilinEndAmp;
+	data(n++) = gapP;
+	data(n++) = gapN;
+	data(n++) = bilinEndAmpP;
+	data(n++) = bilinEndAmpN;
+	data(n++) = cyclicRuleP;
+	data(n++) = cyclicRuleN;
 
 	if (theChannel.sendVector(this->getDbTag(), commitTag, data) < 0) {
 		opserr << "SmoothIMK::sendSelf() - failed to sendSelf\n";
@@ -674,7 +749,7 @@ int
 SmoothIMK::recvSelf(int commitTag, Channel& theChannel,
 	FEM_ObjectBroker& theBroker)
 {
-	static Vector data(81);	//assuming 41 fixed data members plus 20 positive and negative backbone data
+	static Vector data(69);	//assuming 45 fixed data members plus 20 positive and negative backbone data
 
 	if (theChannel.recvVector(this->getDbTag(), commitTag, data) < 0) {
 		opserr << "SmoothIMK::recvSelf() - failed to recvSelf\n";
@@ -701,11 +776,15 @@ SmoothIMK::recvSelf(int commitTag, Channel& theChannel,
 		nd.push_back(data(n++));
 		nf.push_back(data(n++));
 	}
-	pinchXPos = data(n++);
+	alphaPinchPos = data(n++);
 	pinchYPos = data(n++);
+	betaPinchPos = data(n++);
+	epsPinchPos = data(n++);
 	sigPenetFacP = data(n++);
-	pinchXNeg = data(n++);
+	alphaPinchNeg = data(n++);
 	pinchYNeg = data(n++);
+	betaPinchNeg = data(n++);
+	epsPinchNeg = data(n++);
 	sigPenetFacN = data(n++);
 	FailEnergS = data(n++);
 	cS = data(n++);
@@ -736,9 +815,13 @@ SmoothIMK::recvSelf(int commitTag, Channel& theChannel,
 	slopeRatP = data(n++);
 	onEnvelopeP = data(n++);
 	initiatedP = data(n++);
-	R0P = data(n++); //49
-	gap = data(n++);
-	bilinEndAmp = data(n++);
+	R0P = data(n++);
+	gapP = data(n++);
+	gapN = data(n++);
+	bilinEndAmpP = data(n++);
+	bilinEndAmpN = data(n++);
+	cyclicRuleP = data(n++);
+	cyclicRuleN = data(n++);
 	e = eP;
 	sig = sigP;
 	eps = epsP;
@@ -819,13 +902,14 @@ void SmoothIMK::updateDamage()
 			if (ExcurEnergy < 0) ExcurEnergy = 0.;
 			if (branch == pd.size() - 1)
 			{
+				// we are on residual branch
 				FyIndP = FrIndP;
 				FcIndP = FrIndP;
 			}
-			else if (branch == pd.size())
+			else if (branch < 1000 && branch >= pd.size())
 			{
 				FyIndP = -1;
-				FcIndP = FrIndP;
+				FcIndP = -1;
 			}
 			else
 			{
@@ -839,10 +923,11 @@ void SmoothIMK::updateDamage()
 					opserr << "\nSmoothIMK:" << this->getTag() << " WARNING! Complete Strength loss\n" << endln;
 					beta = 0.9999;
 				}
+				double Fr = FrIndP != -1 ? pf[FrIndP] : 0.00001*pf[0];
+				double Fr_ = 0;
 				for (size_t i = 0; i < FrIndP; ++i) {
-					fpDmgd[i] = (1. - beta) * fpDmgd[i];
-					if (FrIndP != -1)
-						fpDmgd[i] += beta * pf[FrIndP] / pf[0] * fpDmgd[i];
+					Fr_ = pf[i] / pf[0] * Fr;
+					fpDmgd[i] = (1. - beta) * (fpDmgd[i] - Fr_) + Fr_;
 				}
 				//FrP = FcP - pf2 + pf3;
 				//if (FrP < 0)
@@ -873,10 +958,10 @@ void SmoothIMK::updateDamage()
 				FyIndN = FrIndN;
 				FcIndN = FrIndN;
 			}
-			else if (branch == pd.size())
+			else if (branch < 1000 && branch >= pd.size())
 			{
 				FyIndN = -1;
-				FcIndN = FrIndN;
+				FcIndN = -1;
 			}
 			else {
 				double beta = 0;
@@ -889,10 +974,11 @@ void SmoothIMK::updateDamage()
 					opserr << "\nSmoothIMK:" << this->getTag() << " WARNING! Complete Strength loss\n" << endln;
 					beta = 0.999;
 				}
+				double Fr = FrIndN != -1 ? nf[FrIndN] : 0.00001 * nf[0];
+				double Fr_ = 0;
 				for (size_t i = 0; i < FrIndN; ++i) {
-					fnDmgd[i] = (1. - beta) * fnDmgd[i];
-					if (FrIndN != -1)
-						fnDmgd[i] += beta * nf[FrIndN] / nf[0] * fnDmgd[i];
+					Fr_ = nf[i] / nf[0] * Fr;
+					fnDmgd[i] = (1. - beta) * (fnDmgd[i] - Fr_) + Fr_;
 				}
 				//FrN = FcN - nf2 + nf3;
 				//if (FrN > 0)
@@ -906,7 +992,7 @@ void SmoothIMK::updateDamage()
 					opserr << "\nSmoothIMK:" << this->getTag() << " WARNING! Complete Unloading Stiffness loss\n" << endln;
 					beta = 0.9999;
 				}
-				EunloadN = (1. - beta) * EunloadN;
+				EunloadN *= (1. - beta);
 			}
 		}
 		ExcurEnergy = 0.0;
@@ -929,22 +1015,6 @@ int SmoothIMK::setTrialStrain(double trialStrain, double strainRate)
 	if (!initiated) // handle start in negative direction
 	{
 		isPosDir = (deps > 0);
-		if (gap > 0.001 * pd[0])
-		{
-			onEnvelope = true; //allow the next branch to follow the bilin method
-			branch = 10011; // gapped loading;
-			//assuming positive initial loading
-			for (size_t i = 0; i < pd.size(); ++i) {
-				gpd[i] = pd[i] + gap / 2;
-			}
-			epsmax = gpd[0];
-			e = 0.001 * pf[0] / gap * 2;
-			for (size_t i = 0; i < nd.size(); ++i) {
-				gnd[i] = nd[i] - gap / 2;
-			}
-			epsmin = gnd[0];
-			e = 0.001 * nf[0] / gap * 2;
-		}
 		initiated = true;
 		updateAsymptote();
 	}
@@ -993,17 +1063,21 @@ int SmoothIMK::setTrialStrain(double trialStrain, double strainRate)
 
 void SmoothIMK::changeBranch(bool isReturning)
 {
+	bool shouldPinch = (
+		(isPosDir && fabs(epsPl - epsmax) / pd[0] >= bilinEndAmpP) ||
+		(!isPosDir && fabs(epsPl - epsmin) / nd[0] <= -bilinEndAmpN)
+		);
 	if (onEnvelope)
 	{
-		branch = nextBranch(branch);
+		branch = nextBranch(branch, shouldPinch);
 		return;
 	}
-	bool shouldPinch = (
-		(isPosDir && fabs(epsPl - epsmax) / pd[0] >= bilinEndAmp) ||
-		(!isPosDir && fabs(epsPl - epsmin) / nd[0] <= -bilinEndAmp)
-		);
 	//unloading:
-	if (gap > 0.001 * pd[0] && !isReturning)
+	int& cyclicRule = isPosDir ? cyclicRuleP : cyclicRuleN;
+	double& gap = isPosDir ? gapP : gapN;
+	std::vector<double>& d = isPosDir ? pd : nd;
+	bool hasGap = isPosDir ? gap > 0.001 * d[0] : gap < 0.001 * d[0];
+	if (hasGap && !isReturning)
 	{
 		if (cyclicRule == 3 && shouldPinch)
 			branch = 1003;
@@ -1011,27 +1085,26 @@ void SmoothIMK::changeBranch(bool isReturning)
 			branch = 10012;
 		return;
 	}
-	branch = cyclicRule == 1 || !shouldPinch ? 0 : cyclicRule == 2 ? 1002 : 1003;
+	branch = cyclicRule == 1 || !shouldPinch ? 0 : cyclicRule == 2 ? 1006 : 1003;
 }
 
-int SmoothIMK::nextBranch(int branch)
+int SmoothIMK::nextBranch(int branch, bool shouldPinch)
 {
 	const double& epsPeak = isPosDir ? epsmax : epsmin;
 	const std::vector<double>& d = isPosDir ? pd : nd;
-	if (branch == 10011)
+	int cyclicRule = isPosDir ? cyclicRuleP : cyclicRuleN;
+	if (branch == 10010 || branch == 10011)
 		return 0;
 	else if (branch == 10012)
 	{
-		if (cyclicRule == 1)
+		if (cyclicRule == 1 || !shouldPinch)
 			return 10011;
 		return 1002;
 	}
-	else if (branch == 1002)
+	else if (branch == 1002 || branch == 1004 || branch == 1006)
 		return 1005;
 	else if (branch == 1003)
 		return 1004;
-	else if (branch == 1004)
-		return 1005;
 	else if (branch == 1005)
 	{
 		double tmp;
@@ -1054,27 +1127,35 @@ void SmoothIMK::updateAsymptote()
 	const std::vector<double>& f = isPosDir ? fpDmgd : fnDmgd;
 	const int& FyInd = isPosDir ? FyIndP : FyIndN;
 	const int& FcInd = isPosDir ? FcIndP : FcIndN;
-	const double Esh = FyInd == -1 ? 0 : (f[FyInd + 1] - f[FyInd]) / (gd[FyInd + 1] - gd[FyInd]);
-	const double& Fy = FyInd == -1 ? 0 : f[FyInd];
+	const int& FrInd = isPosDir ? FrIndP : FrIndN;
+	const double& E1 = isPosDir ? E0p : E0n;
+	const double Esh = FyInd == -1 ? 0.001*E1 : (f[FyInd + 1] - f[FyInd]) / (gd[FyInd + 1] - gd[FyInd]);
+	const double& Fy = FyInd == -1 ? 0.001*f[0] : f[FyInd];
 	const double& dy = gd[0];
 	const double& dc = gd[FcInd];
-	const double& E1 = isPosDir ? E0p : E0n;
 	const double& E2 = isPosDir ? (sigP < -0.001 * Fy ? EunloadN : E0p) : (sigP > 0.001 * Fy ? EunloadP : E0n);
 	const double& Eunload = isPosDir ? EunloadN : EunloadP;
-	const double gapD = isPosDir ? gap / 2 : -gap / 2;
+	const double& gapD = isPosDir ? gapP : gapN;
+	const double  gap = (gapP - gapN)/2; // sum abs values by 2
 	const double& epsPeak = isPosDir ? epsmax : epsmin;
 	const double& sigPenetFac = isPosDir ? sigPenetFacP : sigPenetFacN;
-	const double pinchX = isPosDir ? pinchXPos : pinchXNeg;
-	const double pinchY = isPosDir ? pinchYPos : pinchYNeg;
+	const double& alphaPinch = isPosDir ? alphaPinchPos : alphaPinchNeg;
+	const double& pinchY = isPosDir ? pinchYPos : pinchYNeg;
+	const double& betaPinch = isPosDir ? betaPinchPos : betaPinchNeg;
+	const double& epsPinch = isPosDir ? epsPinchPos : epsPinchNeg;
+	bool shouldPinch = (
+		(isPosDir && fabs(epsPl - epsmax) / pd[0] >= bilinEndAmpP) ||
+		(!isPosDir && fabs(epsPl - epsmin) / nd[0] <= -bilinEndAmpN)
+		);
 	epsr = epsP;
 	sigr = sigP;
 	double k2 = 0;
 	double Dy = 0;
-	if (branch == 10011) // epsPl+gapD to yield
+	if (branch == 10010 || branch == 10011) // epsPl+gapD to yield
 	{
 		//gapped loading
-		epss0 = epsPl + gapD;
-		sigs0 = 0.001 * Fy;
+		epss0 = epsPl + (branch == 10010 ? gapD : gap * 2);
+		sigs0 = (branch == 10010 ? 0.001 : 0.002) * Fy;
 		Dy = (Fy - Esh * dy - sigs0 + E2 * epss0) / (E2 - Esh);
 		epsLimit = (epss0 + Dy) / 2;
 		k2 = E1;
@@ -1082,15 +1163,15 @@ void SmoothIMK::updateAsymptote()
 	else if (branch == 10012) // epsPl to epsPl+gapD
 	{
 		//gapped unloading
-		sigs0 = 0.001 * Fy;
+		sigs0 = 0.00001 * Fy;
 		if (fabs(epsPl - epsr) < 0.01 * fabs(d[0]))
-		{ // unloading within gap should be skipped
-			branch = nextBranch(10012);
+		{ // unloading from gap should be skipped
+			branch = nextBranch(10012, shouldPinch);
 			return updateAsymptote();
 		}
 		epss0 = epsPl;
-		epsLimit = epss0 + gapD / 2;
-		k2 = 0.001 * Fy / (gapD / 2);
+		epsLimit = epss0 + gap;
+		k2 = 0.001 * Fy / gap;
 	}
 	else if (branch == 0) // yield to 1
 	{
@@ -1105,18 +1186,25 @@ void SmoothIMK::updateAsymptote()
 		epsLimit = epss0 + (gd[1] - gd[0]) / 2;
 		k2 = Esh;
 	}
-	else if (branch == 1002) // epsPl+gapD to peak
+	else if (branch == 1002 || branch == 1006) // epsPl+gapD to peak
 	{
-		epss0 = epsPl;
-		sigs0 = 0.001 * Fy;
+		if (branch == 1002)
+		{
+			epss0 = epsPl + 2 * gap;
+			sigs0 = 0.002 * Fy;
+		}
+		else { //1006
+			epss0 = epsPl;
+			sigs0 = (sigPenetFac > 0.00001 ? sigPenetFac : 0.00001) * Fy;
+		}
 		epsLimit = (epss0 + epsPeak) / 2;
 		double sigmax;
 		int targBranch;
 		double tmp, nextLimit, nextEps = epsPeak;
 		getEnvelope(epsPeak, false, sigmax, targBranch, tmp, nextLimit);
-		if (fabs((epsPeak - nextLimit) / d[0]) < 0.5)
+		if (fabs((epsPeak - nextLimit) / d[0]) < 0.1	)
 		{
-			targBranch = nextBranch(1005);
+			targBranch = nextBranch(1005, shouldPinch);
 			if (targBranch < gd.size())
 			{
 				nextEps = gd[targBranch];
@@ -1129,31 +1217,37 @@ void SmoothIMK::updateAsymptote()
 		}
 		k2 = (sigmax - sigs0) / (nextEps - epss0);
 	}
-	else if (branch == 1003) // epsPl to epsPl+gapD+pinchX
+	else if (branch == 1003) // epsPl to epsPl+gapD+alphaPinch
 	{
 		double sigmax;
 		int targBranch; // not used
 		double tmp;
 		getEnvelope(epsPeak, false, sigmax, targBranch, tmp, tmp);
-		sigs0 = sigPenetFac * Fy;
-		epss0 = epsPl + sigPenetFac * d[0];
-		double x = epsPl + pinchX * (epsPeak - epsPl) + gapD;
-		epsLimit = (epss0 + x) / 2;
+		double penetFac = (sigPenetFac > 0.00001 ? sigPenetFac : 0.00001);
+		sigs0 = penetFac *Fy;
+		epss0 = epsPl + penetFac * d[0];
+		double x = epsPeak - epss0 - 2*gap;
+		double dx = pow(alphaPinch, pow(epsPinch * d[0] / x, betaPinch)) * x;
+		double pinchEps = epss0 + dx + 2*gap;
+		epsLimit = (epss0 + pinchEps) / 2;
 		double y = pinchY * sigmax;
-		k2 = (y - sigs0) / (x - epss0);
+		k2 = (y - sigs0) / (pinchEps - epss0);
 	}
-	else if (branch == 1004) // epsPl+gapD+pinchX to peak
+	else if (branch == 1004) // epsPl+gapD+alphaPinch to peak
 	{
-		epss0 = epsPl + pinchX * (epsPeak - epsPl) + gapD;
+		double penetFac = (sigPenetFac > 0.00001 ? sigPenetFac : 0.00001);
+		double x = epsPeak - epsPl - penetFac * d[0] - 2*gap;
+		double dx = pow(alphaPinch, pow(epsPinch * d[0] / x, betaPinch)) * x;
+		epss0 = epsPl + penetFac * d[0] + dx + 2*gap;
 		epsLimit = (epss0 + epsPeak) / 2;
 		double sigmax;
 		int targBranch;
 		double tmp, nextLimit, nextEps = epsPeak;
 		getEnvelope(epsPeak, false, sigmax, targBranch, tmp, nextLimit);
 		sigs0 = pinchY * sigmax;
-		if (fabs((epsPeak - nextLimit) / d[0]) < 0.5)
+		if (fabs((epsPeak - nextLimit) / d[0]) < 0.1)
 		{
-			targBranch = nextBranch(1005);
+			targBranch = nextBranch(1005, shouldPinch);
 			if (targBranch < gd.size())
 			{
 				nextEps = gd[targBranch];
@@ -1171,7 +1265,7 @@ void SmoothIMK::updateAsymptote()
 		epss0 = epsPeak;
 		int targBranch;
 		getEnvelope(epss0, true, sigs0, targBranch, k2, epsLimit);
-		if (fabs((epss0 - epsLimit) / d[0]) < 0.5)
+		if (fabs((epss0 - epsLimit) / d[0]) < 0.1)
 		{
 			branch = targBranch;
 			return updateAsymptote();
@@ -1184,9 +1278,9 @@ void SmoothIMK::updateAsymptote()
 		const double& du = d[b - 1];
 		const double& dr = d[b - 2];
 		epss0 = (2 * du - dr);
-		sigs0 = 0;
+		sigs0 = 0.00001*Fy;
 		epsLimit = d[0] * 1000;
-		k2 = 0;
+		k2 = 1e-5*E1;
 	}
 	else if (branch >= 1 && branch < 1000)
 	{
@@ -1249,7 +1343,7 @@ void SmoothIMK::getEnvelope(double eps, bool onPlusSide, double& targStress, int
 					if (i < n)
 						limitEps = (dVec[i] + dVec[i + 1]) / 2;
 					else
-						limitEps = 2*dVec[i];
+						limitEps = 2 * dVec[i];
 					if (onPlusSide && i < n - 1)
 						k = (fVec[i + 1] - fVec[i]) / (dVec[i + 1] - dVec[i]);
 					targStress = fVec[i];
@@ -1278,8 +1372,8 @@ void SmoothIMK::computeR0(double k1, double k2, double E1, double dy)
 	if (r1 != 0.0)
 	{
 		double xi_1 = E1 / fabs(k1 - k2);
-		double xi_21 = (epss0 - epsr) / dy;
-		double xi_22 = (epsLimit - epss0) / dy;
+		double xi_21 = fabs(epss0 - epsr) / dy;
+		double xi_22 = fabs(epsLimit - epss0) / dy;
 		double xi_2 = (2 * std::min(xi_21, xi_22));
 		R0 += r1 * xi_1 + r2 * xi_2;
 		R0 = std::min(30.0, R0);

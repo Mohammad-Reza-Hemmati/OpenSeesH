@@ -37,11 +37,11 @@ public:
 		double gamaS, double cS,
 		double gamaUnloadE, double cUnloadE,
 		double r0, double r1, double r2,
-		int cyclicRule,
-		double pinchXPos, double pinchYPos, double sigPenetFacPos,
-		double pinchXNeg, double pinchYNeg, double sigPenetFacNeg,
-		double unloadingStiffFacPos, double unloadingStiffFacNeg,
-		double sigInit, double gap, double bilinEndAmp);
+		int cyclicRuleP, double gapP, double alphaPinchPos, double pinchYPos,
+		double betaPinchPos, double epsPinchPos, double sigPenetFacPos, double bilinEndAmpPos, double unloadingStiffFacPos,
+		int cyclicRuleN, double gapN, double alphaPinchNeg, double pinchYNeg,
+		double betaPinchNeg, double epsPinchNeg, double sigPenetFacNeg, double bilinEndAmpNeg, double unloadingStiffFacNeg,
+		double sigInit);
 
 	SmoothIMK(void);
 	virtual ~SmoothIMK();
@@ -83,12 +83,12 @@ protected:
 private:
 	std::vector<double> pd, pf, nd, nf, gpd, gnd; //gpd: gapped pd
 	double r0, r1, r2;
-	double gap;
-	double bilinEndAmp;	//strain amplitude limit at which bilin behavior ends and either pinched or peak-oriented rules start based on the cyclicRule
+	double gapP, gapN;
+	double bilinEndAmpP, bilinEndAmpN;	//strain amplitude limit at which bilin behavior ends and either pinched or peak-oriented rules start based on the cyclicRule
 	double sigPenetFacP, sigPenetFacN;
-	int cyclicRule;  // 1:bilinear, 2:pinched, 3:peak-oriented
+	int cyclicRuleP, cyclicRuleN;  // 1:bilinear, 2:pinched, 3:peak-oriented
 	double FailEnergS, FailEnergUnloadE, cS, cUnloadE;			//damage parameters
-	double pinchXPos, pinchXNeg, pinchYPos, pinchYNeg;
+	double alphaPinchPos, alphaPinchNeg, betaPinchPos, epsPinchPos, pinchYPos, pinchYNeg, betaPinchNeg, epsPinchNeg;
 	//double FydP, FydN;		//Pos and Neg Fy's affected by damage
 	double ExcurEnergy;
 	double EnergyP; //by SAJalali
@@ -137,7 +137,7 @@ private:
 	void updateDamage();
 	void updateAsymptote();
 	void changeBranch(bool isReturning);
-	int nextBranch(int branch);
+	int nextBranch(int branch, bool shouldPinch);
 	void getEnvelope(double eps, bool pSide, double& targStress, int& targBranch, double& k, double& limitEps);
 	void computeR0(double k1, double k2, double E1, double dy);
 };
