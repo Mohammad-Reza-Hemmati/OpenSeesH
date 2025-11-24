@@ -100,7 +100,7 @@ OPS_SmoothIMK()
 		return 0;
 	}
 	std::vector<double> pf, pd, nf, nd;
-	double bilinEndAmpPos = 1, bilinEndAmpNeg = 1;
+	double bilinEndAmpPos = 1.2, bilinEndAmpNeg = 1.2;
 	double unloadingStiffFacPos = 1, unloadingStiffFacNeg = 1; //default values for unloading stiffness factors
 	//default parameters:
 	double gamaS = 1e6, cS = 1, gamaUE = 1e6, cUE = 1, r0 = 3, r1 = 26, r2 = 0.2, sigInit = 0;
@@ -414,6 +414,18 @@ OPS_SmoothIMK()
 	}
 
 	return theMaterial;
+}
+
+double pinchDx(double x, double alphaPinch, double epsPinch, double betaPinch, double x0)
+{
+	if (betaPinch == 0)
+		return alphaPinch * x;
+	if (fabs(x) < 1e-6)
+	{
+		//avoid division by zero
+		x = x > 0 ? 1e-6 : -1e-6;
+	}
+	return pow(alphaPinch, pow(epsPinch * x0 / x, betaPinch)) * x;
 }
 
 SmoothIMK::SmoothIMK(int tag,
@@ -1112,7 +1124,7 @@ int SmoothIMK::nextBranch(int branch, bool shouldPinch)
 		getEnvelope(epsPeak, false, tmp, targBranch, tmp, tmp);
 		return targBranch;
 	}
-	else if (branch < 1000 && branch > d.size() - 1)
+	else if (branch == 1010 || (branch < 1000 && branch > d.size() - 1))
 		return 1010;//failed
 	else
 		return branch + 1;
@@ -1227,7 +1239,7 @@ void SmoothIMK::updateAsymptote()
 		sigs0 = penetFac *Fy;
 		epss0 = epsPl + penetFac * d[0];
 		double x = epsPeak - epss0 - 2*gap;
-		double dx = pow(alphaPinch, pow(epsPinch * d[0] / x, betaPinch)) * x;
+		double dx = pinchDx(x, alphaPinch, epsPinch, betaPinch, d[0]);
 		double pinchEps = epss0 + dx + 2*gap;
 		epsLimit = (epss0 + pinchEps) / 2;
 		double y = pinchY * sigmax;
@@ -1237,7 +1249,7 @@ void SmoothIMK::updateAsymptote()
 	{
 		double penetFac = (sigPenetFac > 0.00001 ? sigPenetFac : 0.00001);
 		double x = epsPeak - epsPl - penetFac * d[0] - 2*gap;
-		double dx = pow(alphaPinch, pow(epsPinch * d[0] / x, betaPinch)) * x;
+		double dx = pinchDx(x, alphaPinch, epsPinch, betaPinch, d[0]);
 		epss0 = epsPl + penetFac * d[0] + dx + 2*gap;
 		epsLimit = (epss0 + epsPeak) / 2;
 		double sigmax;
