@@ -69,10 +69,14 @@ class ViscousMaterial : public UniaxialMaterial
 
     int setParameter(const char **argv, int argc, Parameter &param);
     int updateParameter(int parameterID, Information &info);
-    
+    virtual double getEnergy() { return EnergyP; };
+    virtual void resetEnergy(void) { EnergyP = 0; }
+
   protected:
     
   private:
+    double EnergyP; //by SAJalali
+    double Tstress, Cstress;
     double trialStrain;
     double trialRate;
     double C;
