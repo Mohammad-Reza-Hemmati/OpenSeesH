@@ -380,13 +380,8 @@ DispBeamColumn2dThermal::update(void)
 	double xi[maxNumSections];
 	beamInt->getSectionLocations(numSections, L, xi);
 
-	//opserr<< "Basic Deformation: "<<v<<endln;
-	// Loop over the integration points
-#ifdef _DEBUG
-//opserr << "BeamNUT_" << this->getTag() << " ,  v  " << v << endln;
-	//<<" , Average epsT "<<AverageThermalElong<<endln;
-#endif
 	for (int i = 0; i < numSections; i++) {
+		//opserr << "ele & section: " << this->getTag() << ", " << i << endln;
 
 		int order = theSections[i]->getOrder();   // return 2
 		const ID& code = theSections[i]->getType();   // code: Section_Response_P, Section_Response_MZ
@@ -735,7 +730,8 @@ DispBeamColumn2dThermal::addLoad(ElementalLoad* theLoad, double loadFactor)
 
 		int n = data.Size() / 2;
 		int tag = this->getTag();
-		opserr << data;
+		//opserr << "thermal load data:\n";
+		//opserr << data;
 		Vector dataMixV(3 * n);
 		for (int m = 0; m < n; m++) {
 			dataMixV(2 * m) = data(2 * m); //Linear temperature interpolation
@@ -1286,7 +1282,7 @@ DispBeamColumn2dThermal::sendSelf(int commitTag, Channel& theChannel)
 	//
 	// send the sections
 	//
-
+	int tag = this->getTag();
 	for (j = 0; j < numSections; j++) {
 		if (theSections[j]->sendSelf(commitTag, theChannel) < 0) {
 			opserr << "DispBeamColumn2dThermal::sendSelf() - section " <<
@@ -1419,7 +1415,7 @@ DispBeamColumn2dThermal::recvSelf(int commitTag, Channel& theChannel,
 		// create a section and recvSelf on it
 		numSections = nSect;
 		loc = 0;
-
+		int tag = this->getTag();
 		for (i = 0; i < numSections; i++) {
 			int sectClassTag = idSections(loc);
 			int sectDbTag = idSections(loc + 1);

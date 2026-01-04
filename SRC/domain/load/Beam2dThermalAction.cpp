@@ -197,10 +197,10 @@ Beam2dThermalAction::applyLoad(double loadfactor)
 int
 Beam2dThermalAction::sendSelf(int commitTag, Channel& theChannel)
 {
-	// Currently implemented to only support saving database after thermomechanical analysis is complete
-	// Also, only indicator == 2 (timeSeries-dependant temperature) is supported.
-	// However, the following analysis is assumed to constantly use the temp value reached at the end of previou phase.
+	// Currently implemented to only support saving after thermomechanical analysis is complete
+	// Therefore, the next analysis is assumed to constantly use the temp value reached at the end of previou phase.
 	// So, no timeSeries is saved and restored.
+	// Also, only indicator == 2 (timeSeries-dependant temperature) is supported.
 
 	ID idData(5);
 	idData(0) = this->getTag();
@@ -214,6 +214,7 @@ Beam2dThermalAction::sendSelf(int commitTag, Channel& theChannel)
 		opserr << "Beam2dThermalAction::sendSelf() - failed to send Id data" << endln;
 		return res;
 	}
+	opserr << "sent tempApp:\n" << TempApp << endln;
 	res = theChannel.sendVector(this->getDbTag(), commitTag, TempApp);
 	if (res < 0)
 	{
@@ -257,7 +258,7 @@ Beam2dThermalAction::recvSelf(int commitTag, Channel& theChannel,
 		opserr << "Beam2dThermalAction::sendSelf() - failed to recieve TempApp" << endln;
 		return res;
 	}
-	opserr << "tempApp:\n" << TempApp << endln;
+	opserr << "rcvd tempApp:\n" << TempApp << endln;
 
 	res = theChannel.recvVector(this->getDbTag(), commitTag, Loc);
 	if (res < 0)

@@ -115,6 +115,8 @@ OPS_SmoothIMK()
 	while (OPS_GetNumRemainingInputArgs() > 0)
 	{
 		option = OPS_GetString();
+		if (option == NULL)
+			break;
 		if (strcmp(option, "-posBackBone") == 0) {
 			n = 0;
 			while (OPS_GetDoubleInput(&numData, &val) == 0)
@@ -148,6 +150,8 @@ OPS_SmoothIMK()
 				}
 			}
 			option = OPS_GetString();
+			if (option == NULL)
+				option = "Invalid String Input!";
 			if (strcmp(option, "-gap") == 0)
 			{
 				if (OPS_GetDoubleInput(&numData, &gapP) != 0) {
@@ -192,6 +196,8 @@ OPS_SmoothIMK()
 				}
 			}
 			option = OPS_GetString();
+			if (option == NULL)
+				option = "Invalid String Input!";
 			if (strcmp(option, "-gap") == 0)
 			{
 				if (OPS_GetDoubleInput(&numData, &gapN) != 0) {
@@ -284,6 +290,8 @@ OPS_SmoothIMK()
 						return 0;
 					}
 					option = OPS_GetString();
+					if (option == NULL)
+						option = "Invalid String Input!";
 					betaPinchPos = 0, epsPinchPos = 1;
 					if (strcmp(option, "-nonlin") == 0)
 					{
@@ -303,7 +311,7 @@ OPS_SmoothIMK()
 				}
 				else
 				{
-					if (strcmp(option, "Invalid String Input!") != 0)
+					if (option == NULL || strcmp(option, "Invalid String Input!") != 0)
 						OPS_ResetCurrentInputArg(-1);
 					break;
 				}
@@ -314,6 +322,8 @@ OPS_SmoothIMK()
 			while (OPS_GetNumRemainingInputArgs() > 0)
 			{
 				option = OPS_GetString();
+				if (option == NULL)
+					option = "Invalid String Input!";
 				if (strcmp(option, "-peakOriented") == 0)
 				{
 					ruleN = 2;
@@ -350,6 +360,8 @@ OPS_SmoothIMK()
 						return 0;
 					}
 					option = OPS_GetString();
+					if (option == NULL)
+						option = "Invalid String Input!";
 					betaPinchNeg = 0, epsPinchNeg = 1;
 					if (strcmp(option, "-nonlin") == 0)
 					{

@@ -105,9 +105,9 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeaderOutputFile>.\..\..\obj\cblas\release/cblas.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\..\..\obj\cblas\release/</AssemblerListingLocation>
-      <ObjectFileName>.\..\..\obj\cblas\release/</ObjectFileName>
-      <ProgramDataBaseFileName>.\..\..\obj\cblas\release/</ProgramDataBaseFileName>
+      <AssemblerListingLocation>.\..\..\obj\cblas\pyDebug/</AssemblerListingLocation>
+      <ObjectFileName>.\..\..\obj\cblas\pyDebug/</ObjectFileName>
+      <ProgramDataBaseFileName>.\..\..\obj\cblas\pyDebug/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>

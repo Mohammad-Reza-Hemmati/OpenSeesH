@@ -522,7 +522,17 @@ static struct PyModuleDef moduledef = {
 #define INITERROR return NULL
 
 PyMODINIT_FUNC
-PyInit_OpenSeesH(void)
+#if Py312
+PyInit_OpenSeesH_312(void)
+#elif Py313
+PyInit_OpenSeesH_313(void)
+#elif Py314
+PyInit_OpenSeesH_314(void)
+#elif Py315
+PyInit_OpenSeesH_315(void)
+#elif Py316
+PyInit_OpenSeesH_316(void)
+#endif // Py312
 
 #else
 #define INITERROR return

@@ -467,11 +467,6 @@ LoadPattern::sendSelf(int cTag, Channel& theChannel)
 	numEleLd = theElementalLoads->getNumComponents();
 	numSPs = theSPs->getNumComponents();
 
-	lpData(10) = this->getTag();
-	lpData(0) = currentGeoTag;
-	lpData(1) = numNodLd;
-	lpData(2) = numEleLd;
-	lpData(3) = numSPs;
 
 	if (dbNod == 0) {
 		dbNod = theChannel.getDbTag();
@@ -479,10 +474,13 @@ LoadPattern::sendSelf(int cTag, Channel& theChannel)
 		dbSPs = theChannel.getDbTag();
 	}
 
+	lpData(0) = currentGeoTag;
+	lpData(1) = numNodLd;
+	lpData(2) = numEleLd;
+	lpData(3) = numSPs;
 	lpData(4) = dbNod;
 	lpData(5) = dbEle;
 	lpData(6) = dbSPs;
-
 	lpData(7) = isConstant;
 
 	if (theSeries != 0) {
@@ -497,6 +495,7 @@ LoadPattern::sendSelf(int cTag, Channel& theChannel)
 	}
 	else
 		lpData(8) = -1;
+	lpData(10) = this->getTag();
 
 
 	// see if we can save sending the vector containing just the load factor
@@ -514,8 +513,6 @@ LoadPattern::sendSelf(int cTag, Channel& theChannel)
 	if (theChannel.sendVector(myDbTag, cTag, data) < 0) {
 		opserr << "LoadPattern::sendSelf - channel failed to send the Vector\n";
 		return -2;
-
-
 	}
 
 	if (theSeries != 0)
@@ -636,12 +633,15 @@ LoadPattern::sendSelf(int cTag, Channel& theChannel)
 		}
 
 		// set the lst send db tag so we don't have to do all that again
-		lastGeoSendTag = currentGeoTag;
-		if (theChannel.isDatastore() == 1) {
-			static ID theLastSendTag(1);
-			theLastSendTag(0) = lastGeoSendTag;
-			theChannel.sendID(myDbTag, 0, theLastSendTag);
-		}
+		//lastGeoSendTag = currentGeoTag;
+		//if (theChannel.isDatastore() == 1) {
+		//	static ID theLastSendTag(1);
+		//	theLastSendTag(0) = lastGeoSendTag;
+		//	if (theChannel.sendID(myDbTag, 0, theLastSendTag) < 0) {
+		//		opserr << "LoadPAttern::sendSelf - channel failed sending theLastSendTag\n";
+		//		return -1;
+		//	}
+		//}
 	}
 
 	// now we invoke sendSelf on all the NodalLoads, ElementalLoads and SP_Constraints
@@ -764,7 +764,7 @@ LoadPattern::recvSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker
 			ID nodeData(2 * numNod);
 
 			// now receive the ID about the nodes, class tag and dbTags
-			if (theChannel.recvID(dbNod, currentGeoTag, nodeData) < 0) {
+			if (theChannel.recvID(dbNod, lpData(0), nodeData) < 0) {
 				opserr << "LoadPAttern::recvSelf - channel failed to recv the NodalLoad ID\n";
 				return -2;
 			}
@@ -809,7 +809,7 @@ LoadPattern::recvSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker
 		if (numEle != 0) {
 			ID eleData(2 * numEle);
 
-			if (theChannel.recvID(dbEle, currentGeoTag, eleData) < 0) {
+			if (theChannel.recvID(dbEle, lpData(0), eleData) < 0) {
 				opserr << "LoadPattern::recvSelf - channel failed to recv the EleLoad ID\n";
 				return -2;
 			}
@@ -848,7 +848,7 @@ LoadPattern::recvSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker
 		if (numSPs != 0) {
 			ID spData(2 * numSPs);
 
-			if (theChannel.recvID(dbSPs, currentGeoTag, spData) < 0) {
+			if (theChannel.recvID(dbSPs, lpData(0), spData) < 0) {
 				opserr << "LoadPattern::recvSelf - channel failed to recv the SP_Constraints ID\n";
 				return -2;
 			}
@@ -882,8 +882,15 @@ LoadPattern::recvSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker
 		}
 
 		// now set the load pattern db count
-		currentGeoTag = lpData(0);
-		lastGeoSendTag = currentGeoTag;
+		//lastGeoSendTag = currentGeoTag;
+		//if (theChannel.isDatastore() == 1) {
+		//	ID geoData(1);
+			//if (theChannel.recvID(myDbTag, 0, geoData) < 0) { //kept to balance data send/receive
+			//	opserr << "LoadPattern::recvSelf - could not read geoData ID\n";
+			//	return -1;
+			//}
+			//lastGeoSendTag = geoData(0); commented out since caused error
+		//}
 
 	}
 	else {

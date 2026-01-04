@@ -96,18 +96,18 @@ bool          ops_InitialStateAnalysis = false;
 int           ops_Creep = 0;
 
 Domain::Domain()
-:theRecorders(0), numRecorders(0),
- currentTime(0.0), committedTime(0.0), dT(0.0), currentGeoTag(0),
- hasDomainChangedFlag(false), theDbTag(0), lastGeoSendTag(-1),
- dbEle(0), dbNod(0), dbSPs(0), dbPCs(0), dbMPs(0), dbLPs(0), dbParam(0),
- eleGraphBuiltFlag(false),  nodeGraphBuiltFlag(false), theNodeGraph(0), 
- theElementGraph(0), 
- theRegions(0), numRegions(0), commitTag(0), initBounds(true), resetBounds(false),
- theBounds(6), theEigenvalues(0), theEigenvalueSetTime(0), 
- theModalProperties(0),
- theModalDampingFactors(0), inclModalMatrix(false),
- lastChannel(0),
- paramIndex(0), paramSize(0), numParameters(0)
+	:theRecorders(0), numRecorders(0),
+	currentTime(0.0), committedTime(0.0), dT(0.0), currentGeoTag(0),
+	hasDomainChangedFlag(false), theDbTag(0), lastGeoSendTag(-1),
+	dbEle(0), dbNod(0), dbSPs(0), dbPCs(0), dbMPs(0), dbLPs(0), dbParam(0),
+	eleGraphBuiltFlag(false), nodeGraphBuiltFlag(false), theNodeGraph(0),
+	theElementGraph(0),
+	theRegions(0), numRegions(0), commitTag(0), initBounds(true), resetBounds(false),
+	theBounds(6), theEigenvalues(0), theEigenvalueSetTime(0),
+	theModalProperties(0),
+	theModalDampingFactors(0), inclModalMatrix(false),
+	lastChannel(0),
+	paramIndex(0), paramSize(0), numParameters(0)
 {
 
 	// init the arrays for storing the domain components
@@ -151,18 +151,18 @@ Domain::Domain()
 
 
 Domain::Domain(int numNodes, int numElements, int numSPs, int numMPs,
-	       int numLoadPatterns)
-:theRecorders(0), numRecorders(0),
- currentTime(0.0), committedTime(0.0), dT(0.0), currentGeoTag(0),
- hasDomainChangedFlag(false), theDbTag(0), lastGeoSendTag(-1),
- dbEle(0), dbNod(0), dbSPs(0), dbPCs(0), dbMPs(0), dbLPs(0), dbParam(0),
- eleGraphBuiltFlag(false), nodeGraphBuiltFlag(false), theNodeGraph(0), 
- theElementGraph(0),
- theRegions(0), numRegions(0), commitTag(0), initBounds(true), resetBounds(false),
- theBounds(6), theEigenvalues(0), theEigenvalueSetTime(0), 
- theModalProperties(0),
- theModalDampingFactors(0), inclModalMatrix(false),
- lastChannel(0), paramIndex(0), paramSize(0), numParameters(0)
+	int numLoadPatterns)
+	:theRecorders(0), numRecorders(0),
+	currentTime(0.0), committedTime(0.0), dT(0.0), currentGeoTag(0),
+	hasDomainChangedFlag(false), theDbTag(0), lastGeoSendTag(-1),
+	dbEle(0), dbNod(0), dbSPs(0), dbPCs(0), dbMPs(0), dbLPs(0), dbParam(0),
+	eleGraphBuiltFlag(false), nodeGraphBuiltFlag(false), theNodeGraph(0),
+	theElementGraph(0),
+	theRegions(0), numRegions(0), commitTag(0), initBounds(true), resetBounds(false),
+	theBounds(6), theEigenvalues(0), theEigenvalueSetTime(0),
+	theModalProperties(0),
+	theModalDampingFactors(0), inclModalMatrix(false),
+	lastChannel(0), paramIndex(0), paramSize(0), numParameters(0)
 {
 	// init the arrays for storing the domain components
 	theElements = new MapOfTaggedObjects();
@@ -203,27 +203,27 @@ Domain::Domain(int numNodes, int numElements, int numSPs, int numMPs,
 }
 
 
-Domain::Domain(TaggedObjectStorage &theNodesStorage,
-	       TaggedObjectStorage &theElementsStorage,
-	       TaggedObjectStorage &theMPsStorage,
-	       TaggedObjectStorage &theSPsStorage,
-	       TaggedObjectStorage &theLoadPatternsStorage)
-:theRecorders(0), numRecorders(0),
- currentTime(0.0), committedTime(0.0), dT(0.0), currentGeoTag(0),
- hasDomainChangedFlag(false), theDbTag(0), lastGeoSendTag(-1),
- dbEle(0), dbNod(0), dbSPs(0), dbPCs(0), dbMPs(0), dbLPs(0), dbParam(0),
- eleGraphBuiltFlag(false), nodeGraphBuiltFlag(false), theNodeGraph(0), 
- theElementGraph(0), 
- theElements(&theElementsStorage),
- theNodes(&theNodesStorage),
- theSPs(&theSPsStorage),
- theMPs(&theMPsStorage), 
- theLoadPatterns(&theLoadPatternsStorage),
- theRegions(0), numRegions(0), commitTag(0), initBounds(true), resetBounds(false),
- theBounds(6), theEigenvalues(0), theEigenvalueSetTime(0), 
- theModalProperties(0),
- theModalDampingFactors(0), inclModalMatrix(false),
- lastChannel(0),paramIndex(0), paramSize(0), numParameters(0)
+Domain::Domain(TaggedObjectStorage& theNodesStorage,
+	TaggedObjectStorage& theElementsStorage,
+	TaggedObjectStorage& theMPsStorage,
+	TaggedObjectStorage& theSPsStorage,
+	TaggedObjectStorage& theLoadPatternsStorage)
+	:theRecorders(0), numRecorders(0),
+	currentTime(0.0), committedTime(0.0), dT(0.0), currentGeoTag(0),
+	hasDomainChangedFlag(false), theDbTag(0), lastGeoSendTag(-1),
+	dbEle(0), dbNod(0), dbSPs(0), dbPCs(0), dbMPs(0), dbLPs(0), dbParam(0),
+	eleGraphBuiltFlag(false), nodeGraphBuiltFlag(false), theNodeGraph(0),
+	theElementGraph(0),
+	theElements(&theElementsStorage),
+	theNodes(&theNodesStorage),
+	theSPs(&theSPsStorage),
+	theMPs(&theMPsStorage),
+	theLoadPatterns(&theLoadPatternsStorage),
+	theRegions(0), numRegions(0), commitTag(0), initBounds(true), resetBounds(false),
+	theBounds(6), theEigenvalues(0), theEigenvalueSetTime(0),
+	theModalProperties(0),
+	theModalDampingFactors(0), inclModalMatrix(false),
+	lastChannel(0), paramIndex(0), paramSize(0), numParameters(0)
 {
 	// init the arrays for storing the domain components
 	thePCs = new MapOfTaggedObjects();
@@ -271,18 +271,18 @@ Domain::Domain(TaggedObjectStorage &theNodesStorage,
 
 
 
-Domain::Domain(TaggedObjectStorage &theStorage)
-:theRecorders(0), numRecorders(0),
- currentTime(0.0), committedTime(0.0), dT(0.0), currentGeoTag(0),
- hasDomainChangedFlag(false), theDbTag(0), lastGeoSendTag(-1),
- dbEle(0), dbNod(0), dbSPs(0), dbPCs(0), dbMPs(0), dbLPs(0), dbParam(0),
- eleGraphBuiltFlag(false), nodeGraphBuiltFlag(false), theNodeGraph(0), 
- theElementGraph(0), 
- theRegions(0), numRegions(0), commitTag(0),initBounds(true), resetBounds(false),
- theBounds(6), theEigenvalues(0), theEigenvalueSetTime(0), 
- theModalProperties(0),
- theModalDampingFactors(0), inclModalMatrix(false),
- lastChannel(0),paramIndex(0), paramSize(0), numParameters(0)
+Domain::Domain(TaggedObjectStorage& theStorage)
+	:theRecorders(0), numRecorders(0),
+	currentTime(0.0), committedTime(0.0), dT(0.0), currentGeoTag(0),
+	hasDomainChangedFlag(false), theDbTag(0), lastGeoSendTag(-1),
+	dbEle(0), dbNod(0), dbSPs(0), dbPCs(0), dbMPs(0), dbLPs(0), dbParam(0),
+	eleGraphBuiltFlag(false), nodeGraphBuiltFlag(false), theNodeGraph(0),
+	theElementGraph(0),
+	theRegions(0), numRegions(0), commitTag(0), initBounds(true), resetBounds(false),
+	theBounds(6), theEigenvalues(0), theEigenvalueSetTime(0),
+	theModalProperties(0),
+	theModalDampingFactors(0), inclModalMatrix(false),
+	lastChannel(0), paramIndex(0), paramSize(0), numParameters(0)
 {
 	// init the arrays for storing the domain components
 	theStorage.clearAll(); // clear the storage just in case populated
@@ -360,20 +360,20 @@ Domain::~Domain()
 	if (theLoadPatterns != 0)
 		delete theLoadPatterns;
 
-  if (theParameters != 0)
-    delete theParameters;
+	if (theParameters != 0)
+		delete theParameters;
 
-  if (paramIndex != 0)
-    delete [] paramIndex;
-  
-  if (theEleIter != 0)
-    delete theEleIter;
-  
-  if (theNodIter != 0)
-    delete theNodIter;
-  
-  if (theSP_Iter != 0)
-    delete theSP_Iter;
+	if (paramIndex != 0)
+		delete[] paramIndex;
+
+	if (theEleIter != 0)
+		delete theEleIter;
+
+	if (theNodIter != 0)
+		delete theNodIter;
+
+	if (theSP_Iter != 0)
+		delete theSP_Iter;
 
 	if (thePC_Iter != 0)
 		delete thePC_Iter;
@@ -390,11 +390,11 @@ Domain::~Domain()
 	if (theEigenvalues != 0)
 		delete theEigenvalues;
 
-  if (theModalProperties != 0)
-    delete theModalProperties;
+	if (theModalProperties != 0)
+		delete theModalProperties;
 
-  if (theLoadPatternIter != 0)
-      delete theLoadPatternIter;
+	if (theLoadPatternIter != 0)
+		delete theLoadPatternIter;
 
 	if (theModalDampingFactors != 0)
 		delete theModalDampingFactors;
@@ -490,64 +490,65 @@ Domain::addNode(Node* node)
 {
 	int nodTag = node->getTag();
 
-	TaggedObject *other = theNodes->getComponentPtr(nodTag);
-  if (other != 0) {
-    opserr << "Domain::addNode - node with tag " << nodTag << " already exists in model\n"; 
-    return false;
-  }
-  
-  bool result = theNodes->addComponent(node);
-  if (result == true) {
-      node->setDomain(this);
-#if _NET
-	  if (this->_DomainEvent_AddNode)
-		  this->_DomainEvent_AddNode(node);
-#endif
-	  this->domainChange();
+	TaggedObject* other = theNodes->getComponentPtr(nodTag);
+	if (other != 0) {
+		opserr << "Domain::addNode - node with tag " << nodTag << " already exists in model\n";
+		return false;
+	}
 
-      if (!resetBounds) {
-          // see if the physical bounds are changed
-          // note this assumes 0,0,0,0,0,0 as startup min,max values
-          const Vector& crds = node->getCrds();
-          int dim = crds.Size();
-          if (initBounds) {
-              if (dim >= 1) {
-                  double x = crds(0);
-                  theBounds(0) = x;
-                  theBounds(3) = x;
-              }
-              if (dim >= 2) {
-                  double y = crds(1);
-                  theBounds(1) = y;
-                  theBounds(4) = y;
-              }
-              if (dim == 3) {
-                  double z = crds(2);
-                  theBounds(2) = z;
-                  theBounds(5) = z;
-              }
-              initBounds = false;
-          }
-          else {
-              if (dim >= 1) {
-                  double x = crds(0);
-                  if (x < theBounds(0)) theBounds(0) = x;
-                  if (x > theBounds(3)) theBounds(3) = x;
-              }
-              if (dim >= 2) {
-                  double y = crds(1);
-                  if (y < theBounds(1)) theBounds(1) = y;
-                  if (y > theBounds(4)) theBounds(4) = y;
-              }
-              if (dim == 3) {
-                  double z = crds(2);
-                  if (z < theBounds(2)) theBounds(2) = z;
-                  if (z > theBounds(5)) theBounds(5) = z;
-              }
-          }
-      }
-  } else
-    opserr << "Domain::addNode - node with tag " << nodTag << "could not be added to container\n";
+	bool result = theNodes->addComponent(node);
+	if (result == true) {
+		node->setDomain(this);
+#if _NET
+		if (this->_DomainEvent_AddNode)
+			this->_DomainEvent_AddNode(node);
+#endif
+		this->domainChange();
+
+		if (!resetBounds) {
+			// see if the physical bounds are changed
+			// note this assumes 0,0,0,0,0,0 as startup min,max values
+			const Vector& crds = node->getCrds();
+			int dim = crds.Size();
+			if (initBounds) {
+				if (dim >= 1) {
+					double x = crds(0);
+					theBounds(0) = x;
+					theBounds(3) = x;
+				}
+				if (dim >= 2) {
+					double y = crds(1);
+					theBounds(1) = y;
+					theBounds(4) = y;
+				}
+				if (dim == 3) {
+					double z = crds(2);
+					theBounds(2) = z;
+					theBounds(5) = z;
+				}
+				initBounds = false;
+			}
+			else {
+				if (dim >= 1) {
+					double x = crds(0);
+					if (x < theBounds(0)) theBounds(0) = x;
+					if (x > theBounds(3)) theBounds(3) = x;
+				}
+				if (dim >= 2) {
+					double y = crds(1);
+					if (y < theBounds(1)) theBounds(1) = y;
+					if (y > theBounds(4)) theBounds(4) = y;
+				}
+				if (dim == 3) {
+					double z = crds(2);
+					if (z < theBounds(2)) theBounds(2) = z;
+					if (z > theBounds(5)) theBounds(5) = z;
+				}
+			}
+		}
+	}
+	else
+		opserr << "Domain::addNode - node with tag " << nodTag << "could not be added to container\n";
 
 	return result;
 }
@@ -561,7 +562,7 @@ bool
 Domain::addSP_Constraint(SP_Constraint* spConstraint)
 {
 	//#ifdef _G3DEBUG    
-	  // check the Node exists in the Domain
+		// check the Node exists in the Domain
 	int nodeTag = spConstraint->getNodeTag();
 	int dof = spConstraint->getDOF_Number();
 
@@ -599,13 +600,13 @@ Domain::addSP_Constraint(SP_Constraint* spConstraint)
 		return false;
 	}
 
-  // check that no other object with similar tag exists in model
-  int tag = spConstraint->getTag();
-  TaggedObject *other = theSPs->getComponentPtr(tag);
-  if (other != 0) {
-    opserr << "Domain::addSP_Constraint - cannot add as constraint with tag " << 
-      tag << " already exists in model\n";             
-    spConstraint->Print(opserr);
+	// check that no other object with similar tag exists in model
+	int tag = spConstraint->getTag();
+	TaggedObject* other = theSPs->getComponentPtr(tag);
+	if (other != 0) {
+		opserr << "Domain::addSP_Constraint - cannot add as constraint with tag " <<
+			tag << " already exists in model\n";
+		spConstraint->Print(opserr);
 		return false;
 	}
 
@@ -761,7 +762,7 @@ Domain::addMP_Constraint(MP_Constraint* mpConstraint)
 	// MISSING CODE
 	//#endif
 
-  // check that no other object with similar tag exists in model
+	// check that no other object with similar tag exists in model
 	int tag = mpConstraint->getTag();
 	TaggedObject* other = theMPs->getComponentPtr(tag);
 	if (other != 0) {
@@ -822,13 +823,13 @@ Domain::addParameter(Parameter* theParam)
 {
 	int paramTag = theParam->getTag();
 
-  // Commenting out bc setDomain is done below for all parameters -- MHS
-  // We need to be able to have tag=0 for parameters just like nodes, elements, etc.
-  //if (paramTag == 0) {
-  //  // don't add it .. just invoke setDomain on the parameter
-  //  theParam->setDomain(this);
-  //  return true;
-  //}
+	// Commenting out bc setDomain is done below for all parameters -- MHS
+	// We need to be able to have tag=0 for parameters just like nodes, elements, etc.
+	//if (paramTag == 0) {
+	//  // don't add it .. just invoke setDomain on the parameter
+	//  theParam->setDomain(this);
+	//  return true;
+	//}
 	if (paramTag == 0) {
 		// don't add it .. just invoke setDomain on the parameter
 		theParam->setDomain(this);
@@ -933,13 +934,13 @@ Domain::addSP_Constraint(SP_Constraint* spConstraint, int pattern)
 bool
 Domain::addNodalLoad(NodalLoad* load, int pattern)
 {
-    int nodTag = load->getNodeTag();
-    Node *res = this->getNode(nodTag);
-    if (res == 0) {
-      opserr << "Domain::addNodalLoad() - no node with tag " << nodTag << 
-	" exists in the model, not adding the nodal load "  << *load << endln;
-	return false;
-    }
+	int nodTag = load->getNodeTag();
+	Node* res = this->getNode(nodTag);
+	if (res == 0) {
+		opserr << "Domain::addNodalLoad() - no node with tag " << nodTag <<
+			" exists in the model, not adding the nodal load " << *load << endln;
+		return false;
+	}
 
 	// now add it to the pattern
 	TaggedObject* thePattern = theLoadPatterns->getComponentPtr(pattern);
@@ -958,8 +959,8 @@ Domain::addNodalLoad(NodalLoad* load, int pattern)
 		return false;
 	}
 
-    load->setDomain(this);    // done in LoadPattern::addNodalLoad()
-    //this->domainChange(); // a nodal load does not change the domain
+	load->setDomain(this);    // done in LoadPattern::addNodalLoad()
+	//this->domainChange(); // a nodal load does not change the domain
 
 	return result;
 }
@@ -1057,24 +1058,24 @@ Domain::clearAll(void) {
 
 	this->setModalDampingFactors(0);
 
-  // set the bounds around the origin
-  initBounds = true;
-  theBounds(0) = 0;
-  theBounds(1) = 0;
-  theBounds(2) = 0;
-  theBounds(3) = 0;
-  theBounds(4) = 0;
-  theBounds(5) = 0;
-  
-  currentGeoTag = 0;
-  lastGeoSendTag = -1;
-  
-  // rest the flag to be as initial
-  hasDomainChangedFlag = false;
-  nodeGraphBuiltFlag = false;
-  eleGraphBuiltFlag = false;
-  
-  dbEle =0; dbNod =0; dbSPs =0; dbPCs = 0; dbMPs =0; dbLPs = 0; dbParam = 0;
+	// set the bounds around the origin
+	initBounds = true;
+	theBounds(0) = 0;
+	theBounds(1) = 0;
+	theBounds(2) = 0;
+	theBounds(3) = 0;
+	theBounds(4) = 0;
+	theBounds(5) = 0;
+
+	currentGeoTag = 0;
+	lastGeoSendTag = -1;
+
+	// rest the flag to be as initial
+	hasDomainChangedFlag = false;
+	nodeGraphBuiltFlag = false;
+	eleGraphBuiltFlag = false;
+
+	dbEle = 0; dbNod = 0; dbSPs = 0; dbPCs = 0; dbMPs = 0; dbLPs = 0; dbParam = 0;
 
 	currentGeoTag = 0;
 	lastGeoSendTag = -1;
@@ -1174,22 +1175,22 @@ Domain::removeNode(int tag)
 	if (mc == 0)
 		return 0;
 
-  // mark the domain has having changed 
-  this->domainChange();
+	// mark the domain has having changed 
+	this->domainChange();
 
-  // adjust node bounds 
-  resetBounds = true;
-  
-  // perform a downward cast to a Node (safe as only Node added to
-  // this container and return the result of the cast
-  Node *result = (Node *)mc;
-  // result->setDomain(0);
-  
+	// adjust node bounds 
+	resetBounds = true;
+
+	// perform a downward cast to a Node (safe as only Node added to
+	// this container and return the result of the cast
+	Node* result = (Node*)mc;
+	// result->setDomain(0);
+
 #if _NET
-  if (this->_DomainEvent_RemoveNode)
-	  this->_DomainEvent_RemoveNode(result);
+	if (this->_DomainEvent_RemoveNode)
+		this->_DomainEvent_RemoveNode(result);
 #endif
-  return result;
+	return result;
 }
 
 
@@ -1723,7 +1724,7 @@ Domain::getCurrentTime(void) const
 double
 Domain::getDT(void) const
 {
-    return dT;
+	return dT;
 }
 
 int
@@ -1777,64 +1778,64 @@ Domain::getNumParameters(void) const
 const Vector&
 Domain::getPhysicalBounds(void)
 {
-    // reset bounds if nodes were deleted
-    if (resetBounds) {
-        initBounds = true;
-        theBounds(0) = 0;
-        theBounds(1) = 0;
-        theBounds(2) = 0;
-        theBounds(3) = 0;
-        theBounds(4) = 0;
-        theBounds(5) = 0;
-        if (theNodes->getNumComponents() != 0) {
-            initBounds = false;
-            Node* nodePtr;
-            NodeIter& theNodeIter = this->getNodes();
-            // initialize with first node
-            nodePtr = theNodeIter();
-            const Vector& crds = nodePtr->getCrds();
-            int dim = crds.Size();
-            double x, y, z;
-            if (dim >= 1) {
-                x = crds(0);
-                theBounds(0) = x;
-                theBounds(3) = x;
-            }
-            if (dim >= 2) {
-                y = crds(1);
-                theBounds(1) = y;
-                theBounds(4) = y;
-            }
-            if (dim == 3) {
-                z = crds(2);
-                theBounds(2) = z;
-                theBounds(5) = z;
-            }
-            // adjust for other nodes
-            while ((nodePtr = theNodeIter()) != 0) {
-                const Vector& crds = nodePtr->getCrds();
-                dim = crds.Size();
-                if (dim >= 1) {
-                    x = crds(0);
-                    if (x < theBounds(0)) theBounds(0) = x;
-                    if (x > theBounds(3)) theBounds(3) = x;
-                }
-                if (dim >= 2) {
-                    y = crds(1);
-                    if (y < theBounds(1)) theBounds(1) = y;
-                    if (y > theBounds(4)) theBounds(4) = y;
-                }
-                if (dim == 3) {
-                    z = crds(2);
-                    if (z < theBounds(2)) theBounds(2) = z;
-                    if (z > theBounds(5)) theBounds(5) = z;
-                }
-            }
-        }
-        resetBounds = false;
-    }
-    
-    return theBounds;
+	// reset bounds if nodes were deleted
+	if (resetBounds) {
+		initBounds = true;
+		theBounds(0) = 0;
+		theBounds(1) = 0;
+		theBounds(2) = 0;
+		theBounds(3) = 0;
+		theBounds(4) = 0;
+		theBounds(5) = 0;
+		if (theNodes->getNumComponents() != 0) {
+			initBounds = false;
+			Node* nodePtr;
+			NodeIter& theNodeIter = this->getNodes();
+			// initialize with first node
+			nodePtr = theNodeIter();
+			const Vector& crds = nodePtr->getCrds();
+			int dim = crds.Size();
+			double x, y, z;
+			if (dim >= 1) {
+				x = crds(0);
+				theBounds(0) = x;
+				theBounds(3) = x;
+			}
+			if (dim >= 2) {
+				y = crds(1);
+				theBounds(1) = y;
+				theBounds(4) = y;
+			}
+			if (dim == 3) {
+				z = crds(2);
+				theBounds(2) = z;
+				theBounds(5) = z;
+			}
+			// adjust for other nodes
+			while ((nodePtr = theNodeIter()) != 0) {
+				const Vector& crds = nodePtr->getCrds();
+				dim = crds.Size();
+				if (dim >= 1) {
+					x = crds(0);
+					if (x < theBounds(0)) theBounds(0) = x;
+					if (x > theBounds(3)) theBounds(3) = x;
+				}
+				if (dim >= 2) {
+					y = crds(1);
+					if (y < theBounds(1)) theBounds(1) = y;
+					if (y > theBounds(4)) theBounds(4) = y;
+				}
+				if (dim == 3) {
+					z = crds(2);
+					if (z < theBounds(2)) theBounds(2) = z;
+					if (z > theBounds(5)) theBounds(5) = z;
+				}
+			}
+		}
+		resetBounds = false;
+	}
+
+	return theBounds;
 }
 
 const Vector*
@@ -2000,13 +2001,13 @@ Domain::setCommittedTime(double newTime)
 void
 Domain::setCreep(int newCreep)
 {
-	 ops_Creep = newCreep;
+	ops_Creep = newCreep;
 }
 
 int
 Domain::getCreep(void) const
 {
-	 return ops_Creep;
+	return ops_Creep;
 }
 
 
@@ -2383,32 +2384,32 @@ Domain::getTimeEigenvaluesSet(void)
 
 void Domain::setModalProperties(const DomainModalProperties& dmp)
 {
-    if (theModalProperties) {
-        *theModalProperties = dmp;
-    }
-    else {
-        theModalProperties = new DomainModalProperties(dmp);
-    }
+	if (theModalProperties) {
+		*theModalProperties = dmp;
+	}
+	else {
+		theModalProperties = new DomainModalProperties(dmp);
+	}
 }
 
 void Domain::unsetModalProperties(void)
 {
-    if (theModalProperties) {
-        delete theModalProperties;
-        theModalProperties = nullptr;
-    }
+	if (theModalProperties) {
+		delete theModalProperties;
+		theModalProperties = nullptr;
+	}
 }
 
-int Domain::getModalProperties(DomainModalProperties &dmp) const
+int Domain::getModalProperties(DomainModalProperties& dmp) const
 {
-    if (theModalProperties == 0) {
-      opserr << "Domain::getModalProperties - DomainModalProperties were never set" << endln;
-      return -1;
-    }
-    else {
-      dmp = *theModalProperties;
-      return 0;
-    }
+	if (theModalProperties == 0) {
+		opserr << "Domain::getModalProperties - DomainModalProperties were never set" << endln;
+		return -1;
+	}
+	else {
+		dmp = *theModalProperties;
+		return 0;
+	}
 }
 
 int
@@ -2664,12 +2665,12 @@ Domain::removeRecorders(void)
 }
 
 int Domain::flushRecorders() {
-    for (int i = 0; i < numRecorders; i++) {
-      if (theRecorders[i] != 0) {
-      theRecorders[i]->flush();
-      }
-    }
-    return 0;
+	for (int i = 0; i < numRecorders; i++) {
+		if (theRecorders[i] != 0) {
+			theRecorders[i]->flush();
+		}
+	}
+	return 0;
 }
 
 int
@@ -3038,10 +3039,10 @@ Domain::sendSelf(int cTag, Channel& theChannel)
 
 	/*
 	if (theChannel.isDatastore() == 1) {
-	  static ID theLastSendTag(1);
-	  if (theChannel.recvID(0,0,theLastSendTag) == 0)
+		static ID theLastSendTag(1);
+		if (theChannel.recvID(0,0,theLastSendTag) == 0)
 		lastGeoSendTag = theLastSendTag(0);
-	  else
+		else
 		lastGeoSendTag = -1;
 	}
 	*/
@@ -3253,21 +3254,21 @@ Domain::sendSelf(int cTag, Channel& theChannel)
 				loc += 2;
 			}
 
-      if (theChannel.sendID(dbParam, currentGeoTag, paramData) < 0) {
-	opserr << "Domain::send - channel failed to send the Parameter ID\n";
-	return -7;
-      }    
-  }
-    // now so that we don't do this next time if nothing in the domain has changed
-    lastGeoSendTag = currentGeoTag;
-    /*
-    if (theChannel.isDatastore() == 1) {
-      static ID theLastSendTag(1);
-      theLastSendTag(0) = lastGeoSendTag;
-      theChannel.sendID(0,0, theLastSendTag);
-    }
-    */
-  }
+			if (theChannel.sendID(dbParam, currentGeoTag, paramData) < 0) {
+				opserr << "Domain::send - channel failed to send the Parameter ID\n";
+				return -7;
+			}
+		}
+		// now so that we don't do this next time if nothing in the domain has changed
+		lastGeoSendTag = currentGeoTag;
+		/*
+		if (theChannel.isDatastore() == 1) {
+			static ID theLastSendTag(1);
+			theLastSendTag(0) = lastGeoSendTag;
+			theChannel.sendID(0,0, theLastSendTag);
+		}
+		*/
+	}
 
 	//
 	// now we invoke sendSelf on each of the objects .. 
@@ -3344,6 +3345,7 @@ Domain::sendSelf(int cTag, Channel& theChannel)
 		}
 	}
 
+	theChannel.Flush();
 	// if get here we were successfull
 	return commitTag;
 }
@@ -3380,8 +3382,8 @@ Domain::recvSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 
 	/*
 	if (theChannel.isDatastore() == 1) {
-	  static ID theLastSendTag(1);
-	  if (theChannel.recvID(0,0,theLastSendTag) == 0)
+		static ID theLastSendTag(1);
+		if (theChannel.recvID(0,0,theLastSendTag) == 0)
 		lastGeoSendTag = theLastSendTag(0);
 	}
 	*/
@@ -3624,30 +3626,30 @@ Domain::recvSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 		numLPs = domainData(5);
 		dbLPs = domainData(10);
 
-    if (numLPs != 0) {
-      ID lpData(2*numLPs);
-      
-      if (theChannel.recvID(dbLPs, geoTag, lpData) < 0) {
-	opserr << "Domain::recv - channel failed to recv the LoadPatterns ID\n";
-	return -2;
-      }
+		if (numLPs != 0) {
+			ID lpData(2 * numLPs);
+
+			if (theChannel.recvID(dbLPs, geoTag, lpData) < 0) {
+				opserr << "Domain::recv - channel failed to recv the LoadPatterns ID\n";
+				return -2;
+			}
 
 			loc = 0;
 			for (i = 0; i < numLPs; i++) {
 				int classTag = lpData(loc);
 				int dbTag = lpData(loc + 1);
 
-	LoadPattern *theLP = theBroker.getNewLoadPattern(classTag);
-	if (theLP == 0) {
-	  opserr << "Domain::recv - cannot create LoadPattern with classTag  " << classTag << endln;
-	  return -2;
-	}			
-	theLP->setDbTag(dbTag);
-      
-	if (theLP->recvSelf(commitTag, theChannel, theBroker) < 0) {
-	  opserr << "Domain::recv - LoadPattern with dbTag " << dbTag << " failed in recvSelf\n";
-	  return -2;
-	}			
+				LoadPattern* theLP = theBroker.getNewLoadPattern(classTag);
+				if (theLP == 0) {
+					opserr << "Domain::recv - cannot create LoadPattern with classTag  " << classTag << endln;
+					return -2;
+				}
+				theLP->setDbTag(dbTag);
+
+				if (theLP->recvSelf(commitTag, theChannel, theBroker) < 0) {
+					opserr << "Domain::recv - LoadPattern with dbTag " << dbTag << " failed in recvSelf\n";
+					return -2;
+				}
 
 				if (this->addLoadPattern(theLP) == false) {
 					opserr << "Domain::recv - could not add LoadPattern with tag " << theLP->getTag() << " into the Domain\n";
@@ -3662,35 +3664,35 @@ Domain::recvSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 		int numParameters = domainData(11);
 		int dbParameters = domainData(12);
 
-    if (numParameters != 0) {
-      ID paramData(2*numParameters);
-      
-      if (theChannel.recvID(dbParameters, geoTag, paramData) < 0) {
-	opserr << "Domain::recv - channel failed to recv the Parameters ID\n";
-	return -2;
-      }
+		if (numParameters != 0) {
+			ID paramData(2 * numParameters);
+
+			if (theChannel.recvID(dbParameters, geoTag, paramData) < 0) {
+				opserr << "Domain::recv - channel failed to recv the Parameters ID\n";
+				return -2;
+			}
 
 			loc = 0;
 			for (i = 0; i < numParameters; i++) {
 				int classTag = paramData(loc);
 				int dbTag = paramData(loc + 1);
 
-	Parameter *theParameter = theBroker.getParameter(classTag);
-	if (theParameter == 0) {
-	  opserr << "Domain::recv - cannot create Parameter with classTag  " << classTag << endln;
-	  return -2;
-	}			
-	theParameter->setDbTag(dbTag);
-      
-	if (theParameter->recvSelf(commitTag, theChannel, theBroker) < 0) {
-	  opserr << "Domain::recv - Parameter with dbTag " << dbTag << " failed in recvSelf\n";
-	  return -2;
-	}			
+				Parameter* theParameter = theBroker.getParameter(classTag);
+				if (theParameter == 0) {
+					opserr << "Domain::recv - cannot create Parameter with classTag  " << classTag << endln;
+					return -2;
+				}
+				theParameter->setDbTag(dbTag);
 
-	if (this->addParameter(theParameter) == false) {
-	  opserr << "Domain::recv - could not add Parameter with tag " << theParameter->getTag() <<  " into the Domain\n";
-	  return -3;
-	}			
+				if (theParameter->recvSelf(commitTag, theChannel, theBroker) < 0) {
+					opserr << "Domain::recv - Parameter with dbTag " << dbTag << " failed in recvSelf\n";
+					return -2;
+				}
+
+				if (this->addParameter(theParameter) == false) {
+					opserr << "Domain::recv - could not add Parameter with tag " << theParameter->getTag() << " into the Domain\n";
+					return -3;
+				}
 
 				loc += 2;
 			}
@@ -3777,7 +3779,9 @@ Domain::recvSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 
 	// now set the domains lastGeoSendTag and currentDomainChangedFlag
 	lastGeoSendTag = currentGeoTag;
-
+#if _DEBUG
+	theChannel.Flush();
+#endif
 	// if get here we were successfull
 	return 0;
 }
@@ -3858,34 +3862,34 @@ Domain::getRecorder(int tag)
 
 int Domain::activateElements(const ID& elementList)
 {
-    ElementIter& iter = getElements();
-    Element* theElement;
-    for (int i = 0; i < elementList.Size(); ++i)
-    {
-        int eleTag = elementList(i);
-        theElement = this->getElement(eleTag);
-        if (theElement != 0)
-        {
-            theElement->activate();
-        }
-    }
-    return 0;
+	ElementIter& iter = getElements();
+	Element* theElement;
+	for (int i = 0; i < elementList.Size(); ++i)
+	{
+		int eleTag = elementList(i);
+		theElement = this->getElement(eleTag);
+		if (theElement != 0)
+		{
+			theElement->activate();
+		}
+	}
+	return 0;
 }
 
 
 
 int Domain::deactivateElements(const ID& elementList)
 {
-    // ElementIter& iter = getElements();
-    Element* theElement;
-    for (int i = 0; i < elementList.Size(); ++i)
-    {
-        int eleTag = elementList(i);
-        theElement = this->getElement(eleTag);
-        if (theElement != 0)
-        {
-            theElement->deactivate();
-        }
-    }
-    return 0;
+	// ElementIter& iter = getElements();
+	Element* theElement;
+	for (int i = 0; i < elementList.Size(); ++i)
+	{
+		int eleTag = elementList(i);
+		theElement = this->getElement(eleTag);
+		if (theElement != 0)
+		{
+			theElement->deactivate();
+		}
+	}
+	return 0;
 }

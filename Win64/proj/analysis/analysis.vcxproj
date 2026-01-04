@@ -142,9 +142,9 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeaderOutputFile>.\..\..\obj\analysis\release/analysis.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\..\..\obj\analysis\release/</AssemblerListingLocation>
-      <ObjectFileName>.\..\..\obj\analysis\release/</ObjectFileName>
-      <ProgramDataBaseFileName>.\..\..\obj\analysis\release/</ProgramDataBaseFileName>
+      <AssemblerListingLocation>.\..\..\obj\analysis\pyDebug/</AssemblerListingLocation>
+      <ObjectFileName>.\..\..\obj\analysis\pyDebug/</ObjectFileName>
+      <ProgramDataBaseFileName>.\..\..\obj\analysis\pyDebug/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>

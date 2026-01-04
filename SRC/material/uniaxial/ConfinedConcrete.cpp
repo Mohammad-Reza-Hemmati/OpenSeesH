@@ -20,7 +20,7 @@
 
 // Source: /usr/local/cvs/OpenSees/SRC/material/uniaxial/ConfinedConcrete.cpp,v
 
-// Written: SA Jalali (Civil Soft Science)
+// Written: SA Jalali (https://github.com/OpenSeesHouse/OpenSeesH)
 // Created: 02/1401
 //
 

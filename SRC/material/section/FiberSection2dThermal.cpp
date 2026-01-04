@@ -438,6 +438,7 @@ FiberSection2dThermal::setTrialSectionDeformation(const Vector& deforms)
 		}
 	}
 
+	//opserr << "temp data: \n" << FiberTemperatures << endln;
 	for (int i = 0; i < numFibers; i++) {
 
 		// initializing material strain and set it
@@ -856,7 +857,7 @@ FiberSection2dThermal::sendSelf(int commitTag, Channel& theChannel)
 	data(1) = numFibers;
 	data(2) = computeCentroid ? 1 : 0; // Now the ID data is really 3  
 	int dbTag = this->getDbTag();
-	res += theChannel.sendID(dbTag, commitTag, data);
+	res += theChannel.sendID(dbTag, commitTag, data); // 1
 	if (res < 0) {
 		opserr << "FiberSection2dThermal::sendSelf - failed to send ID data\n";
 		return res;
@@ -878,7 +879,7 @@ FiberSection2dThermal::sendSelf(int commitTag, Channel& theChannel)
 			materialData(2 * i + 1) = matDbTag;
 		}
 
-		res += theChannel.sendID(dbTag, commitTag, materialData);
+		res += theChannel.sendID(dbTag, commitTag, materialData); //2
 		if (res < 0) {
 			opserr << "FiberSection2dThermal::sendSelf - failed to send material data\n";
 			return res;
@@ -892,7 +893,7 @@ FiberSection2dThermal::sendSelf(int commitTag, Channel& theChannel)
 			fiberData(2 * numFibers + i) = Fiber_Tangent[i];
 			fiberData(3 * numFibers + i) = Fiber_ElongP[i];
 		}
-		res += theChannel.sendVector(dbTag, commitTag, fiberData);
+		res += theChannel.sendVector(dbTag, commitTag, fiberData); //3
 		if (res < 0) {
 			opserr << "FiberSection2dThermal::sendSelf - failed to send material data\n";
 			return res;
@@ -900,13 +901,13 @@ FiberSection2dThermal::sendSelf(int commitTag, Channel& theChannel)
 
 		// now invoke send(0 on all the materials
 		for (int j = 0; j < numFibers; j++)
-			theMaterials[j]->sendSelf(commitTag, theChannel);
+			theMaterials[j]->sendSelf(commitTag, theChannel); //4
 
-		//res += theChannel.sendVector(dbTag, commitTag, FiberTemperatures);
-		//if (res < 0) {
-		//	opserr << "FiberSection2dThermal::sendSelf - failed to send FiberTemperatures\n";
-		//	return res;
-		//}
+		res += theChannel.sendVector(dbTag, commitTag, FiberTemperatures);
+		if (res < 0) {
+			opserr << "FiberSection2dThermal::sendSelf - failed to send FiberTemperatures\n";
+			return res;
+		}
 	}
 
 	return res;
@@ -921,7 +922,7 @@ FiberSection2dThermal::recvSelf(int commitTag, Channel& theChannel,
 	static ID data(3);
 
 	int dbTag = this->getDbTag();
-	res += theChannel.recvID(dbTag, commitTag, data);
+	res += theChannel.recvID(dbTag, commitTag, data); //1
 	if (res < 0) {
 		opserr << "FiberSection2dThermal::recvSelf - failed to recv ID data\n";
 		return res;
@@ -931,7 +932,7 @@ FiberSection2dThermal::recvSelf(int commitTag, Channel& theChannel,
 	// recv data about materials objects, classTag and dbTag
 	if (data(1) != 0) {
 		ID materialData(2 * data(1));
-		res += theChannel.recvID(dbTag, commitTag, materialData);
+		res += theChannel.recvID(dbTag, commitTag, materialData); //2
 		if (res < 0) {
 			opserr << "FiberSection2dThermal::recvSelf - failed to recv material data\n";
 			return res;
@@ -990,7 +991,7 @@ FiberSection2dThermal::recvSelf(int commitTag, Channel& theChannel,
 		}
 
 		Vector fiberData(4 * numFibers);
-		res += theChannel.recvVector(dbTag, commitTag, fiberData);
+		res += theChannel.recvVector(dbTag, commitTag, fiberData); //3
 		if (res < 0) {
 			opserr << "FiberSection2dThermal::recvSelf - failed to recv material data\n";
 			return res;
@@ -1022,30 +1023,33 @@ FiberSection2dThermal::recvSelf(int commitTag, Channel& theChannel,
 			}
 
 			theMaterials[i]->setDbTag(dbTag);
-			res += theMaterials[i]->recvSelf(commitTag, theChannel, theBroker);
+			res += theMaterials[i]->recvSelf(commitTag, theChannel, theBroker); //4
 		}
 		FiberTemperatures.resize(numFibers);
-		//res += theChannel.recvVector(dbTag, commitTag, FiberTemperatures);
-		//if (res < 0) {
-		//	opserr << "FiberSection2dThermal::recvSelf - failed to recv FiberTemperatures\n";
-		//	return res;
-		//}
-		double Qz = 0.0;
-		double A = 0.0;
-		double yLoc, Area;
+		FiberTemperatures.Zero();
+		res += theChannel.recvVector(dbTag, commitTag, FiberTemperatures);
+		if (res < 0) {
+			opserr << "FiberSection2dThermal::recvSelf - failed to recv FiberTemperatures\n";
+			return res;
+		}
 
 		computeCentroid = data(2) ? true : false;
 
 		// Recompute centroid
-		for (i = 0; i < numFibers; i++) {
-			yLoc = matData[2 * i];
-			Area = matData[2 * i + 1];
-			A += Area;
-			Qz += yLoc * Area;
-		}
-
 		if (computeCentroid)
+		{
+			double Qz = 0.0;
+			double A = 0.0;
+			double yLoc, Area;
+			for (i = 0; i < numFibers; i++) {
+				yLoc = matData[2 * i];
+				Area = matData[2 * i + 1];
+				A += Area;
+				Qz += yLoc * Area;
+			}
+
 			yBar = Qz / A;
+		}
 		else
 			yBar = 0.0;
 	}

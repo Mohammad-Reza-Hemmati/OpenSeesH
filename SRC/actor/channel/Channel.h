@@ -108,7 +108,7 @@ class Channel
     virtual int recvID(int dbTag, int commitTag, 
 		    ID &theID, 
 		    ChannelAddress *theAddress =0) =0;      
-
+    virtual void Flush() {}
   protected:
     
   private:
