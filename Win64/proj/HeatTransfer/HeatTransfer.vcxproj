@@ -92,6 +92,9 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <StringPooling>true</StringPooling>
+      <AssemblerListingLocation>.\..\..\obj\HeatTransfer\pyDebug/</AssemblerListingLocation>
+      <ObjectFileName>.\..\..\obj\HeatTransfer\pyDebug/</ObjectFileName>
+      <ProgramDataBaseFileName>.\..\..\obj\HeatTransfer\pyDebug/</ProgramDataBaseFileName>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|X64'">

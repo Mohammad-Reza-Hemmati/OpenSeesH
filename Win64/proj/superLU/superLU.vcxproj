@@ -137,9 +137,9 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeaderOutputFile>.\..\..\obj\superLU\release/superLU.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\..\..\obj\superLU\release/</AssemblerListingLocation>
-      <ObjectFileName>.\..\..\obj\superLU\release/</ObjectFileName>
-      <ProgramDataBaseFileName>.\..\..\obj\superLU\release/</ProgramDataBaseFileName>
+      <AssemblerListingLocation>.\..\..\obj\superLU\pyDebug/</AssemblerListingLocation>
+      <ObjectFileName>.\..\..\obj\superLU\pyDebug/</ObjectFileName>
+      <ProgramDataBaseFileName>.\..\..\obj\superLU\pyDebug/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>

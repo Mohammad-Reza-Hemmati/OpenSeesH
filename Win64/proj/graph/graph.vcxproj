@@ -105,9 +105,9 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeaderOutputFile>.\..\..\obj\graph\release/graph.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\..\..\obj\graph\release/</AssemblerListingLocation>
-      <ObjectFileName>.\..\..\obj\graph\release/</ObjectFileName>
-      <ProgramDataBaseFileName>.\..\..\obj\graph\release/</ProgramDataBaseFileName>
+      <AssemblerListingLocation>.\..\..\obj\graph\pyDebug/</AssemblerListingLocation>
+      <ObjectFileName>.\..\..\obj\graph\pyDebug/</ObjectFileName>
+      <ProgramDataBaseFileName>.\..\..\obj\graph\pyDebug/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>

@@ -47,208 +47,208 @@ Force-Based Beam-Column Elements." Journal of Structural Engineering,
 
 void* OPS_HingeRadauTwoBeamIntegration(int& integrationTag, ID& secTags)
 {
-    if(OPS_GetNumRemainingInputArgs() < 6) {
-	opserr<<"insufficient arguments:integrationTag,secTagI,lpI,secTagJ,lpJ,secTagE\n";
-	return 0;
-    }
+	if (OPS_GetNumRemainingInputArgs() < 6) {
+		opserr << "insufficient arguments:integrationTag,secTagI,lpI,secTagJ,lpJ,secTagE\n";
+		return 0;
+	}
 
-    // inputs: 
-    int iData[4];
-    double dData[2];
-    int numData = 2;
-    if(OPS_GetIntInput(&numData,&iData[0]) < 0) {
-	opserr << "WARNING: failed to get tag and secTagI\n";
-	return 0;
-    }
-    numData = 1;
-    if(OPS_GetDoubleInput(&numData,&dData[0]) < 0) {
-	opserr << "WARNING: failed to get lpI\n";
-	return 0;
-    }
-    if(OPS_GetIntInput(&numData,&iData[2]) < 0) {
-	opserr << "WARNING: failed to get secTagJ\n";
-	return 0;
-    }
-    if(OPS_GetDoubleInput(&numData,&dData[1]) < 0) {
-	opserr << "WARNING: failed to get lpJ\n";
-	return 0;
-    }
-    if(OPS_GetIntInput(&numData,&iData[3]) < 0) {
-	opserr << "WARNING: failed to get secTagE\n";
-	return 0;
-    }
-    
-    integrationTag = iData[0];
-    secTags.resize(6);
-    secTags(0) = iData[1];
-    secTags(1) = iData[1];
-    secTags(2) = iData[3];
-    secTags(3) = iData[3];
-    secTags(4) = iData[2];
-    secTags(5) = iData[2];
+	// inputs: 
+	int iData[4];
+	double dData[2];
+	int numData = 2;
+	if (OPS_GetIntInput(&numData, &iData[0]) < 0) {
+		opserr << "WARNING: failed to get tag and secTagI\n";
+		return 0;
+	}
+	numData = 1;
+	if (OPS_GetDoubleInput(&numData, &dData[0]) < 0) {
+		opserr << "WARNING: failed to get lpI\n";
+		return 0;
+	}
+	if (OPS_GetIntInput(&numData, &iData[2]) < 0) {
+		opserr << "WARNING: failed to get secTagJ\n";
+		return 0;
+	}
+	if (OPS_GetDoubleInput(&numData, &dData[1]) < 0) {
+		opserr << "WARNING: failed to get lpJ\n";
+		return 0;
+	}
+	if (OPS_GetIntInput(&numData, &iData[3]) < 0) {
+		opserr << "WARNING: failed to get secTagE\n";
+		return 0;
+	}
 
-    return new HingeRadauTwoBeamIntegration(dData[0],dData[1]);
+	integrationTag = iData[0];
+	secTags.resize(6);
+	secTags(0) = iData[1];
+	secTags(1) = iData[1];
+	secTags(2) = iData[3];
+	secTags(3) = iData[3];
+	secTags(4) = iData[2];
+	secTags(5) = iData[2];
+
+	return new HingeRadauTwoBeamIntegration(dData[0], dData[1]);
 }
 
 HingeRadauTwoBeamIntegration::HingeRadauTwoBeamIntegration(double lpi,
-							   double lpj):
-  BeamIntegration(BEAM_INTEGRATION_TAG_HingeRadauTwo), lpI(lpi), lpJ(lpj)
+	double lpj) :
+	BeamIntegration(BEAM_INTEGRATION_TAG_HingeRadauTwo), lpI(lpi), lpJ(lpj)
 {
-  // Nothing to do
+	// Nothing to do
 }
 
-HingeRadauTwoBeamIntegration::HingeRadauTwoBeamIntegration():
-  BeamIntegration(BEAM_INTEGRATION_TAG_HingeRadauTwo), lpI(0.0), lpJ(0.0)
+HingeRadauTwoBeamIntegration::HingeRadauTwoBeamIntegration() :
+	BeamIntegration(BEAM_INTEGRATION_TAG_HingeRadauTwo), lpI(0.0), lpJ(0.0)
 {
 
 }
 
 HingeRadauTwoBeamIntegration::~HingeRadauTwoBeamIntegration()
 {
-  // Nothing to do
+	// Nothing to do
 }
 
 void
 HingeRadauTwoBeamIntegration::getSectionLocations(int numSections, double L,
-						  double *xi)
+	double* xi)
 {
-  double oneOverL = 1.0/L;
+	double oneOverL = 1.0 / L;
 
-  xi[0] = 0.0;
-  xi[1] = 2.0/3*lpI*oneOverL;
-  xi[4] = 1.0-2.0/3*lpJ*oneOverL;
-  xi[5] = 1.0;
+	xi[0] = 0.0;
+	xi[1] = 2.0 / 3 * lpI * oneOverL;
+	xi[4] = 1.0 - 2.0 / 3 * lpJ * oneOverL;
+	xi[5] = 1.0;
 
-  static const double oneRoot3 = 1.0/sqrt(3.0);
+	static const double oneRoot3 = 1.0 / sqrt(3.0);
 
-  double alpha = 0.5 - 0.5*(lpI+lpJ)*oneOverL;
-  double beta  = 0.5 + 0.5*(lpI-lpJ)*oneOverL;
-  xi[2] = alpha*(-oneRoot3) + beta;
-  xi[3] = alpha*(oneRoot3) + beta;
+	double alpha = 0.5 - 0.5 * (lpI + lpJ) * oneOverL;
+	double beta = 0.5 + 0.5 * (lpI - lpJ) * oneOverL;
+	xi[2] = alpha * (-oneRoot3) + beta;
+	xi[3] = alpha * (oneRoot3)+beta;
 
-  for (int i = 6; i < numSections; i++)
-    xi[i] = 0.0;
+	for (int i = 6; i < numSections; i++)
+		xi[i] = 0.0;
 }
 
 void
 HingeRadauTwoBeamIntegration::getSectionWeights(int numSections, double L,
-						double *wt)
+	double* wt)
 {
-  double oneOverL = 1.0/L;
+	double oneOverL = 1.0 / L;
 
-  wt[0] = 0.25*lpI*oneOverL;
-  wt[1] = 0.75*lpI*oneOverL;
-  wt[4] = 0.75*lpJ*oneOverL;
-  wt[5] = 0.25*lpJ*oneOverL;
+	wt[0] = 0.25 * lpI * oneOverL;
+	wt[1] = 0.75 * lpI * oneOverL;
+	wt[4] = 0.75 * lpJ * oneOverL;
+	wt[5] = 0.25 * lpJ * oneOverL;
 
-  wt[2] = 0.5-0.5*(lpI+lpJ)*oneOverL;
-  wt[3] = 0.5-0.5*(lpI+lpJ)*oneOverL;
+	wt[2] = 0.5 - 0.5 * (lpI + lpJ) * oneOverL;
+	wt[3] = 0.5 - 0.5 * (lpI + lpJ) * oneOverL;
 
-  for (int i = 6; i < numSections; i++)
-    wt[i] = 1.0;
+	for (int i = 6; i < numSections; i++)
+		wt[i] = 1.0;
 }
 
 BeamIntegration*
 HingeRadauTwoBeamIntegration::getCopy(void)
 {
-  return new HingeRadauTwoBeamIntegration(lpI, lpJ);
+	return new HingeRadauTwoBeamIntegration(lpI, lpJ);
 }
 
 int
-HingeRadauTwoBeamIntegration::sendSelf(int cTag, Channel &theChannel)
+HingeRadauTwoBeamIntegration::sendSelf(int cTag, Channel& theChannel)
 {
-  static Vector data(2);
+	static Vector data(2);
 
-  data(0) = lpI;
-  data(1) = lpJ;
+	data(0) = lpI;
+	data(1) = lpJ;
 
-  int dbTag = this->getDbTag();
+	int dbTag = this->getDbTag();
 
-  if (theChannel.sendVector(dbTag, cTag, data) < 0) {
-    opserr << "HingeRadauTwoBeamIntegration::sendSelf() - failed to send Vector data\n";
-    return -1;
-  }    
+	if (theChannel.sendVector(dbTag, cTag, data) < 0) {
+		opserr << "HingeRadauTwoBeamIntegration::sendSelf() - failed to send Vector data\n";
+		return -1;
+	}
 
-  return 0;
+	return 0;
 }
 
 int
-HingeRadauTwoBeamIntegration::recvSelf(int cTag, Channel &theChannel,
-				       FEM_ObjectBroker &theBroker)
+HingeRadauTwoBeamIntegration::recvSelf(int cTag, Channel& theChannel,
+	FEM_ObjectBroker& theBroker)
 {
-  static Vector data(2);
+	static Vector data(2);
 
-  int dbTag = this->getDbTag();
+	int dbTag = this->getDbTag();
 
-  if (theChannel.recvVector(dbTag, cTag, data) < 0)  {
-    opserr << "HingeRadauTwoBeamIntegration::recvSelf() - failed to receive Vector data\n";
-    return -1;
-  }
-  
-  lpI = data(0);
-  lpJ = data(1);
+	if (theChannel.recvVector(dbTag, cTag, data) < 0) {
+		opserr << "HingeRadauTwoBeamIntegration::recvSelf() - failed to receive Vector data\n";
+		return -1;
+	}
 
-  return 0;
+	lpI = data(0);
+	lpJ = data(1);
+
+	return 0;
 }
 
 int
-HingeRadauTwoBeamIntegration::setParameter(const char **argv, int argc,
-					   Parameter &param)
+HingeRadauTwoBeamIntegration::setParameter(const char** argv, int argc,
+	Parameter& param)
 {
-  if (argc < 1)
-    return -1;
+	if (argc < 1)
+		return -1;
 
-  if (strcmp(argv[0],"lpI") == 0) {
-    param.setValue(lpI);
-    return param.addObject(1, this);
-  }
-  if (strcmp(argv[0],"lpJ") == 0) {
-    param.setValue(lpJ);
-    return param.addObject(2, this);
-  }
-  if (strcmp(argv[0],"lp") == 0) {
-    param.setValue(lpI);
-    return param.addObject(3, this);
-  }
-  return -1;
+	if (strcmp(argv[0], "lpI") == 0) {
+		param.setValue(lpI);
+		return param.addObject(1, this);
+	}
+	if (strcmp(argv[0], "lpJ") == 0) {
+		param.setValue(lpJ);
+		return param.addObject(2, this);
+	}
+	if (strcmp(argv[0], "lp") == 0) {
+		param.setValue(lpI);
+		return param.addObject(3, this);
+	}
+	return -1;
 }
 
 int
 HingeRadauTwoBeamIntegration::updateParameter(int parameterID,
-					      Information &info)
+	Information& info)
 {
-  switch (parameterID) {
-  case 1:
-    lpI = info.theDouble;
-    return 0;
-  case 2:
-    lpJ = info.theDouble;
-    return 0;
-  case 3:
-    lpI = lpJ = info.theDouble;
-    return 0;
-  default:
-    return -1;
-  }
+	switch (parameterID) {
+	case 1:
+		lpI = info.theDouble;
+		return 0;
+	case 2:
+		lpJ = info.theDouble;
+		return 0;
+	case 3:
+		lpI = lpJ = info.theDouble;
+		return 0;
+	default:
+		return -1;
+	}
 }
 
 int
 HingeRadauTwoBeamIntegration::activateParameter(int paramID)
 {
-  parameterID = paramID;
+	parameterID = paramID;
 
-  return 0;
+	return 0;
 }
 
 void
-HingeRadauTwoBeamIntegration::Print(OPS_Stream &s, int flag)
+HingeRadauTwoBeamIntegration::Print(OPS_Stream& s, int flag)
 {
 	if (flag == OPS_PRINT_PRINTMODEL_JSON) {
 		s << "{\"type\": \"HingeRadauTwo\", ";
 		s << "\"lpI\": " << lpI << ", ";
 		s << "\"lpJ\": " << lpJ << "}";
 	}
-	
+
 	else {
 		s << "HingeRadauTwo" << endln;
 		s << " lpI = " << lpI;
@@ -256,105 +256,105 @@ HingeRadauTwoBeamIntegration::Print(OPS_Stream &s, int flag)
 	}
 }
 
-void 
+void
 HingeRadauTwoBeamIntegration::getLocationsDeriv(int numSections,
-						double L, double dLdh,
-						double *dptsdh)
+	double L, double dLdh,
+	double* dptsdh)
 {
-  double oneOverL = 1.0/L;
+	double oneOverL = 1.0 / L;
 
-  for (int i = 0; i < numSections; i++)
-    dptsdh[i] = 0.0;
+	for (int i = 0; i < numSections; i++)
+		dptsdh[i] = 0.0;
 
-  //return;
+	//return;
 
-  static const double oneRoot3 = 1.0/sqrt(3.0);
+	static const double oneRoot3 = 1.0 / sqrt(3.0);
 
-  if (parameterID == 1) { // lpI
-    dptsdh[1] = 2.0/3*oneOverL;
-    dptsdh[2] = 0.5*oneOverL*(1.0+oneRoot3);
-    dptsdh[3] = 0.5*oneOverL*(1.0-oneRoot3);
-  }
+	if (parameterID == 1) { // lpI
+		dptsdh[1] = 2.0 / 3 * oneOverL;
+		dptsdh[2] = 0.5 * oneOverL * (1.0 + oneRoot3);
+		dptsdh[3] = 0.5 * oneOverL * (1.0 - oneRoot3);
+	}
 
-  if (parameterID == 2) { // lpJ
-    dptsdh[2] = -0.5*oneOverL*(1.0-oneRoot3);
-    dptsdh[3] = -0.5*oneOverL*(1.0+oneRoot3);
-    dptsdh[4] = -2.0/3*oneOverL;
-  }
+	if (parameterID == 2) { // lpJ
+		dptsdh[2] = -0.5 * oneOverL * (1.0 - oneRoot3);
+		dptsdh[3] = -0.5 * oneOverL * (1.0 + oneRoot3);
+		dptsdh[4] = -2.0 / 3 * oneOverL;
+	}
 
-  if (parameterID == 3) { // lpI and lpJ
-    dptsdh[1] = 2.0/3*oneOverL;
-    dptsdh[2] =  oneOverL*oneRoot3;
-    dptsdh[3] = -oneOverL*oneRoot3;
-    dptsdh[4] = -2.0/3*oneOverL;
-  }
+	if (parameterID == 3) { // lpI and lpJ
+		dptsdh[1] = 2.0 / 3 * oneOverL;
+		dptsdh[2] = oneOverL * oneRoot3;
+		dptsdh[3] = -oneOverL * oneRoot3;
+		dptsdh[4] = -2.0 / 3 * oneOverL;
+	}
 
-  return;
+	return;
 
-  if (dLdh != 0.0) {
-    dptsdh[1] = -2.0/3*lpI*dLdh/(L*L);
-    double dalphadh =  0.5*(lpI+lpJ)*dLdh/(L*L);
-    double dbetadh  = -0.5*(lpI-lpJ)*dLdh/(L*L);
-    dptsdh[2] = -oneRoot3*dalphadh + dbetadh;
-    dptsdh[3] =  oneRoot3*dalphadh + dbetadh;
-    double alpha = 0.5*L - 0.5*(lpI+lpJ);
-    double beta  = 0.5*L + 0.5*(lpI-lpJ);
-    dptsdh[2] = -(-oneRoot3*alpha+beta)*dLdh/(L*L) + 0.5*dLdh;///(L*L);
-    dptsdh[3] = -( oneRoot3*alpha+beta)*dLdh/(L*L) + 0.5*dLdh;///(L*L);
-    dptsdh[4] = -(L-2.0/3*lpJ)*dLdh/(L*L);
-    dptsdh[5] =  -L*dLdh/(L*L);
-    // STILL TO DO
-    //opserr << "getPointsDeriv -- to do" << endln;
-  }
+	if (dLdh != 0.0) {
+		dptsdh[1] = -2.0 / 3 * lpI * dLdh / (L * L);
+		double dalphadh = 0.5 * (lpI + lpJ) * dLdh / (L * L);
+		double dbetadh = -0.5 * (lpI - lpJ) * dLdh / (L * L);
+		dptsdh[2] = -oneRoot3 * dalphadh + dbetadh;
+		dptsdh[3] = oneRoot3 * dalphadh + dbetadh;
+		double alpha = 0.5 * L - 0.5 * (lpI + lpJ);
+		double beta = 0.5 * L + 0.5 * (lpI - lpJ);
+		dptsdh[2] = -(-oneRoot3 * alpha + beta) * dLdh / (L * L) + 0.5 * dLdh;///(L*L);
+		dptsdh[3] = -(oneRoot3 * alpha + beta) * dLdh / (L * L) + 0.5 * dLdh;///(L*L);
+		dptsdh[4] = -(L - 2.0 / 3 * lpJ) * dLdh / (L * L);
+		dptsdh[5] = -L * dLdh / (L * L);
+		// STILL TO DO
+		//opserr << "getPointsDeriv -- to do" << endln;
+	}
 
-  return;
+	return;
 }
 
 void
 HingeRadauTwoBeamIntegration::getWeightsDeriv(int numSections,
-					      double L, double dLdh,
-					      double *dwtsdh)
+	double L, double dLdh,
+	double* dwtsdh)
 {
-  double oneOverL = 1.0/L;
+	double oneOverL = 1.0 / L;
 
-  for (int i = 0; i < numSections; i++)
-    dwtsdh[i] = 0.0;
+	for (int i = 0; i < numSections; i++)
+		dwtsdh[i] = 0.0;
 
-  if (parameterID == 1) { // lpI
-    dwtsdh[0] = 0.25*oneOverL;
-    dwtsdh[1] = 0.75*oneOverL;
-    dwtsdh[2] = -0.5*oneOverL;
-    dwtsdh[3] = -0.5*oneOverL;
-  }
+	if (parameterID == 1) { // lpI
+		dwtsdh[0] = 0.25 * oneOverL;
+		dwtsdh[1] = 0.75 * oneOverL;
+		dwtsdh[2] = -0.5 * oneOverL;
+		dwtsdh[3] = -0.5 * oneOverL;
+	}
 
-  if (parameterID == 2) { // lpJ
-    dwtsdh[2] = -0.5*oneOverL;
-    dwtsdh[3] = -0.5*oneOverL;
-    dwtsdh[4] = 0.75*oneOverL;
-    dwtsdh[5] = 0.25*oneOverL;
-  }
+	if (parameterID == 2) { // lpJ
+		dwtsdh[2] = -0.5 * oneOverL;
+		dwtsdh[3] = -0.5 * oneOverL;
+		dwtsdh[4] = 0.75 * oneOverL;
+		dwtsdh[5] = 0.25 * oneOverL;
+	}
 
-  if (parameterID == 3) { // lpI and lpJ
-    dwtsdh[0] = 0.25*oneOverL;
-    dwtsdh[1] = 0.75*oneOverL;
-    dwtsdh[2] = -oneOverL;
-    dwtsdh[3] = -oneOverL;
-    dwtsdh[4] = 0.75*oneOverL;
-    dwtsdh[5] = 0.25*oneOverL;
-  }
+	if (parameterID == 3) { // lpI and lpJ
+		dwtsdh[0] = 0.25 * oneOverL;
+		dwtsdh[1] = 0.75 * oneOverL;
+		dwtsdh[2] = -oneOverL;
+		dwtsdh[3] = -oneOverL;
+		dwtsdh[4] = 0.75 * oneOverL;
+		dwtsdh[5] = 0.25 * oneOverL;
+	}
 
-  return;
+	return;
 
-  if (dLdh != 0.0) {
-    dwtsdh[0] = -0.25*lpI*dLdh/(L*L);
-    dwtsdh[1] = -0.75*lpI*dLdh/(L*L);
-    dwtsdh[2] = 0.5*(lpI+lpJ)*dLdh/(L*L);
-    dwtsdh[3] = 0.5*(lpI+lpJ)*dLdh/(L*L);
-    dwtsdh[4] = -0.75*lpJ*dLdh/(L*L);
-    dwtsdh[5] = -0.25*lpJ*dLdh/(L*L);
-    // STILL TO DO
-    //opserr << "getWeightsDeriv -- to do" << endln;
-  }
+	if (dLdh != 0.0) {
+		dwtsdh[0] = -0.25 * lpI * dLdh / (L * L);
+		dwtsdh[1] = -0.75 * lpI * dLdh / (L * L);
+		dwtsdh[2] = 0.5 * (lpI + lpJ) * dLdh / (L * L);
+		dwtsdh[3] = 0.5 * (lpI + lpJ) * dLdh / (L * L);
+		dwtsdh[4] = -0.75 * lpJ * dLdh / (L * L);
+		dwtsdh[5] = -0.25 * lpJ * dLdh / (L * L);
+		// STILL TO DO
+		//opserr << "getWeightsDeriv -- to do" << endln;
+	}
 
-  return;
+	return;
 }

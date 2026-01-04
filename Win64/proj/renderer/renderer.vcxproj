@@ -137,9 +137,9 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeaderOutputFile>.\..\..\obj\renderer\release/renderer.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\..\..\obj\renderer\release/</AssemblerListingLocation>
-      <ObjectFileName>.\..\..\obj\renderer\release/</ObjectFileName>
-      <ProgramDataBaseFileName>.\..\..\obj\renderer\release/</ProgramDataBaseFileName>
+      <AssemblerListingLocation>.\..\..\obj\renderer\pyDebug/</AssemblerListingLocation>
+      <ObjectFileName>.\..\..\obj\renderer\pyDebug/</ObjectFileName>
+      <ProgramDataBaseFileName>.\..\..\obj\renderer\pyDebug/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>

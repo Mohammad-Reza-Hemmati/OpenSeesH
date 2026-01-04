@@ -44,7 +44,7 @@
 #include <UniaxialFiber2d.h>
 #include <UniaxialFiber3d.h>
 
-#include <CapPlasticity.h>          // Quan Gu & ZhiJian Qiu  2013
+//#include <CapPlasticity.h>          // Quan Gu & ZhiJian Qiu  2013
 
 #include <PressureIndependMultiYield.h>
 #include <PressureDependMultiYield.h>
@@ -71,8 +71,8 @@ extern  void* OPS_RAFourSteelPCPlaneStressMaterial(void);
 //extern  void* OPS_NewPlasticDamageConcrete3d(void);
 extern  void* OPS_NewPlasticDamageConcretePlaneStress(void);
 extern  void* OPS_ElasticIsotropicMaterial(void);
-extern  void* OPS_ElasticIsotropic3D(void);
-extern  void* OPS_IncrementalElasticIsotropicThreeDimensional(void);
+//extern  void* OPS_ElasticIsotropic3D(void);
+//extern  void* OPS_IncrementalElasticIsotropicThreeDimensional(void);
 extern  void* OPS_ElasticOrthotropicMaterial(void);
 extern  void* OPS_DruckerPragerMaterial(void);
 extern  void* OPS_BoundingCamClayMaterial(void);
@@ -220,29 +220,29 @@ TclModelBuilderNDMaterialCommand(ClientData clientData, Tcl_Interp* interp, int 
 			return TCL_ERROR;
 	}
 
-	else if ((strcmp(argv[1], "InitStressMaterial") == 0) || (strcmp(argv[1], "InitStress") == 0)) {
-		void* theMat = OPS_InitStressNDMaterial();
-		if (theMat != 0)
-			theMaterial = (NDMaterial*)theMat;
-		else
-			return TCL_ERROR;
-	}
+	//else if ((strcmp(argv[1], "InitStressMaterial") == 0) || (strcmp(argv[1], "InitStress") == 0)) {
+	//	void* theMat = OPS_InitStressNDMaterial();
+	//	if (theMat != 0)
+	//		theMaterial = (NDMaterial*)theMat;
+	//	else
+	//		return TCL_ERROR;
+	//}
 
-	else if (strcmp(argv[1], "InitStrain") == 0) {
-		void* theMat = OPS_InitStrainNDMaterial();
-		if (theMat != 0)
-			theMaterial = (NDMaterial*)theMat;
-		else
-			return TCL_ERROR;
-	}
+	//else if (strcmp(argv[1], "InitStrain") == 0) {
+	//	void* theMat = OPS_InitStrainNDMaterial();
+	//	if (theMat != 0)
+	//		theMaterial = (NDMaterial*)theMat;
+	//	else
+	//		return TCL_ERROR;
+	//}
 
-	else if (strcmp(argv[1], "PlaneStressLayeredMaterial") == 0) {
-		void* theMat = OPS_PlaneStressLayeredMaterial();
-		if (theMat != 0)
-			theMaterial = (NDMaterial*)theMat;
-		else
-			return TCL_ERROR;
-	}
+	//else if (strcmp(argv[1], "PlaneStressLayeredMaterial") == 0) {
+	//	void* theMat = OPS_PlaneStressLayeredMaterial();
+	//	if (theMat != 0)
+	//		theMaterial = (NDMaterial*)theMat;
+	//	else
+	//		return TCL_ERROR;
+	//}
 
 	else if (strcmp(argv[1], "PlaneStressRebarMaterial") == 0) {
 		void* theMat = OPS_PlaneStressRebarMaterial();
@@ -253,26 +253,26 @@ TclModelBuilderNDMaterialCommand(ClientData clientData, Tcl_Interp* interp, int 
 	}
 
 
-	else if (strcmp(argv[1], "J2BeamFiber") == 0) {
-		void* theMat = 0;
-		if (theTclBuilder->getNDM() == 2)
-			theMat = OPS_J2BeamFiber2dMaterial();
-		else
-			theMat = OPS_J2BeamFiber3dMaterial();
+	//else if (strcmp(argv[1], "J2BeamFiber") == 0) {
+	//	void* theMat = 0;
+	//	if (theTclBuilder->getNDM() == 2)
+	//		theMat = OPS_J2BeamFiber2dMaterial();
+	//	else
+	//		theMat = OPS_J2BeamFiber3dMaterial();
 
-		if (theMat != 0)
-			theMaterial = (NDMaterial*)theMat;
-		else
-			return TCL_ERROR;
-	}
+	//	if (theMat != 0)
+	//		theMaterial = (NDMaterial*)theMat;
+	//	else
+	//		return TCL_ERROR;
+	//}
 
-	else if (strcmp(argv[1], "J2PlateFibre") == 0) {
-		void* theMat = OPS_J2PlateFibreMaterial();
-		if (theMat != 0)
-			theMaterial = (NDMaterial*)theMat;
-		else
-			return TCL_ERROR;
-	}
+	//else if (strcmp(argv[1], "J2PlateFibre") == 0) {
+	//	void* theMat = OPS_J2PlateFibreMaterial();
+	//	if (theMat != 0)
+	//		theMaterial = (NDMaterial*)theMat;
+	//	else
+	//		return TCL_ERROR;
+	//}
 
 #ifdef _HAVE_Faria1998
 	else if (strcmp(argv[1], "Faria1998") == 0) {
@@ -382,14 +382,14 @@ TclModelBuilderNDMaterialCommand(ClientData clientData, Tcl_Interp* interp, int 
 
 
 
-	else if ((strcmp(argv[1], "TruncatedDP") == 0)) {
+	//else if ((strcmp(argv[1], "TruncatedDP") == 0)) {
 
-		void* theMat = OPS_LinearCap();
-		if (theMat != 0)
-			theMaterial = (NDMaterial*)theMat;
-		else
-			return TCL_ERROR;
-	}
+	//	void* theMat = OPS_LinearCap();
+	//	if (theMat != 0)
+	//		theMaterial = (NDMaterial*)theMat;
+	//	else
+	//		return TCL_ERROR;
+	//}
 
 
 	// K Kolozvari                                                            
@@ -404,32 +404,32 @@ TclModelBuilderNDMaterialCommand(ClientData clientData, Tcl_Interp* interp, int 
 	}
 
 
-	else if ((strcmp(argv[1], "AcousticMedium") == 0)) {
+	//else if ((strcmp(argv[1], "AcousticMedium") == 0)) {
 
-		void* theMat = OPS_AcousticMedium();
-		if (theMat != 0)
-			theMaterial = (NDMaterial*)theMat;
-		else
-			return TCL_ERROR;
-	}
+	//	void* theMat = OPS_AcousticMedium();
+	//	if (theMat != 0)
+	//		theMaterial = (NDMaterial*)theMat;
+	//	else
+	//		return TCL_ERROR;
+	//}
 
-	else if ((strcmp(argv[1], "UVCplanestress") == 0)) {
+	//else if ((strcmp(argv[1], "UVCplanestress") == 0)) {
 
-		void* theMat = OPS_UVCplanestress();
-		if (theMat != 0)
-			theMaterial = (NDMaterial*)theMat;
-		else
-			return TCL_ERROR;
-	}
+	//	void* theMat = OPS_UVCplanestress();
+	//	if (theMat != 0)
+	//		theMaterial = (NDMaterial*)theMat;
+	//	else
+	//		return TCL_ERROR;
+	//}
 
-	else if ((strcmp(argv[1], "UVCmultiaxial") == 0)) {
+	//else if ((strcmp(argv[1], "UVCmultiaxial") == 0)) {
 
-		void* theMat = OPS_UVCmultiaxial();
-		if (theMat != 0)
-			theMaterial = (NDMaterial*)theMat;
-		else
-			return TCL_ERROR;
-	}
+	//	void* theMat = OPS_UVCmultiaxial();
+	//	if (theMat != 0)
+	//		theMaterial = (NDMaterial*)theMat;
+	//	else
+	//		return TCL_ERROR;
+	//}
 
 	//else if ((strcmp(argv[1], "MaterialCMM") == 0)) {
 
@@ -440,23 +440,23 @@ TclModelBuilderNDMaterialCommand(ClientData clientData, Tcl_Interp* interp, int 
 	//		return TCL_ERROR;
 	//}
 
-	else if ((strcmp(argv[1], "CycLiqCP") == 0)) {
+	//else if ((strcmp(argv[1], "CycLiqCP") == 0)) {
 
-		void* theMat = OPS_CycLiqCPMaterial();
-		if (theMat != 0)
-			theMaterial = (NDMaterial*)theMat;
-		else
-			return TCL_ERROR;
-	}
+	//	void* theMat = OPS_CycLiqCPMaterial();
+	//	if (theMat != 0)
+	//		theMaterial = (NDMaterial*)theMat;
+	//	else
+	//		return TCL_ERROR;
+	//}
 
-	else if ((strcmp(argv[1], "CycLiqCPSP") == 0)) {
+	//else if ((strcmp(argv[1], "CycLiqCPSP") == 0)) {
 
-		void* theMat = OPS_CycLiqCPSPMaterial();
-		if (theMat != 0)
-			theMaterial = (NDMaterial*)theMat;
-		else
-			return TCL_ERROR;
-	}
+	//	void* theMat = OPS_CycLiqCPSPMaterial();
+	//	if (theMat != 0)
+	//		theMaterial = (NDMaterial*)theMat;
+	//	else
+	//		return TCL_ERROR;
+	//}
 
 	else if ((strcmp(argv[1], "BoundingCamClay") == 0)) {
 
@@ -467,95 +467,95 @@ TclModelBuilderNDMaterialCommand(ClientData clientData, Tcl_Interp* interp, int 
 			return TCL_ERROR;
 	}
 
-	else if ((strcmp(argv[1], "ManzariDafalias") == 0)) {
+	//else if ((strcmp(argv[1], "ManzariDafalias") == 0)) {
 
-		void* theMat = OPS_ManzariDafaliasMaterial();
-		if (theMat != 0)
-			theMaterial = (NDMaterial*)theMat;
-		else
-			return TCL_ERROR;
-	}
+	//	void* theMat = OPS_ManzariDafaliasMaterial();
+	//	if (theMat != 0)
+	//		theMaterial = (NDMaterial*)theMat;
+	//	else
+	//		return TCL_ERROR;
+	//}
 
-	else if ((strcmp(argv[1], "ManzariDafaliasRO") == 0)) {
+	//else if ((strcmp(argv[1], "ManzariDafaliasRO") == 0)) {
 
-		void* theMat = OPS_ManzariDafaliasMaterialRO();
-		if (theMat != 0)
-			theMaterial = (NDMaterial*)theMat;
-		else
-			return TCL_ERROR;
-	}
+	//	void* theMat = OPS_ManzariDafaliasMaterialRO();
+	//	if (theMat != 0)
+	//		theMaterial = (NDMaterial*)theMat;
+	//	else
+	//		return TCL_ERROR;
+	//}
 
-	else if ((strcmp(argv[1], "PM4Sand") == 0)) {
+	//else if ((strcmp(argv[1], "PM4Sand") == 0)) {
 
-		void* theMat = OPS_PM4SandMaterial();
-		if (theMat != 0)
-			theMaterial = (NDMaterial*)theMat;
-		else
-			return TCL_ERROR;
-	}
+	//	void* theMat = OPS_PM4SandMaterial();
+	//	if (theMat != 0)
+	//		theMaterial = (NDMaterial*)theMat;
+	//	else
+	//		return TCL_ERROR;
+	//}
 
-	else if ((strcmp(argv[1], "J2CyclicBoundingSurface") == 0)) {
+	//else if ((strcmp(argv[1], "J2CyclicBoundingSurface") == 0)) {
 
-		void* theMat = OPS_J2CyclicBoundingSurfaceMaterial();
-		if (theMat != 0)
-			theMaterial = (NDMaterial*)theMat;
-		else
-			return TCL_ERROR;
-	}
+	//	void* theMat = OPS_J2CyclicBoundingSurfaceMaterial();
+	//	if (theMat != 0)
+	//		theMaterial = (NDMaterial*)theMat;
+	//	else
+	//		return TCL_ERROR;
+	//}
 
-	else if ((strcmp(argv[1], "PM4Silt") == 0)) {
+	//else if ((strcmp(argv[1], "PM4Silt") == 0)) {
 
-		void* theMat = OPS_PM4SiltMaterial();
-		if (theMat != 0)
-			theMaterial = (NDMaterial*)theMat;
-		else
-			return TCL_ERROR;
-	}
+	//	void* theMat = OPS_PM4SiltMaterial();
+	//	if (theMat != 0)
+	//		theMaterial = (NDMaterial*)theMat;
+	//	else
+	//		return TCL_ERROR;
+	//}
 
-	else if ((strcmp(argv[1], "ContactMaterial2D") == 0)) {
+	//else if ((strcmp(argv[1], "ContactMaterial2D") == 0)) {
 
-		void* theMat = OPS_ContactMaterial2DMaterial();
-		if (theMat != 0)
-			theMaterial = (NDMaterial*)theMat;
-		else
-			return TCL_ERROR;
-	}
+	//	void* theMat = OPS_ContactMaterial2DMaterial();
+	//	if (theMat != 0)
+	//		theMaterial = (NDMaterial*)theMat;
+	//	else
+	//		return TCL_ERROR;
+	//}
 
-	else if ((strcmp(argv[1], "ContactMaterial3D") == 0)) {
+	//else if ((strcmp(argv[1], "ContactMaterial3D") == 0)) {
 
-		void* theMat = OPS_ContactMaterial3DMaterial();
-		if (theMat != 0)
-			theMaterial = (NDMaterial*)theMat;
-		else
-			return TCL_ERROR;
-	}
+	//	void* theMat = OPS_ContactMaterial3DMaterial();
+	//	if (theMat != 0)
+	//		theMaterial = (NDMaterial*)theMat;
+	//	else
+	//		return TCL_ERROR;
+	//}
 
-	else if ((strcmp(argv[1], "InitialStateAnalysisWrapper") == 0)) {
+	//else if ((strcmp(argv[1], "InitialStateAnalysisWrapper") == 0)) {
 
-		void* theMat = OPS_InitialStateAnalysisWrapperMaterial();
-		if (theMat != 0)
-			theMaterial = (NDMaterial*)theMat;
-		else
-			return TCL_ERROR;
-	}
+	//	void* theMat = OPS_InitialStateAnalysisWrapperMaterial();
+	//	if (theMat != 0)
+	//		theMaterial = (NDMaterial*)theMat;
+	//	else
+	//		return TCL_ERROR;
+	//}
 
-	else if ((strcmp(argv[1], "stressDensity") == 0) || (strcmp(argv[1], "StressDensity") == 0)) {
+	//else if ((strcmp(argv[1], "stressDensity") == 0) || (strcmp(argv[1], "StressDensity") == 0)) {
 
-		void* theMat = OPS_StressDensityMaterial();
-		if (theMat != 0)
-			theMaterial = (NDMaterial*)theMat;
-		else
-			return TCL_ERROR;
-	}
+	//	void* theMat = OPS_StressDensityMaterial();
+	//	if (theMat != 0)
+	//		theMaterial = (NDMaterial*)theMat;
+	//	else
+	//		return TCL_ERROR;
+	//}
 
-	else if ((strcmp(argv[1], "ElasticIsotropic3D") == 0)) {
+	//else if ((strcmp(argv[1], "ElasticIsotropic3D") == 0)) {
 
-		void* theMat = OPS_ElasticIsotropic3D();
-		if (theMat != 0)
-			theMaterial = (NDMaterial*)theMat;
-		else
-			return TCL_ERROR;
-	}
+	//	void* theMat = OPS_ElasticIsotropic3D();
+	//	if (theMat != 0)
+	//		theMaterial = (NDMaterial*)theMat;
+	//	else
+	//		return TCL_ERROR;
+	//}
 
 	else if ((strcmp(argv[1], "ElasticIsotropic") == 0)) {
 
@@ -575,32 +575,32 @@ TclModelBuilderNDMaterialCommand(ClientData clientData, Tcl_Interp* interp, int 
 			return TCL_ERROR;
 	}
 
-	else if ((strcmp(argv[1], "IncrementalElasticIsotropic3D") == 0) || (strcmp(argv[1], "incrementalElasticIsotropic3D") == 0)) {
+	//else if ((strcmp(argv[1], "IncrementalElasticIsotropic3D") == 0) || (strcmp(argv[1], "incrementalElasticIsotropic3D") == 0)) {
 
-		void* theMat = OPS_IncrementalElasticIsotropicThreeDimensional();
-		if (theMat != 0)
-			theMaterial = (NDMaterial*)theMat;
-		else
-			return TCL_ERROR;
-	}
+	//	void* theMat = OPS_IncrementalElasticIsotropicThreeDimensional();
+	//	if (theMat != 0)
+	//		theMaterial = (NDMaterial*)theMat;
+	//	else
+	//		return TCL_ERROR;
+	//}
 
-	else if ((strcmp(argv[1], "SAniSandMS") == 0)) {
+	//else if ((strcmp(argv[1], "SAniSandMS") == 0)) {
 
-		void* theMat = OPS_SAniSandMSMaterial();
-		if (theMat != 0)
-			theMaterial = (NDMaterial*)theMat;
-		else
-			return TCL_ERROR;
-	}
+	//	void* theMat = OPS_SAniSandMSMaterial();
+	//	if (theMat != 0)
+	//		theMaterial = (NDMaterial*)theMat;
+	//	else
+	//		return TCL_ERROR;
+	//}
 
 
-	else if (strcmp(argv[1], "PressureDependentElastic3D") == 0) {
-		void* theMat = OPS_PressureDependentElastic3D();
-		if (theMat != 0)
-			theMaterial = (NDMaterial*)theMat;
-		else
-			return TCL_ERROR;
-	}
+	//else if (strcmp(argv[1], "PressureDependentElastic3D") == 0) {
+	//	void* theMat = OPS_PressureDependentElastic3D();
+	//	if (theMat != 0)
+	//		theMaterial = (NDMaterial*)theMat;
+	//	else
+	//		return TCL_ERROR;
+	//}
 
 	else if ((strcmp(argv[1], "OrthotropicRotatingAngleConcreteT2DMaterial01") == 0) || (strcmp(argv[1], "OrthotropicRAConcrete") == 0)) {
 		void* theMat = OPS_OrthotropicRotatingAngleConcreteT2DMaterial01();
@@ -642,13 +642,13 @@ TclModelBuilderNDMaterialCommand(ClientData clientData, Tcl_Interp* interp, int 
 */
 
 
-	else if ((strcmp(argv[1], "PlaneStressSimplifiedJ2") == 0)) {
-		void* theMat = OPS_PlaneStressSimplifiedJ2();
-		if (theMat != 0)
-			theMaterial = (NDMaterial*)theMat;
-		else
-			return TCL_ERROR;
-	}
+	//else if ((strcmp(argv[1], "PlaneStressSimplifiedJ2") == 0)) {
+	//	void* theMat = OPS_PlaneStressSimplifiedJ2();
+	//	if (theMat != 0)
+	//		theMaterial = (NDMaterial*)theMat;
+	//	else
+	//		return TCL_ERROR;
+	//}
 	/////////////////////////////////////////////////////////////////
 
 			//
@@ -659,7 +659,7 @@ TclModelBuilderNDMaterialCommand(ClientData clientData, Tcl_Interp* interp, int 
 			// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 			// Check argv[1] for MultiaxialCyclicPlasticity material type
-	else if ((strcmp(argv[1], "MultiaxialCyclicPlasticity") == 0) ||
+	/*else if ((strcmp(argv[1], "MultiaxialCyclicPlasticity") == 0) ||
 		(strcmp(argv[1], "MCP") == 0)) {
 		if (argc < 12) {
 			opserr << "WARNING insufficient arguments\n";
@@ -740,7 +740,7 @@ TclModelBuilderNDMaterialCommand(ClientData clientData, Tcl_Interp* interp, int 
 
 		theMaterial = new MultiaxialCyclicPlasticity(tag, 0, rho, K, G, Su, Ho, h, m,
 			beta, Kcoeff, eta);
-	}
+	}*/
 
 
 	// Pressure Independent Multi-yield, by ZHY
@@ -1232,32 +1232,32 @@ TclModelBuilderNDMaterialCommand(ClientData clientData, Tcl_Interp* interp, int 
 			return TCL_ERROR;
 	}
 
-	else if (strcmp(argv[1], "Series3D") == 0) {
-		void* theMat = OPS_Series3DMaterial();
-		if (theMat != 0) {
-			theMaterial = (NDMaterial*)theMat;
-		}
-		else
-			return TCL_ERROR;
-	}
+	//else if (strcmp(argv[1], "Series3D") == 0) {
+	//	void* theMat = OPS_Series3DMaterial();
+	//	if (theMat != 0) {
+	//		theMaterial = (NDMaterial*)theMat;
+	//	}
+	//	else
+	//		return TCL_ERROR;
+	//}
 
-	else if (strcmp(argv[1], "Parallel3D") == 0) {
-		void* theMat = OPS_Parallel3DMaterial();
-		if (theMat != 0) {
-			theMaterial = (NDMaterial*)theMat;
-		}
-		else
-			return TCL_ERROR;
-	}
+	//else if (strcmp(argv[1], "Parallel3D") == 0) {
+	//	void* theMat = OPS_Parallel3DMaterial();
+	//	if (theMat != 0) {
+	//		theMaterial = (NDMaterial*)theMat;
+	//	}
+	//	else
+	//		return TCL_ERROR;
+	//}
 
-	else if (strcmp(argv[1], "ASDConcrete3D") == 0) {
-		void* theMat = OPS_ASDConcrete3DMaterial();
-		if (theMat != 0) {
-			theMaterial = (NDMaterial*)theMat;
-		}
-		else
-			return TCL_ERROR;
-	}
+	//else if (strcmp(argv[1], "ASDConcrete3D") == 0) {
+	//	void* theMat = OPS_ASDConcrete3DMaterial();
+	//	if (theMat != 0) {
+	//		theMaterial = (NDMaterial*)theMat;
+	//	}
+	//	else
+	//		return TCL_ERROR;
+	//}
 #ifdef _EIGEN3
 	else if (strcmp(argv[1], "ASDPlasticMaterial3D") == 0 ||
 		strcmp(argv[1], "ASDPlasticMaterial") == 0) {
@@ -1301,7 +1301,7 @@ TclModelBuilderNDMaterialCommand(ClientData clientData, Tcl_Interp* interp, int 
 	// ----- Cap plasticity model ------    // Quan Gu & ZhiJian Qiu  2013
 
 	// format nDmaterial CapPlasticity $tag $ndm $rho $G $K $X $D $W $R $lambda $theta $beta $alpha $T $tol
-	else if (strcmp(argv[1], "CapPlasticity") == 0) {
+	/*else if (strcmp(argv[1], "CapPlasticity") == 0) {
 
 		int tag;
 		int ndm = 3;
@@ -1417,7 +1417,7 @@ TclModelBuilderNDMaterialCommand(ClientData clientData, Tcl_Interp* interp, int 
 
 
 	}
-
+	*/
 
 	/////////////////////////////////////////////////////////////////
 	/*
@@ -1436,13 +1436,13 @@ TclModelBuilderNDMaterialCommand(ClientData clientData, Tcl_Interp* interp, int 
 
 
 	// Check argv[1] for J2PlaneStrain material type
-	else if ((strcmp(argv[1], "Simplified3DJ2") == 0) || (strcmp(argv[1], "3DJ2") == 0)) {
-		void* theMat = OPS_SimplifiedJ2();
-		if (theMat != 0)
-			theMaterial = (NDMaterial*)theMat;
-		else
-			return TCL_ERROR;
-	}
+	//else if ((strcmp(argv[1], "Simplified3DJ2") == 0) || (strcmp(argv[1], "3DJ2") == 0)) {
+	//	void* theMat = OPS_SimplifiedJ2();
+	//	if (theMat != 0)
+	//		theMaterial = (NDMaterial*)theMat;
+	//	else
+	//		return TCL_ERROR;
+	//}
 
 
 	else if (strcmp(argv[1], "PlateRebarMaterial") == 0 ||
@@ -1466,23 +1466,23 @@ TclModelBuilderNDMaterialCommand(ClientData clientData, Tcl_Interp* interp, int 
 
 
 	//start Yuli Huang & Xinzheng Lu ConcreteS
-	else if (strcmp(argv[1], "ConcreteS") == 0) {
-		void* theMat = OPS_ConcreteS();
-		if (theMat != 0)
-			theMaterial = (NDMaterial*)theMat;
-		else
-			return TCL_ERROR;
-	}
+	//else if (strcmp(argv[1], "ConcreteS") == 0) {
+	//	void* theMat = OPS_ConcreteS();
+	//	if (theMat != 0)
+	//		theMaterial = (NDMaterial*)theMat;
+	//	else
+	//		return TCL_ERROR;
+	//}
 	//end Yuli Huang & Xinzheng Lu ConcreteS
 
 	//start Yuli Huang & Xinzheng Lu PlaneStressUserMaterial
-	else if (strcmp(argv[1], "PlaneStressUserMaterial") == 0) {
-		void* theMat = OPS_PlaneStressUserMaterial();
-		if (theMat != 0)
-			theMaterial = (NDMaterial*)theMat;
-		else
-			return TCL_ERROR;
-	}
+	//else if (strcmp(argv[1], "PlaneStressUserMaterial") == 0) {
+	//	void* theMat = OPS_PlaneStressUserMaterial();
+	//	if (theMat != 0)
+	//		theMaterial = (NDMaterial*)theMat;
+	//	else
+	//		return TCL_ERROR;
+	//}
 	//end Yuli Huang & Xinzheng Lu PlaneStressUserMaterial
 
 	else if (strcmp(argv[1], "BeamFiberMaterial") == 0 ||
@@ -1495,42 +1495,42 @@ TclModelBuilderNDMaterialCommand(ClientData clientData, Tcl_Interp* interp, int 
 			return TCL_ERROR;
 	}
 
-	else if (strcmp(argv[1], "BeamFiberMaterial2d") == 0 ||
-		strcmp(argv[1], "BeamFiber2d") == 0) {
+	//else if (strcmp(argv[1], "BeamFiberMaterial2d") == 0 ||
+	//	strcmp(argv[1], "BeamFiber2d") == 0) {
 
-		void* theMat = OPS_BeamFiberMaterial2d();
-		if (theMat != 0)
-			theMaterial = (NDMaterial*)theMat;
-		else
-			return TCL_ERROR;
-	}
+	//	void* theMat = OPS_BeamFiberMaterial2d();
+	//	if (theMat != 0)
+	//		theMaterial = (NDMaterial*)theMat;
+	//	else
+	//		return TCL_ERROR;
+	//}
 
-	else if (strcmp(argv[1], "BeamFiberMaterial2dPS") == 0 ||
-		strcmp(argv[1], "BeamFiber2dPS") == 0) {
+	//else if (strcmp(argv[1], "BeamFiberMaterial2dPS") == 0 ||
+	//	strcmp(argv[1], "BeamFiber2dPS") == 0) {
 
-		void* theMat = OPS_BeamFiberMaterial2dPS();
-		if (theMat != 0)
-			theMaterial = (NDMaterial*)theMat;
-		else
-			return TCL_ERROR;
-	}
+	//	void* theMat = OPS_BeamFiberMaterial2dPS();
+	//	if (theMat != 0)
+	//		theMaterial = (NDMaterial*)theMat;
+	//	else
+	//		return TCL_ERROR;
+	//}
 
-	else if (strcmp(argv[1], "ConcreteMcftNonLinear5") == 0 ||
-		strcmp(argv[1], "ConcreteMcftNonlinear5") == 0) {
-		void* theMat = OPS_ConcreteMcftNonlinear5();
-		if (theMat != 0)
-			theMaterial = (NDMaterial*)theMat;
-		else
-			return TCL_ERROR;
-	}
-	else if (strcmp(argv[1], "ConcreteMcftNonLinear7") == 0 ||
-		strcmp(argv[1], "ConcreteMcftNonlinear7") == 0) {
-		void* theMat = OPS_ConcreteMcftNonlinear7();
-		if (theMat != 0)
-			theMaterial = (NDMaterial*)theMat;
-		else
-			return TCL_ERROR;
-	}
+	//else if (strcmp(argv[1], "ConcreteMcftNonLinear5") == 0 ||
+	//	strcmp(argv[1], "ConcreteMcftNonlinear5") == 0) {
+	//	void* theMat = OPS_ConcreteMcftNonlinear5();
+	//	if (theMat != 0)
+	//		theMaterial = (NDMaterial*)theMat;
+	//	else
+	//		return TCL_ERROR;
+	//}
+	//else if (strcmp(argv[1], "ConcreteMcftNonLinear7") == 0 ||
+	//	strcmp(argv[1], "ConcreteMcftNonlinear7") == 0) {
+	//	void* theMat = OPS_ConcreteMcftNonlinear7();
+	//	if (theMat != 0)
+	//		theMaterial = (NDMaterial*)theMat;
+	//	else
+	//		return TCL_ERROR;
+	//}
 
 	else if (strcmp(argv[1], "Bidirectional") == 0) {
 		opserr << "nDMaterial Bidirectional is now a section model, please "

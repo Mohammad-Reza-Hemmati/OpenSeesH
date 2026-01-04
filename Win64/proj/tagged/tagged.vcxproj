@@ -124,9 +124,9 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeaderOutputFile>.\..\..\obj\tagged\release/tagged.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\..\..\obj\tagged\release/</AssemblerListingLocation>
-      <ObjectFileName>.\..\..\obj\tagged\release/</ObjectFileName>
-      <ProgramDataBaseFileName>.\..\..\obj\tagged\release/</ProgramDataBaseFileName>
+      <AssemblerListingLocation>.\..\..\obj\tagged\pyDebug/</AssemblerListingLocation>
+      <ObjectFileName>.\..\..\obj\tagged\pyDebug/</ObjectFileName>
+      <ProgramDataBaseFileName>.\..\..\obj\tagged\pyDebug/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>

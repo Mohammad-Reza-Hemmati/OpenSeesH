@@ -102,9 +102,9 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeaderOutputFile>.\..\..\obj\tcl\release/tcl.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\..\..\obj\tcl\release/</AssemblerListingLocation>
-      <ObjectFileName>.\..\..\obj\tcl\release/</ObjectFileName>
-      <ProgramDataBaseFileName>.\..\..\obj\tcl\release/</ProgramDataBaseFileName>
+      <AssemblerListingLocation>.\..\..\obj\tcl\pyDebug/</AssemblerListingLocation>
+      <ObjectFileName>.\..\..\obj\tcl\pyDebug/</ObjectFileName>
+      <ProgramDataBaseFileName>.\..\..\obj\tcl\pyDebug/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>
@@ -233,6 +233,7 @@
     <ClCompile Include="..\..\..\SRC\element\zeroLength\TclZeroLength.cpp" />
     <ClCompile Include="..\..\..\SRC\HeatTransfer\Interpreter\TclHeatTransferModule.cpp" />
     <ClCompile Include="..\..\..\SRC\material\nD\soil\TclUpdateMaterialStageCommand.cpp" />
+    <ClCompile Include="..\..\..\SRC\material\nD\TclModelBuilderNDMaterialCommand.cpp" />
     <ClCompile Include="..\..\..\SRC\material\section\TclModelBuilderSectionCommand.cpp" />
     <ClCompile Include="..\..\..\SRC\material\uniaxial\PY\TclPyTzQzMaterialCommand.cpp" />
     <ClCompile Include="..\..\..\SRC\material\uniaxial\TclModelBuilderUniaxialMaterialCommand.cpp" />

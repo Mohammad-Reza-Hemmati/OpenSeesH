@@ -199,9 +199,9 @@ TclCommand_addBeamIntegration(ClientData clientData, Tcl_Interp* interp, int arg
 //int
 //TclCommand_addLimitCurve(ClientData clientData, Tcl_Interp* interp, int argc, TCL_Char** argv);
 
-//int
-//TclCommand_addNDMaterial(ClientData clientData, Tcl_Interp* interp, int argc,
-//	TCL_Char** argv);
+int
+TclCommand_addNDMaterial(ClientData clientData, Tcl_Interp* interp, int argc,
+	TCL_Char** argv);
 
 int
 TclCommand_addSection(ClientData clientData, Tcl_Interp* interp, int argc,
@@ -512,8 +512,8 @@ TclModelBuilder::TclModelBuilder(Domain& theDomain, Tcl_Interp* interp, int NDM,
 	//Tcl_CreateCommand(interp, "limitCurve", TclCommand_addLimitCurve,
 	//	(ClientData)NULL, NULL);
 
-	//Tcl_CreateCommand(interp, "nDMaterial", TclCommand_addNDMaterial,
-	//	(ClientData)NULL, NULL);
+	Tcl_CreateCommand(interp, "nDMaterial", TclCommand_addNDMaterial,
+		(ClientData)NULL, NULL);
 
 	Tcl_CreateCommand(interp, "section", TclCommand_addSection,
 		(ClientData)NULL, NULL);
@@ -1612,22 +1612,22 @@ TclCommand_addUniaxialMaterial(ClientData clientData, Tcl_Interp* interp, int ar
 //	return Tcl_AddLimitCurveCommand(clientData, interp, argc, argv, theTclDomain);
 //}
 
-//extern int
-//TclModelBuilderNDMaterialCommand(ClientData clienData, Tcl_Interp* interp, int argc,
-//	TCL_Char** argv, TclModelBuilder* theTclBuilder);
-//
-//int
-//TclCommand_addNDMaterial(ClientData clientData, Tcl_Interp* interp,
-//	int argc, TCL_Char** argv)
-//
-//{
-//#ifdef _CSS
-//	printArgv(interp, argc, argv); //SAJalali
-//#endif // _CSS
-//
-//	return TclModelBuilderNDMaterialCommand(clientData, interp,
-//		argc, argv, theTclBuilder);
-//}
+extern int
+TclModelBuilderNDMaterialCommand(ClientData clienData, Tcl_Interp* interp, int argc,
+	TCL_Char** argv, TclModelBuilder* theTclBuilder);
+
+int
+TclCommand_addNDMaterial(ClientData clientData, Tcl_Interp* interp,
+	int argc, TCL_Char** argv)
+
+{
+#ifdef _CSS
+	printArgv(interp, argc, argv); //SAJalali
+#endif // _CSS
+
+	return TclModelBuilderNDMaterialCommand(clientData, interp,
+		argc, argv, theTclBuilder);
+}
 
 extern int
 TclModelBuilderSectionCommand(ClientData clienData, Tcl_Interp* interp, int argc,

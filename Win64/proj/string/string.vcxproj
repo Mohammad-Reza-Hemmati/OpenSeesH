@@ -139,9 +139,9 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderOutputFile>.\..\..\obj\string\release/string.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\..\..\obj\string\release/</AssemblerListingLocation>
-      <ObjectFileName>.\..\..\obj\string\release/</ObjectFileName>
-      <ProgramDataBaseFileName>.\..\..\obj\string\release/</ProgramDataBaseFileName>
+      <AssemblerListingLocation>.\..\..\obj\string\pyDebug/</AssemblerListingLocation>
+      <ObjectFileName>.\..\..\obj\string\pyDebug/</ObjectFileName>
+      <ProgramDataBaseFileName>.\..\..\obj\string\pyDebug/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>

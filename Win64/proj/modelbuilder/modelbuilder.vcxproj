@@ -136,9 +136,9 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeaderOutputFile>.\..\..\obj\modelbuilder\release/modelbuilder.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\..\..\obj\modelbuilder\release/</AssemblerListingLocation>
-      <ObjectFileName>.\..\..\obj\modelbuilder\release/</ObjectFileName>
-      <ProgramDataBaseFileName>.\..\..\obj\modelbuilder\release/</ProgramDataBaseFileName>
+      <AssemblerListingLocation>.\..\..\obj\modelbuilder\pyDebug/</AssemblerListingLocation>
+      <ObjectFileName>.\..\..\obj\modelbuilder\pyDebug/</ObjectFileName>
+      <ProgramDataBaseFileName>.\..\..\obj\modelbuilder\pyDebug/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>

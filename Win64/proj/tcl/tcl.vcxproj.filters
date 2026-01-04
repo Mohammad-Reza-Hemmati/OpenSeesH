@@ -116,6 +116,9 @@
     <ClCompile Include="..\..\..\SRC\HeatTransfer\Interpreter\TclHeatTransferModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\SRC\material\nD\TclModelBuilderNDMaterialCommand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\SRC\modelbuilder\tcl\TclModelBuilder.h">

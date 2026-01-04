@@ -105,9 +105,9 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeaderOutputFile>.\..\..\obj\handler\release/handler.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\..\..\obj\handler\release/</AssemblerListingLocation>
-      <ObjectFileName>.\..\..\obj\handler\release/</ObjectFileName>
-      <ProgramDataBaseFileName>.\..\..\obj\handler\release/</ProgramDataBaseFileName>
+      <AssemblerListingLocation>.\..\..\obj\handler\pyDebug/</AssemblerListingLocation>
+      <ObjectFileName>.\..\..\obj\handler\pyDebug/</ObjectFileName>
+      <ProgramDataBaseFileName>.\..\..\obj\handler\pyDebug/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>

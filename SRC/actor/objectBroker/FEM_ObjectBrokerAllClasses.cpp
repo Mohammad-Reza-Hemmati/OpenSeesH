@@ -184,7 +184,7 @@
 // #include "fedeas/FedeasSteel1Material.h"
 // #include "fedeas/FedeasSteel2Material.h"
 
-// #include "Bilin.h"
+ #include "Bilin.h"
 // #include "drain/DrainBilinearMaterial.h"
 // #include "drain/DrainClough1Material.h"
 // #include "drain/DrainClough2Material.h"
@@ -2018,8 +2018,8 @@ FEM_ObjectBrokerAllClasses::getNewUniaxialMaterial(int classTag)
 	//case MAT_TAG_ViscoelasticGap:
 	//	return new ViscoelasticGap();
 
-	//case MAT_TAG_Bilin:
-	//	return new Bilin();
+	case MAT_TAG_Bilin:
+		return new Bilin();
 
 	//case MAT_TAG_DrainClough1:
 	//	return new DrainClough1Material();

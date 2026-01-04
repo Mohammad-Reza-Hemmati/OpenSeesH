@@ -63,7 +63,7 @@ void *OPS_ModElasticBeam3d(void) {
   int numOptionalArgs = 0;
   while (OPS_GetNumRemainingInputArgs() > 0) {
     std::string theType = OPS_GetString();
-    if (theType == "-mass") {
+    if (theType == "-rho") {
       numOptionalArgs++;
       if (OPS_GetNumRemainingInputArgs() > 0) {
         numData = 1;

@@ -134,9 +134,9 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeaderOutputFile>.\..\..\obj\material\release/material.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\..\..\obj\material\release/</AssemblerListingLocation>
-      <ObjectFileName>.\..\..\obj\material\release/</ObjectFileName>
-      <ProgramDataBaseFileName>.\..\..\obj\material\release/</ProgramDataBaseFileName>
+      <AssemblerListingLocation>.\..\..\obj\material\pyDebug/</AssemblerListingLocation>
+      <ObjectFileName>.\..\..\obj\material\pyDebug/</ObjectFileName>
+      <ProgramDataBaseFileName>.\..\..\obj\material\pyDebug/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>

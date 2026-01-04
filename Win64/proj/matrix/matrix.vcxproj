@@ -105,9 +105,9 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeaderOutputFile>.\..\..\obj\matrix\release/matrix.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\..\..\obj\matrix\release/</AssemblerListingLocation>
-      <ObjectFileName>.\..\..\obj\matrix\release/</ObjectFileName>
-      <ProgramDataBaseFileName>.\..\..\obj\matrix\release/</ProgramDataBaseFileName>
+      <AssemblerListingLocation>.\..\..\obj\matrix\pyDebug/</AssemblerListingLocation>
+      <ObjectFileName>.\..\..\obj\matrix\pyDebug/</ObjectFileName>
+      <ProgramDataBaseFileName>.\..\..\obj\matrix\pyDebug/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>

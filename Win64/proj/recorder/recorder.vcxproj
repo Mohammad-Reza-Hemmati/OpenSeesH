@@ -100,9 +100,9 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeaderOutputFile>.\..\..\obj\recorder\release/recorder.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\..\..\obj\recorder\release/</AssemblerListingLocation>
-      <ObjectFileName>.\..\..\obj\recorder\release/</ObjectFileName>
-      <ProgramDataBaseFileName>.\..\..\obj\recorder\release/</ProgramDataBaseFileName>
+      <AssemblerListingLocation>.\..\..\obj\recorder\pyDebug/</AssemblerListingLocation>
+      <ObjectFileName>.\..\..\obj\recorder\pyDebug/</ObjectFileName>
+      <ProgramDataBaseFileName>.\..\..\obj\recorder\pyDebug/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>
