@@ -44,6 +44,7 @@
 #include <Vector.h>
 #include <ID.h>
 #include <BeamIntegration.h>
+#include <Damping.h>
 
 class Node;
 class SectionForceDeformation;
@@ -57,7 +58,7 @@ class DispBeamColumn2dThermal : public Element
     DispBeamColumn2dThermal(int tag, int nd1, int nd2,
 		     int numSections, SectionForceDeformation **s,
 		     BeamIntegration &bi, CrdTransf &coordTransf,
-		     double rho = 0.0);
+		     double rho = 0.0, Damping *theDamping = 0);
     DispBeamColumn2dThermal();
     ~DispBeamColumn2dThermal();
 
@@ -69,6 +70,7 @@ class DispBeamColumn2dThermal : public Element
 
     int getNumDOF(void);
     void setDomain(Domain *theDomain);
+    int setDamping(Domain *theDomain, Damping *theDamping);
 
     // public methods to set the state of the element    
     int commitState(void);
@@ -88,6 +90,7 @@ class DispBeamColumn2dThermal : public Element
     int addInertiaLoadToUnbalance(const Vector &accel);
 
     const Vector &getResistingForce(void);
+    const Vector &getDampingForce(void);
     const Vector &getResistingForceIncInertia(void);            
 
     // public methods for element output
@@ -134,6 +137,7 @@ class DispBeamColumn2dThermal : public Element
     double p0[3];  // Reactions in basic system
 
     double rho;			// Mass density per unit length
+    Damping *theDamping;
 
     enum {maxNumSections = 20};
 
