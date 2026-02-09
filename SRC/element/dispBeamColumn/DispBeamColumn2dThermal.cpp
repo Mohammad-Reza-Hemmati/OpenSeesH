@@ -63,6 +63,8 @@ double DispBeamColumn2dThermal::workArea[100];
 
 void* OPS_DispBeamColumn2dThermal()
 {
+	int dampingTag = 0;
+	Damping* theDamping = 0;
 	if (OPS_GetNumRemainingInputArgs() < 5) {
 		opserr << "insufficient arguments:eleTag,iNode,jNode,transfTag,integrationTag <-mass mass> <-cmass>\n";
 		return 0;
@@ -85,6 +87,16 @@ void* OPS_DispBeamColumn2dThermal()
 			if (OPS_GetNumRemainingInputArgs() > 0) {
 				if (OPS_GetDoubleInput(&numData, &mass) < 0) {
 					opserr << "WARNING: invalid mass\n";
+					return 0;
+				}
+			}
+		}
+		else if (strcmp(type, "-damp") == 0) {
+			if (OPS_GetNumRemainingInputArgs() > 0) {
+				if (OPS_GetIntInput(&numData, &dampingTag) < 0) return 0;
+				theDamping = OPS_getDamping(dampingTag);
+				if (theDamping == 0) {
+					opserr << "damping not found\n";
 					return 0;
 				}
 			}
@@ -123,7 +135,7 @@ void* OPS_DispBeamColumn2dThermal()
 	}
 
 	Element* theEle = new DispBeamColumn2dThermal(iData[0], iData[1], iData[2], secTags.Size(), sections,
-		*bi, *theTransf, mass);
+		*bi, *theTransf, mass, theDamping);
 	delete[] sections;
 	return theEle;
 }
@@ -131,11 +143,11 @@ void* OPS_DispBeamColumn2dThermal()
 DispBeamColumn2dThermal::DispBeamColumn2dThermal(int tag, int nd1, int nd2,
 	int numSec, SectionForceDeformation** s,
 	BeamIntegration& bi,
-	CrdTransf& coordTransf, double r)
+	CrdTransf& coordTransf, double r, Damping* damping)
 	:Element(tag, ELE_TAG_DispBeamColumn2dThermal),
 	numSections(numSec), theSections(0), crdTransf(0), beamInt(0),
 	connectedExternalNodes(2),
-	Q(6), q(3), rho(r), parameterID(0), SectionThermalElong(numSections)
+	Q(6), q(3), rho(r), parameterID(0), SectionThermalElong(numSections), theDamping(0)
 {
 	// Allocate arrays of pointers to SectionForceDeformations
 	theSections = new SectionForceDeformation * [numSections];
@@ -171,6 +183,16 @@ DispBeamColumn2dThermal::DispBeamColumn2dThermal(int tag, int nd1, int nd2,
 		exit(-1);
 	}
 
+	if (damping)
+	{
+		theDamping = (*damping).getCopy();
+
+		if (!theDamping) {
+			opserr << "DispBeamColumn2dThermal::DispBeamColumn2dThermal - failed to copy damping\n";
+			exit(-1);
+		}
+	}
+
 	// Set connected external node IDs
 	connectedExternalNodes(0) = nd1;
 	connectedExternalNodes(1) = nd2;
@@ -200,7 +222,7 @@ DispBeamColumn2dThermal::DispBeamColumn2dThermal()
 	:Element(0, ELE_TAG_DispBeamColumn2dThermal),
 	numSections(0), theSections(0), crdTransf(0), beamInt(0),
 	connectedExternalNodes(2), SectionThermalElong(0),
-	Q(6), q(3), rho(0.0), parameterID(0)
+	Q(6), q(3), rho(0.0), parameterID(0), theDamping(0)
 {
 	q0[0] = 0.0;
 	q0[1] = 0.0;
@@ -240,6 +262,8 @@ DispBeamColumn2dThermal::~DispBeamColumn2dThermal()
 
 	if (beamInt != 0)
 		delete beamInt;
+
+	if (theDamping) delete theDamping;
 
 }
 
@@ -304,6 +328,12 @@ DispBeamColumn2dThermal::setDomain(Domain* theDomain)
 		// Add some error check
 	}
 
+	// initialize the damping
+	if (theDamping && theDamping->setDomain(theDomain, 3)) {
+		opserr << "DispBeamColumn2dThermal::setDomain(): Error initializing damping";
+		exit(0);
+	}
+
 	double L = crdTransf->getInitialLength();
 
 	if (L == 0.0) {
@@ -313,6 +343,28 @@ DispBeamColumn2dThermal::setDomain(Domain* theDomain)
 	this->DomainComponent::setDomain(theDomain);
 
 	this->update();
+}
+
+int
+DispBeamColumn2dThermal::setDamping(Domain* theDomain, Damping* damping)
+{
+	if (theDomain && damping)
+	{
+		if (theDamping) delete theDamping;
+
+		theDamping = (*damping).getCopy();
+
+		if (!theDamping) {
+			opserr << "DispBeamColumn2dThermal::setDamping -- failed to get copy of damping\n";
+			return -1;
+		}
+		if (theDamping->setDomain(theDomain, 3)) {
+			opserr << "DispBeamColumn2dThermal::setDamping -- Error initializing damping\n";
+			return -2;
+		}
+	}
+
+	return 0;
 }
 
 int
@@ -331,6 +383,8 @@ DispBeamColumn2dThermal::commitState()
 
 	retVal += crdTransf->commitState();
 
+	if (theDamping) retVal += theDamping->commitState();
+
 	return retVal;
 }
 
@@ -345,6 +399,8 @@ DispBeamColumn2dThermal::revertToLastCommit()
 
 	retVal += crdTransf->revertToLastCommit();
 
+	if (theDamping) retVal += theDamping->revertToLastCommit();
+
 	return retVal;
 }
 
@@ -358,6 +414,8 @@ DispBeamColumn2dThermal::revertToStart()
 		retVal += theSections[i]->revertToStart();
 
 	retVal += crdTransf->revertToStart();
+
+	if (theDamping) retVal += theDamping->revertToStart();
 
 	return retVal;
 }
@@ -614,6 +672,7 @@ const Matrix&
 DispBeamColumn2dThermal::getInitialStiff()
 {
 	const Matrix& kb = this->getInitialBasicStiff();
+	if (theDamping) kb *= theDamping->getStiffnessMultiplier();
 
 	// Transform to global stiffness
 	K = crdTransf->getInitialGlobalStiffMatrix(kb);
@@ -1122,6 +1181,8 @@ DispBeamColumn2dThermal::getResistingForce()
 	q(1) += q0[1];
 	q(2) += q0[2];
 
+	if (theDamping) theDamping->update(q);
+
 
 	if (counterTemperature == 1) {
 #ifdef _BDEBUG
@@ -1165,10 +1226,20 @@ DispBeamColumn2dThermal::getResistingForce()
 }
 
 const Vector&
+DispBeamColumn2dThermal::getDampingForce(void)
+{
+	crdTransf->update();
+
+	return crdTransf->getGlobalResistingForce(theDamping->getDampingForce(), Vector(3));
+}
+
+const Vector&
 DispBeamColumn2dThermal::getResistingForceIncInertia()
 {
 
 	this->getResistingForce();
+
+	if (theDamping) P += this->getDampingForce();
 
 	if (rho != 0.0) {
 		const Vector& accel1 = theNodes[0]->getTrialAccel();
@@ -1209,7 +1280,7 @@ DispBeamColumn2dThermal::sendSelf(int commitTag, Channel& theChannel)
 	int i, j;
 	int loc = 0;
 
-	static Vector data(14);
+	static Vector data(16);
 	data(0) = this->getTag();
 	data(1) = connectedExternalNodes(0);
 	data(2) = connectedExternalNodes(1);
@@ -1236,6 +1307,19 @@ DispBeamColumn2dThermal::sendSelf(int commitTag, Channel& theChannel)
 	data(11) = betaK;
 	data(12) = betaK0;
 	data(13) = betaKc;
+
+	data(14) = 0;
+	data(15) = 0;
+	if (theDamping) {
+		data(14) = theDamping->getClassTag();
+		int dbTag = theDamping->getDbTag();
+		if (dbTag == 0) {
+			dbTag = theChannel.getDbTag();
+			if (dbTag != 0)
+				theDamping->setDbTag(dbTag);
+		}
+		data(15) = dbTag;
+	}
 
 	if (theChannel.sendVector(dbTag, commitTag, data) < 0) {
 		opserr << "DispBeamColumn2d::sendSelf() - failed to send data Vector\n";
@@ -1291,6 +1375,12 @@ DispBeamColumn2dThermal::sendSelf(int commitTag, Channel& theChannel)
 		}
 	}
 
+	// Ask the Damping to send itself
+	if (theDamping && theDamping->sendSelf(commitTag, theChannel) < 0) {
+		opserr << "DispBeamColumn2dThermal::sendSelf -- could not send Damping\n";
+		return -1;
+	}
+
 	return 0;
 }
 
@@ -1304,7 +1394,7 @@ DispBeamColumn2dThermal::recvSelf(int commitTag, Channel& theChannel,
 	int dbTag = this->getDbTag();
 	int i;
 
-	static Vector data(14);
+	static Vector data(16);
 
 	if (theChannel.recvVector(dbTag, commitTag, data) < 0) {
 		opserr << "DispBeamColumn2dThermal::recvSelf() - failed to recv ID data\n";
@@ -1328,6 +1418,42 @@ DispBeamColumn2dThermal::recvSelf(int commitTag, Channel& theChannel,
 	betaK = data(11);
 	betaK0 = data(12);
 	betaKc = data(13);
+
+	// Check if the Damping is null; if so, get a new one
+	int dmpTag = (int)data(14);
+	if (dmpTag) {
+		if (theDamping == 0) {
+			theDamping = theBroker.getNewDamping(dmpTag);
+			if (theDamping == 0) {
+				opserr << "DispBeamColumn2dThermal::recvSelf -- could not get a Damping\n";
+				exit(-1);
+			}
+		}
+
+		// Check that the Damping is of the right type; if not, delete
+		// the current one and get a new one of the right type
+		if (theDamping->getClassTag() != dmpTag) {
+			delete theDamping;
+			theDamping = theBroker.getNewDamping(dmpTag);
+			if (theDamping == 0) {
+				opserr << "DispBeamColumn2dThermal::recvSelf -- could not get a Damping\n";
+				exit(-1);
+			}
+		}
+
+		// Now, receive the Damping
+		theDamping->setDbTag((int)data(15));
+		if (theDamping->recvSelf(commitTag, theChannel, theBroker) < 0) {
+			opserr << "DispBeamColumn2dThermal::recvSelf -- could not receive Damping\n";
+			exit(-1);
+		}
+	}
+	else {
+		if (theDamping) {
+			delete theDamping;
+			theDamping = 0;
+		}
+	}
 
 	// create a new crdTransf object if one needed
 	if (crdTransf == 0 || crdTransf->getClassTag() != crdTransfClassTag) {
@@ -1587,6 +1713,53 @@ DispBeamColumn2dThermal::setResponse(const char** argv, int argc,
 
 		theResponse = new ElementResponse(this, 9, Vector(3));
 
+		// global damping force - 
+	}
+	else if (theDamping && (strcmp(argv[0], "globalDampingForce") == 0 || strcmp(argv[0], "globalDampingForces") == 0)) {
+
+		if (output != 0)
+		{
+			output->tag("ResponseType", "Px_1");
+			output->tag("ResponseType", "Py_1");
+			output->tag("ResponseType", "Mz_1");
+			output->tag("ResponseType", "Px_2");
+			output->tag("ResponseType", "Py_2");
+			output->tag("ResponseType", "Mz_2");
+		}
+
+		theResponse = new ElementResponse(this, 21, P);
+
+
+		// local damping force -
+	}
+	else if (theDamping && (strcmp(argv[0], "localDampingForce") == 0 || strcmp(argv[0], "localDampingForces") == 0)) {
+
+		if (output != 0)
+		{
+			output->tag("ResponseType", "N1");
+			output->tag("ResponseType", "V1");
+			output->tag("ResponseType", "M1");
+			output->tag("ResponseType", "N2");
+			output->tag("ResponseType", "V2");
+			output->tag("ResponseType", "M2");
+		}
+
+		theResponse = new ElementResponse(this, 22, P);
+
+
+		// basic damping force -
+	}
+	else if (theDamping && (strcmp(argv[0], "basicDampingForce") == 0 || strcmp(argv[0], "basicDampingForces") == 0)) {
+
+		if (output != 0)
+		{
+			output->tag("ResponseType", "N");
+			output->tag("ResponseType", "M1");
+			output->tag("ResponseType", "M2");
+		}
+
+		theResponse = new ElementResponse(this, 23, Vector(3));
+
 		// chord rotation -
 	}
 	else if (strcmp(argv[0], "chordRotation") == 0 || strcmp(argv[0], "chordDeformation") == 0
@@ -1710,6 +1883,25 @@ DispBeamColumn2dThermal::getResponse(int responseID, Information& eleInfo)
 
 	if (responseID == 1)
 		return eleInfo.setVector(this->getResistingForce());
+
+	else if (responseID == 21)
+		return eleInfo.setVector(this->getDampingForce());
+
+	else if (responseID == 22) {
+		Vector Sd(3);
+		Sd = theDamping->getDampingForce();
+		P(3) = Sd(0);
+		P(0) = -Sd(0);
+		P(2) = Sd(1);
+		P(5) = Sd(2);
+		V = (Sd(1) + Sd(2)) / L;
+		P(1) = V;
+		P(4) = -V;
+		return eleInfo.setVector(P);
+	}
+
+	else if (responseID == 23)
+		return eleInfo.setVector(theDamping->getDampingForce());
 
 	else if (responseID == 2) {
 		P(3) = q(0);
@@ -2148,4 +2340,3 @@ DispBeamColumn2dThermal::commitSensitivity(int gradNumber, int numGrads)
 
 
 // AddingSensitivity:END /////////////////////////////////////////////
-
