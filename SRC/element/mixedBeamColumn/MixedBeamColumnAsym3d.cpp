@@ -1612,7 +1612,7 @@ Response* MixedBeamColumnAsym3d::setResponse(const char **argv, int argc,
         output.attr("number",sectionNum);
         output.attr("eta",xi[sectionNum-1]*L);
 
-        theResponse =  sections[sectionNum-1]->setResponse(&argv[2], argc-2, output);
+        theResponse =  sections[sectionNum-1]->setResponse(&argv[2], argc-2, &output);
 
         output.endTag();
       }

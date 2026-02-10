@@ -1131,7 +1131,7 @@ Response* ElastomericBearingBoucWen3d::setResponse(const char **argv, int argc,
         if (argc > 2)  {
             int matNum = atoi(argv[1]);
             if (matNum >= 1 && matNum <= 4)
-                theResponse =  theMaterials[matNum-1]->setResponse(&argv[2], argc-2, output);
+                theResponse =  theMaterials[matNum-1]->setResponse(&argv[2], argc-2, &output);
         }
     }
     

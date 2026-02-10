@@ -1387,7 +1387,7 @@ ElasticForceBeamColumnWarping2d::setResponse(const char **argv, int argc, OPS_St
       output.attr("number",sectionNum+1);
       output.attr("eta",xi[sectionNum]*L);
 
-      theResponse = sections[sectionNum]->setResponse(&argv[2], argc-2, output);
+      theResponse = sections[sectionNum]->setResponse(&argv[2], argc-2, &output);
 	}
   }
 
@@ -1405,7 +1405,7 @@ ElasticForceBeamColumnWarping2d::setResponse(const char **argv, int argc, OPS_St
 	output.attr("number",sectionNum);
 	output.attr("eta",xi[sectionNum-1]*L);
 	
-	theResponse = sections[sectionNum-1]->setResponse(&argv[2], argc-2, output);
+	theResponse = sections[sectionNum-1]->setResponse(&argv[2], argc-2, &output);
 	
       }
     }

@@ -1331,7 +1331,7 @@ Response* MixedBeamColumn2d::setResponse(const char **argv, int argc,
       }
       
       if (!thisSectionHasShear || strcmp(argv[2],"force") != 0)
-	theResponse =  sections[sectionNum-1]->setResponse(&argv[2], argc-2, output);	  
+	theResponse =  sections[sectionNum-1]->setResponse(&argv[2], argc-2, &output);	  
       else
 	theResponse = new ElementResponse(this, 500 + sectionNum, Vector(order));
       
@@ -1364,7 +1364,7 @@ Response* MixedBeamColumn2d::setResponse(const char **argv, int argc,
 	}
 
 	if (!thisSectionHasShear || strcmp(argv[2],"force") != 0)
-	  theResponse =  sections[sectionNum-1]->setResponse(&argv[2], argc-2, output);	  
+	  theResponse =  sections[sectionNum-1]->setResponse(&argv[2], argc-2, &output);	  
 	else
 	  theResponse = new ElementResponse(this, 500 + sectionNum, Vector(order));
 	
@@ -1374,7 +1374,7 @@ Response* MixedBeamColumn2d::setResponse(const char **argv, int argc,
   }
 
   if (theResponse == 0)
-    theResponse = crdTransf->setResponse(argv, argc, output);
+    theResponse = crdTransf->setResponse(argv, argc, &output);
   
   output.endTag();
   return theResponse;

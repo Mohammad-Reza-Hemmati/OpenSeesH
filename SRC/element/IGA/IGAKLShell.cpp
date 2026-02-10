@@ -436,7 +436,7 @@ IGAKLShell::setResponse(const char **argv, int argc, OPS_Stream &output)
           output.attr("neta", eta);
 
           // REPLACE THIS LINE WITH AN EMULATION OF WHAT A LayeredShellFiberSection would do
-          //theResponse = m_sections[pointNum - 1]->setResponse(&argv[2], argc - 2, output);
+          //theResponse = m_sections[pointNum - 1]->setResponse(&argv[2], argc - 2, &output);
           theResponse = this->emulateSectionSetResponse(&argv[2], argc - 2, output, pointNum, xi, eta);
 
           // 2* - CLOSE THE GAUSS TAG
@@ -541,7 +541,7 @@ IGAKLShell::setResponse(const char **argv, int argc, OPS_Stream &output)
       // output.attr("neta", tg[pointNum - 1]);
       output.attr("layer", capa);
 
-      theResponse =  materialPointers[gp][capa]->setResponse(&argv[3], argc - 3, output);
+      theResponse =  materialPointers[gp][capa]->setResponse(&argv[3], argc - 3, &output);
 
       output.endTag();
     }
@@ -730,10 +730,10 @@ IGAKLShell::emulateSectionSetResponse(const char **argv, int argc,
       output.attr("zLoc",zLoc);
       output.attr("thickness",thickness);
       
-      // theResponse =  theFibers[pointNum-1]->setResponse(&argv[2], argc-2, output);
+      // theResponse =  theFibers[pointNum-1]->setResponse(&argv[2], argc-2, &output);
       // RESPONSETYPE_KLSHELL_FAKESECTION_FIBER --> in this case it is set by the fiber setResponse
       // opserr << "IGAKLShell::emulateSectionSetResponse called with argv[2] " << argv[2] << endln;
-      theResponse =  materialPointers[gaussPointNum-1][capa-1]->setResponse(&argv[2], argc - 2, output);
+      theResponse =  materialPointers[gaussPointNum-1][capa-1]->setResponse(&argv[2], argc - 2, &output);
       
       output.endTag();
     }

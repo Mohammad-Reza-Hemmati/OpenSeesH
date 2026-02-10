@@ -885,7 +885,7 @@ Response *Pipe::setResponse(const char **argv, int argc,
 
     // no response found, send to transformation
     if (theResponse == 0 && theCoordTransf != 0) {
-        theResponse = theCoordTransf->setResponse(argv, argc, output);
+        theResponse = theCoordTransf->setResponse(argv, argc, &output);
     }
 
     return theResponse;
@@ -952,28 +952,28 @@ int Pipe::getResponse(int responseID, Information &info) {
             // section forces
             double xL = info.theDouble;
             Vector s(6);
-            getSectionForce(xL, s);
+            getSectionForce(xL, &s);
             return info.setVector(s);
         }
 
         case 7: {
             // section forces at I
             Vector s(6);
-            getSectionForce(0.0, s);
+            getSectionForce(0.0, &s);
             return info.setVector(s);
         }
 
         case 8: {
             // section forces at J
             Vector s(6);
-            getSectionForce(1.0, s);
+            getSectionForce(1.0, &s);
             return info.setVector(s);
         }
 
         case 9: {
             // section forces at Center
             Vector s(6);
-            getSectionForce(0.5, s);
+            getSectionForce(0.5, &s);
             return info.setVector(s);
         }
 

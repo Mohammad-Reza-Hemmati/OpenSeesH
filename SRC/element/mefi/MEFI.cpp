@@ -823,7 +823,7 @@ Response* MEFI::setResponse(const char **argv, int argc, OPS_Stream &output)
 	  output.tag("Material");
 	  output.attr("number", secNum);
 
-	  theResponse = theSection[secNum - 1]->setResponse(&argv[2], argc - 2, output);
+	  theResponse = theSection[secNum - 1]->setResponse(&argv[2], argc - 2, &output);
 
   }
 

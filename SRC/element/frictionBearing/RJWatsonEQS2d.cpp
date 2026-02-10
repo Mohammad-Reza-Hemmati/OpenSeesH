@@ -1049,14 +1049,14 @@ Response* RJWatsonEQS2d::setResponse(const char **argv, int argc,
         if (argc > 2)  {
             int matNum = atoi(argv[1]);
             if (matNum >= 1 && matNum <= 3)
-                theResponse = theMaterials[matNum-1]->setResponse(&argv[2], argc-2, output);
+                theResponse = theMaterials[matNum-1]->setResponse(&argv[2], argc-2, &output);
         }
     }
     // friction model output
     else if (strcmp(argv[0],"frictionModel") == 0 || strcmp(argv[0],"frnMdl") == 0 ||
         strcmp(argv[0],"frictionMdl") == 0 || strcmp(argv[0],"frnModel") == 0)  {
             if (argc > 1)
-                theResponse = theFrnMdl->setResponse(&argv[1], argc-1, output);
+                theResponse = theFrnMdl->setResponse(&argv[1], argc-1, &output);
     }
     
     output.endTag(); // ElementOutput

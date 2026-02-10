@@ -2981,7 +2981,7 @@ ForceBeamColumnCBDI2d::setResponse(const char **argv, int argc, OPS_Stream &outp
       output.attr("eta",xi[sectionNum]*L);
       
       if (strcmp(argv[2],"dsdh") != 0) {
-	theResponse = sections[sectionNum]->setResponse(&argv[2], argc-2, output);
+	theResponse = sections[sectionNum]->setResponse(&argv[2], argc-2, &output);
       } else {
 	int order = sections[sectionNum]->getOrder();
 	theResponse = new ElementResponse(this, 76, Vector(order));
@@ -3009,7 +3009,7 @@ ForceBeamColumnCBDI2d::setResponse(const char **argv, int argc, OPS_Stream &outp
 	output.attr("eta",xi[sectionNum-1]*L);
 	
 	if (strcmp(argv[2],"dsdh") != 0) {
-	  theResponse = sections[sectionNum-1]->setResponse(&argv[2], argc-2, output);
+	  theResponse = sections[sectionNum-1]->setResponse(&argv[2], argc-2, &output);
 	} else {
 	  int order = sections[sectionNum-1]->getOrder();
 	  theResponse = new ElementResponse(this, 76, Vector(order));
@@ -3033,7 +3033,7 @@ ForceBeamColumnCBDI2d::setResponse(const char **argv, int argc, OPS_Stream &outp
 	  output.attr("number",i+1);
 	  output.attr("eta",xi[i]*L);
 
-	  Response *theSectionResponse = sections[i]->setResponse(&argv[1], argc-1, output);
+	  Response *theSectionResponse = sections[i]->setResponse(&argv[1], argc-1, &output);
 
 	  if (theSectionResponse != 0) {
 	    numResponse = theCResponse->addResponse(theSectionResponse);
@@ -3053,7 +3053,7 @@ ForceBeamColumnCBDI2d::setResponse(const char **argv, int argc, OPS_Stream &outp
   }
 
   if (theResponse == 0)
-    theResponse = crdTransf->setResponse(argv, argc, output);
+    theResponse = crdTransf->setResponse(argv, argc, &output);
   
   output.endTag(); // ElementOutput
 
