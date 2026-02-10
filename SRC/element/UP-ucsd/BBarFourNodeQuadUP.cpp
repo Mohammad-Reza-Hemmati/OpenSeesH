@@ -1129,7 +1129,7 @@ BBarFourNodeQuadUP::setResponse(const char **argv, int argc, OPS_Stream &output)
       output.tag("GaussPoint");
       output.attr("number",pointNum);
 
-      theResponse =  theMaterial[pointNum-1]->setResponse(&argv[2], argc-2, output);
+      theResponse =  theMaterial[pointNum-1]->setResponse(&argv[2], argc-2, &output);
 
       output.endTag(); // GaussPoint
     }

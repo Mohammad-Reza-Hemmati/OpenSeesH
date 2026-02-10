@@ -1468,7 +1468,7 @@ GradientInelasticBeamColumn3d::setResponse(const char **argv, int argc, OPS_Stre
 				output.attr("eta", secX[sectionNum - 1] * L);
 
 				if (strcmp(argv[2], "dsdh") != 0) {
-					theResponse = sections[sectionNum - 1]->setResponse(&argv[2], argc - 2, output);
+					theResponse = sections[sectionNum - 1]->setResponse(&argv[2], argc - 2, &output);
 				}
 				else {
 					theResponse = new ElementResponse(this, 76, Vector(secOrder));

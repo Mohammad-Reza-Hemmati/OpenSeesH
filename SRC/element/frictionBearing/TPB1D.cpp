@@ -668,7 +668,7 @@ TPB1D::setResponse(const char **argv, int argc, OPS_Stream &output)
 
     // a material quantity
     else if (strcmp(argv[0],"material") == 0) {
-      theResponse =  theMaterial->setResponse(&argv[1], argc-1, output);
+      theResponse =  theMaterial->setResponse(&argv[1], argc-1, &output);
     }
 
     output.endTag();

@@ -89,7 +89,7 @@ target_sources(OPS_InterpTcl PRIVATE
     "${OPS_SRC_DIR}/recorder/TclRecorderCommands.cpp"
     "${OPS_SRC_DIR}/damage/TclModelBuilderDamageModelCommand.cpp"
     #"${OPS_SRC_DIR}/api/elementAPI_TCL.cpp"
-    "${OPS_SRC_DIR}/tcl/TclFeViewer.cpp"
+    "${OPS_SRC_DIR}/tcl/FeViewer.cpp"
     #"${OPS_SRC_DIR}/interpreter/TclInterpreter.cpp"
     "${OPS_SRC_DIR}/interpreter/TclWrapper.cpp"
     #"${OPS_SRC_DIR}/reliability/analysis/gFunction/TclGFunEvaluator.cpp"
@@ -99,5 +99,4 @@ target_sources(OPS_InterpTcl PRIVATE
     #"${OPS_SRC_DIR}/system_of_eqn/linearSOE/petsc/TclPetsc.cpp"
     #"${OPS_SRC_DIR}/tcl/TclVideoPlayer.cpp"
 )
-
 

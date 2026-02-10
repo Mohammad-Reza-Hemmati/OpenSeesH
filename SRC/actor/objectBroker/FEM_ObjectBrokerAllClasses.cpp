@@ -566,7 +566,7 @@
 #include "EnvelopeElementRecorder.h"
 #include "DriftRecorder.h"
 #ifdef _HDF5
-// #include "MPCORecorder.h"
+#include "MPCORecorder.h"
 #endif // _HDF5
 // #include "VTK_Recorder.h"
 // #include "GmshRecorder.h"
@@ -716,7 +716,7 @@
 // #include "drm/DRMLoadPatternWrapper.h"
 
 #ifdef _H5DRM
-// #include "drm/H5DRMLoadPattern.h"
+#include "drm/H5DRMLoadPattern.h"
 #endif
 
  #include "Parameter.h"

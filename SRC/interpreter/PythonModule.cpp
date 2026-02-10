@@ -532,6 +532,8 @@ PyInit_OpenSeesH_314(void)
 PyInit_OpenSeesH_315(void)
 #elif Py316
 PyInit_OpenSeesH_316(void)
+#else
+PyInit_OpenSeesH(void)
 #endif // Py312
 
 #else

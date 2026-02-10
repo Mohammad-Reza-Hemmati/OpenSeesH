@@ -441,7 +441,7 @@ TriSurfaceLoad::Print(OPS_Stream &s, int flag)
 Response*
 TriSurfaceLoad::setResponse(const char **argv, int argc, OPS_Stream &output)
 {
-  return Element::setResponse(argv, argc, output);
+  return Element::setResponse(argv, argc, &output);
 }
 
 int 

@@ -2799,7 +2799,7 @@ Response* Inno3DPnPJoint::setResponse(const char **argv, int argc, OPS_Stream &o
                 {
 					// opserr << "setResponse: output for spring " << springNo << " done!" << endln;
                     
-					return MaterialPtr[springNo-1]->setResponse(&argv[2], argc-1, output);
+					return MaterialPtr[springNo-1]->setResponse(&argv[2], argc-1, &output);
                 }
             }
             else

@@ -533,9 +533,9 @@ MultiFP2d::setResponse(const char **argv, int argc, OPS_Stream &output)
     }
     theResponse = new ElementResponse(this, 1, this->getResistingForce());
   } else if (strcmp(argv[0],"friction") == 0 || strcmp(argv[0],"frictionModel") == 0) {
-      theResponse =  theFrictionModel->setResponse(&argv[1], argc-1, output);
+      theResponse =  theFrictionModel->setResponse(&argv[1], argc-1, &output);
   } else if (strcmp(argv[0],"vertical") == 0 || strcmp(argv[0],"verticalModel") == 0) {
-      theResponse =  theVerticalModel->setResponse(&argv[1], argc-1, output);
+      theResponse =  theVerticalModel->setResponse(&argv[1], argc-1, &output);
   } 
 
   output.endTag();

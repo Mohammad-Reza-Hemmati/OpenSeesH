@@ -1387,7 +1387,7 @@ Response* ASDAbsorbingBoundary3D::setResponse(const char** argv, int argc, OPS_S
     else if (strcmp(argv[iarg], "E") == 0)
         rtype = 5;
     if (rtype == 0)
-        return Element::setResponse(argv, argc, output);
+        return Element::setResponse(argv, argc, &output);
 
     // prepare response meta-data
     output.tag("ElementOutput");

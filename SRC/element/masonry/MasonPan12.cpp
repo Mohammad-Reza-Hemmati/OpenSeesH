@@ -1258,8 +1258,8 @@ MasonPan12::setResponse(const char **argv, int argc, OPS_Stream &output)
       if (argc > 2) {
 	int matNum = atoi(argv[1]);
 	if (matNum >= 1 && matNum <= 6)
-	  theResponse =  theMaterial[matNum-1]->setResponse(&argv[2], argc-2, output);
-		  theResponse =  theMaterial2->setResponse(&argv[2], argc-2, output);
+	  theResponse =  theMaterial[matNum-1]->setResponse(&argv[2], argc-2, &output);
+		  theResponse =  theMaterial2->setResponse(&argv[2], argc-2, &output);
       }
     
 	}
